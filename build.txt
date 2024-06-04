@@ -1,0 +1,3 @@
+displayName = Calamity if it was Vanilla
+author = sixtydegrees, Jeo, Marc0
+version = 0.1
