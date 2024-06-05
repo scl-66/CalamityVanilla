@@ -13,6 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
 {
+    [AutoloadBossHead]
     public partial class HiveMind : ModNPC
     {
         public byte phase = 0;
