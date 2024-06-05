@@ -1,1 +1,8 @@
 NPCs.HiveMind.DisplayName: Hive Mind
+
+Items: {
+	HiveMindSummon: {
+		DisplayName: Sinister Root
+		Tooltip: Summons the Hive Mind
+	}
+}
