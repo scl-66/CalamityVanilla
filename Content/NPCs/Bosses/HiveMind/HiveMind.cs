@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,7 +24,25 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = 4;
+
+            // Add this in for bosses that have a summon item, requires corresponding code in the item (See MinionBossSummonItem.cs)
+            NPCID.Sets.MPAllowedEnemies[Type] = true;
+            // Automatically group with other bosses
+            NPCID.Sets.BossBestiaryPriority.Add(Type);
+
+            // Specify the debuffs it is immune to. Most NPCs are immune to Confused.
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
+
+            // Influences how the NPC looks in the Bestiary
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+            {
+                CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/HiveMind_Preview",
+                //PortraitScale = 0.6f, // Portrait refers to the full picture when clicking on the icon in the bestiary
+                PortraitPositionYOverride = 0f,
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
         }
+
         public override void FindFrame(int frameHeight)
         {
             NPC.frame.Width = 180;
@@ -56,6 +75,15 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
             Music = MusicID.Boss3;
             NPC.Size = new Vector2(150);
             NPC.noTileCollide = false;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            // Sets the description of this NPC that is listed in the bestiary
+            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
+                new FlavorTextBestiaryInfoElement("A despicable shroom-like behemoth responsible for the vile fungi decorating the Corruption soil. It releases aggressive spores when damaged.")
+            });
         }
         public override void AI()
         {
