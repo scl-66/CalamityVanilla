@@ -60,6 +60,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            // Need to make the squish not look janky on platforms
             Asset<Texture2D> tex = TextureAssets.Npc[Type];
             int move = (int)MathHelper.SmoothStep(tex.Height() / 4f,0,NPC.Opacity);
             spriteBatch.Draw(tex.Value,NPC.Center - Main.screenPosition + new Vector2(0,-9 + (move * MathHelper.SmoothStep(1.2f,1,NPC.Opacity))),new Rectangle(NPC.frame.X,NPC.frame.Y,NPC.frame.Width,NPC.frame.Height - move),Color.Lerp(Color.Black,drawColor,NPC.Opacity) * NPC.Opacity,NPC.rotation,NPC.frame.Size() / 2, Vector2.SmoothStep(new Vector2(0.2f,1.6f), new Vector2(1),NPC.Opacity), SpriteEffects.None,0);
@@ -68,6 +69,10 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
         public override void SetDefaults()
         {
             NPC.CloneDefaults(NPCID.EyeofCthulhu);
+
+            NPC.lifeMax = 16000;
+            NPC.defense = 30;
+
             NPC.aiStyle = -1;
             NPC.behindTiles = true;
             NPC.noGravity = false;
@@ -90,7 +95,10 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
             switch (phase)
             {
                 case 0:
-                    Phase0();
+                    Teleport();
+                    break;
+                case 1:
+                    ShootSporeBombs();
                     break;
             }
         }

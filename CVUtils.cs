@@ -7,10 +7,19 @@ using Terraria.Audio;
 using System.Linq;
 using Terraria.DataStructures;
 
-namespace Playground
+namespace CalamityVanilla
 {
     public static class CVUtils
     {
+        public static void QuickDefaults(this Projectile proj, bool hostile = false, int size = 8, int aiStyle = -1)
+        {
+            proj.aiStyle = aiStyle;
+            proj.hostile = hostile;
+            proj.friendly = !hostile;
+            proj.width = size;
+            proj.height = size;
+        }
+
         /// <summary>
         /// Clamps a Vector2 to be a specific length between max and min. Good for giving something a maximum speed.
         /// </summary>

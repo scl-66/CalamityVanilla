@@ -23,7 +23,7 @@ namespace CalamityVanilla.Content.Items
         {
             Item.width = 38;
             Item.height = 36;
-            Item.maxStack = 20;
+            Item.maxStack = Item.CommonMaxStack;
             Item.value = 100;
             Item.rare = ItemRarityID.LightPurple;
             Item.useAnimation = 30;

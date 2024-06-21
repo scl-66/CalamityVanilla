@@ -6,3 +6,8 @@ Items: {
 		Tooltip: Summons the Hive Mind
 	}
 }
+
+Projectiles: {
+	SporeBomb.DisplayName: Spore Bomb
+	Spores.DisplayName: Spores
+}
