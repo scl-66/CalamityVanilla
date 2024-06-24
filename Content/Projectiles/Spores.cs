@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Projectiles
@@ -23,6 +24,13 @@ namespace CalamityVanilla.Content.Projectiles
         }
         public override void AI()
         {
+            if (Main.rand.NextBool(5))
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);
+                d.alpha = 128;
+                d.velocity *= 0.4f;
+            }
+
             Projectile.ai[0]++;
             Projectile.velocity *= 0.99f;
             Projectile.scale = 1f + (float)(Math.Sin(Projectile.ai[0] * 0.1f)) * 0.1f;

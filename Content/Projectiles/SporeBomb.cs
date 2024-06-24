@@ -24,7 +24,14 @@ namespace CalamityVanilla.Content.Projectiles
         }
         public override void AI()
         {
-            if(Projectile.timeLeft == 200)
+            if (Main.rand.NextBool(5))
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);
+                d.alpha = 128;
+                d.velocity *= 0.4f;
+            }
+
+            if (Projectile.timeLeft == 200)
             {
                 SoundEngine.PlaySound(SoundID.Item17, Projectile.position);
             }

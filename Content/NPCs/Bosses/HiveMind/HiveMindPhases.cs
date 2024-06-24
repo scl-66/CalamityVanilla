@@ -56,7 +56,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
                 NPC.ai[0] = 40;
                 NPC.ai[1]++;
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                    Projectile.NewProjectile(NPC.GetSource_FromThis(),NPC.Center,NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.1f) * Main.rand.NextFloat(6,8),ModContent.ProjectileType<SporeBomb>(),25,1,-1,Main.rand.NextFloat(-1f,1f));
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(),NPC.Center,NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.1f) * Main.rand.NextFloat(6,12),ModContent.ProjectileType<SporeBomb>(),25,1,-1,Main.rand.NextFloat(-1f,1f));
             }
 
             if (NPC.ai[1] == 3)

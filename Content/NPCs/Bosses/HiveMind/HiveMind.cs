@@ -21,6 +21,36 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
         public Player target 
         { get { return Main.player[NPC.target]; } }
 
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            if (NPC.alpha > 64)
+                return false;
+            return base.CanHitPlayer(target, ref cooldownSlot);
+        }
+        public override void HitEffect(NPC.HitInfo hit)
+        {
+            if (NPC.life <= 0)
+            {
+                for(int i = 0; i < 5; i++)
+                {
+                    Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(6, 6), Mod.Find<ModGore>("HiveMind" + $"{i}").Type);
+                }
+                for (int i = 0; i < 100; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.position,NPC.width,NPC.height,DustID.CorruptGibs);
+                    d.velocity = Main.rand.NextVector2Circular(6, 6);
+                    d.scale = Main.rand.NextFloat(1, 2);
+                    d.noGravity = !Main.rand.NextBool(3);
+                }
+                for (int i = 0; i < 100; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption);
+                    d.velocity = Main.rand.NextVector2Circular(6, 6);
+                    d.scale = Main.rand.NextFloat(1, 2);
+                    d.noGravity = Main.rand.NextBool();
+                }
+            }
+        }
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = 4;
