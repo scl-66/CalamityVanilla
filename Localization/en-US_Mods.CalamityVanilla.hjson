@@ -10,4 +10,5 @@ Items: {
 Projectiles: {
 	SporeBomb.DisplayName: Spore Bomb
 	Spores.DisplayName: Spores
+	HiveVine.DisplayName: Hive Vine
 }

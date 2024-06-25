@@ -31,7 +31,7 @@ namespace CalamityVanilla.Content.Projectiles
                 d.velocity *= 0.4f;
             }
 
-            if (Projectile.timeLeft == 200)
+            if (Projectile.timeLeft == 60)
             {
                 SoundEngine.PlaySound(SoundID.Item17, Projectile.position);
             }
