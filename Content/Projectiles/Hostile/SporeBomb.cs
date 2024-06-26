@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Projectiles
+namespace CalamityVanilla.Content.Projectiles.Hostile
 {
     public class SporeBomb : ModProjectile
     {
@@ -39,11 +39,11 @@ namespace CalamityVanilla.Content.Projectiles
             Projectile.velocity = Projectile.velocity.RotatedBy(Projectile.ai[0] * 0.01f);
 
             Projectile.frameCounter++;
-            if(Projectile.frameCounter == 5)
+            if (Projectile.frameCounter == 5)
             {
                 Projectile.frameCounter = 0;
                 Projectile.frame++;
-                if(Projectile.frame > 3)
+                if (Projectile.frame > 3)
                 {
                     Projectile.frame = 0;
                 }
@@ -55,7 +55,7 @@ namespace CalamityVanilla.Content.Projectiles
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact, Projectile.position);
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                for(int i = 0; i < 6; i++)
+                for (int i = 0; i < 6; i++)
                 {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(4, 4), ModContent.ProjectileType<Spores>(), 23, 2);
                 }

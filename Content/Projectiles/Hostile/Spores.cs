@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Projectiles
+namespace CalamityVanilla.Content.Projectiles.Hostile
 {
     public class Spores : ModProjectile
     {
@@ -17,7 +17,7 @@ namespace CalamityVanilla.Content.Projectiles
         }
         public override void SetDefaults()
         {
-            Projectile.QuickDefaults(true,36);
+            Projectile.QuickDefaults(true, 36);
             Projectile.timeLeft = 600;
             Projectile.alpha = 128;
             Projectile.tileCollide = false;
@@ -33,12 +33,12 @@ namespace CalamityVanilla.Content.Projectiles
 
             Projectile.ai[0]++;
             Projectile.velocity *= 0.99f;
-            Projectile.scale = 1f + (float)(Math.Sin(Projectile.ai[0] * 0.1f)) * 0.1f;
-            Projectile.rotation += (Projectile.velocity.X * 0.02f) + Projectile.direction * 0.02f;
+            Projectile.scale = 1f + (float)Math.Sin(Projectile.ai[0] * 0.1f) * 0.1f;
+            Projectile.rotation += Projectile.velocity.X * 0.02f + Projectile.direction * 0.02f;
 
-            if(Projectile.timeLeft < 20)
+            if (Projectile.timeLeft < 20)
             {
-                Projectile.alpha+= 6;
+                Projectile.alpha += 6;
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Projectiles;
+﻿using CalamityVanilla.Content.Projectiles.Hostile;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
