@@ -1,4 +1,7 @@
-﻿using Terraria;
+﻿using CalamityVanilla.Content.Projectiles.Magic;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -19,16 +22,40 @@ namespace CalamityVanilla.Content.Items.Weapons.Magic
         {
             // DefaultToStaff handles setting various Item values that magic staff weapons use.
             // Hover over DefaultToStaff in Visual Studio to read the documentation!
-            Item.DefaultToStaff(/*ModContent.ProjectileType<SparklingBall>()*/ProjectileID.WoodenArrowFriendly, 16, 25, 12);
+            Item.DefaultToStaff(ModContent.ProjectileType<MyceliumShroom>(), 16, 25, 12);
 
             // Customize the UseSound. DefaultToStaff sets UseSound to SoundID.Item43, but we want SoundID.Item20
             Item.UseSound = SoundID.Item20;
 
             // Set damage and knockBack
-            Item.SetWeaponValues(20, 5);
+            Item.SetWeaponValues(40, 5);
 
             // Set rarity and value
             Item.SetShopValues(ItemRarityColor.Pink5, 10000);
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            velocity = Vector2.Zero;
+            if (player == Main.LocalPlayer)
+            {
+                int WorldX;
+                int WorldY;
+                int PushUpY;
+                Main.LocalPlayer.FindSentryRestingSpot(type, out WorldX, out WorldY, out PushUpY);
+
+                Projectile mushroomLeft = Projectile.NewProjectileDirect(source, new Vector2(WorldX - 16, WorldY - PushUpY + 12), Vector2.Zero, type, damage, 0, player.whoAmI, -3);
+                mushroomLeft.frame = Main.rand.Next(1, 3);
+                mushroomLeft.rotation = Main.rand.NextFloat(-0.2f, 0f);
+                mushroomLeft.timeLeft = 55;
+                Projectile mushroomRight = Projectile.NewProjectileDirect(source, new Vector2(WorldX + 16, WorldY - PushUpY + 12), Vector2.Zero, type, damage, 0, player.whoAmI, -8);
+                mushroomRight.frame = Main.rand.Next(1, 3);
+                mushroomRight.rotation = Main.rand.NextFloat(0f, 0.2f);
+                mushroomRight.timeLeft = 50;
+                Projectile mushroomCenter = Projectile.NewProjectileDirect(source, new Vector2(WorldX, WorldY - PushUpY + 12), Vector2.Zero, type, damage, 0, player.whoAmI);
+                mushroomCenter.frame = 0;
+            }
+            return false;
         }
     }
 }

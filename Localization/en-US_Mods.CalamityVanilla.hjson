@@ -5,10 +5,17 @@ Items: {
 		DisplayName: Sinister Root
 		Tooltip: Summons the Hive Mind
 	}
+
+	MyceliumStaff: {
+		DisplayName: Mycelium Staff
+		Tooltip: Grows mushrooms that burst into spores
+	}
 }
 
 Projectiles: {
 	SporeBomb.DisplayName: Spore Bomb
 	Spores.DisplayName: Spores
 	HiveVine.DisplayName: Hive Vine
+	MyceliumShroom.DisplayName: Mycelium Shroom
+	MyceliumSpore.DisplayName: Mycelium Spore
 }
