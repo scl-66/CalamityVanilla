@@ -42,7 +42,7 @@ namespace CalamityVanilla.Content.Projectiles.Magic
         public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Top, new Vector2(Main.rand.NextFloat(-2f, 2f), -10f), ModContent.ProjectileType<MyceliumSpore>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Main.rand.Next(-15, 15));
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Top, new Vector2(Main.rand.NextFloat(-2f, 2f), -10f), ModContent.ProjectileType<MyceliumSpore>(), (int)(Projectile.damage * 1.5), Projectile.knockBack, Projectile.owner, Main.rand.Next(-15, 15));
 
             for (int i = 0; i < 5; i++)
             {
@@ -50,7 +50,7 @@ namespace CalamityVanilla.Content.Projectiles.Magic
             }
             for (int i = 0; i < Main.rand.Next(1,2); i++)
             {
-                Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(0.3f, 0.3f), Mod.Find<ModGore>("MyceliumShroom" + "{i}").Type);
+                Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(0.3f, 0.3f), Mod.Find<ModGore>("MyceliumShroom" + $"{i}").Type);
             }
         }
 

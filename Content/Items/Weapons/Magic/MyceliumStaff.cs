@@ -44,15 +44,15 @@ namespace CalamityVanilla.Content.Items.Weapons.Magic
                 int PushUpY;
                 Main.LocalPlayer.FindSentryRestingSpot(type, out WorldX, out WorldY, out PushUpY);
 
-                Projectile mushroomLeft = Projectile.NewProjectileDirect(source, new Vector2(WorldX - 16, WorldY - PushUpY + 12), Vector2.Zero, type, damage, 0, player.whoAmI, -3);
+                Projectile mushroomLeft = Projectile.NewProjectileDirect(source, new Vector2(WorldX - 16, WorldY - PushUpY + 12), Vector2.Zero, type, (int)(damage/1.5), 0, player.whoAmI, -3);
                 mushroomLeft.frame = Main.rand.Next(1, 3);
                 mushroomLeft.rotation = Main.rand.NextFloat(-0.2f, 0f);
                 mushroomLeft.timeLeft = 55;
-                Projectile mushroomRight = Projectile.NewProjectileDirect(source, new Vector2(WorldX + 16, WorldY - PushUpY + 12), Vector2.Zero, type, damage, 0, player.whoAmI, -8);
+                Projectile mushroomRight = Projectile.NewProjectileDirect(source, new Vector2(WorldX + 16, WorldY - PushUpY + 12), Vector2.Zero, type, (int)(damage / 1.5), 0, player.whoAmI, -8);
                 mushroomRight.frame = Main.rand.Next(1, 3);
                 mushroomRight.rotation = Main.rand.NextFloat(0f, 0.2f);
                 mushroomRight.timeLeft = 50;
-                Projectile mushroomCenter = Projectile.NewProjectileDirect(source, new Vector2(WorldX, WorldY - PushUpY + 12), Vector2.Zero, type, damage, 0, player.whoAmI);
+                Projectile mushroomCenter = Projectile.NewProjectileDirect(source, new Vector2(WorldX, WorldY - PushUpY + 12), Vector2.Zero, type, (int)(damage / 1.5), 0, player.whoAmI);
                 mushroomCenter.frame = 0;
             }
             return false;

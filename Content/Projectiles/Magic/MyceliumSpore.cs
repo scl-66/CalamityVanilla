@@ -31,14 +31,23 @@ namespace CalamityVanilla.Content.Projectiles.Magic
         {
             target = CVUtils.FindClosestNPC(700f, Projectile.Center);
 
-            if (Projectile.velocity.Y > 0f && target == null) Projectile.velocity.X = (float)Math.Sin(Projectile.ai[0] / 15) * 1.5f;
-            else if (target != null)
+            if (Projectile.velocity.Y > 0f && target == null) Projectile.velocity.X = (float)Math.Sin(Projectile.ai[0] / 15) * 1f;
+            else if (Projectile.velocity.Y > 0f && target != null)
             {
-                Projectile.position.X = MathHelper.Lerp(Projectile.position.X, target.Center.X, 0.03f);
+                if (Math.Abs(target.Center.X - Projectile.Center.X) > 2f)
+                {
+                    if ((target.Center.X - Projectile.Center.X) / (Math.Abs(target.Center.X - Projectile.Center.X)) == Projectile.velocity.X/Math.Abs(Projectile.velocity.X))
+                    {
+                        Projectile.velocity.X += (target.Center.X - Projectile.Center.X) / (Math.Abs(target.Center.X - Projectile.Center.X)) * 0.08f;
+                    }
+                    else Projectile.velocity.X += (target.Center.X - Projectile.Center.X) / (Math.Abs(target.Center.X - Projectile.Center.X)) * 0.2f;
+                }
             }
             else Projectile.velocity.X *= 0.98f;
             Projectile.velocity.Y = Math.Clamp(Projectile.velocity.Y + 0.1f, -10f, 2f);
             Projectile.ai[0]++;
+
+            Projectile.rotation = Projectile.velocity.X/5f;
 
             if (++Projectile.frameCounter >= 8)
             {
