@@ -8,5 +8,6 @@ You do not need CalamityMod installed to play this!
 
 ## Credits
 
-This mod was made by sixtydegrees, Jeo, and our good friend Marc0.
+This mod was programmed by sixtydegrees, Jeo, Fredleon, and our good friend Marc0. His work's a specialty.
+
 Credits to the Calamity Mod team for the OG mod, of course!
