@@ -1,4 +1,8 @@
-NPCs.HiveMind.DisplayName: Hive Mind
+NPCs: {
+	HiveMind.DisplayName: Hive Mind
+	Perforator.DisplayName: Perforator
+	PerforatorBigWorm.DisplayName: Perforator Big Worm
+}
 
 Items: {
 	HiveMindSummon: {
