@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
+using System.Linq;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using System;
-using Terraria.Audio;
-using System.Linq;
-using Terraria.DataStructures;
 
 namespace CalamityVanilla
 {
@@ -96,7 +94,7 @@ namespace CalamityVanilla
         public static int TypeCountNPC(int type)
         {
             int found = 0;
-            for(int i = 0; i < Main.npc.Length; i++) 
+            for (int i = 0; i < Main.npc.Length; i++)
             {
                 if (Main.npc[i].type == type) found++;
             }
@@ -159,7 +157,7 @@ namespace CalamityVanilla
         /// </summary>
         public static NPC[] GetAllNPCsInArea(float AreaSize, Vector2 position, bool HostileOnly = true, NPC[] excludedNPCs = null)
         {
-            NPC[] AreaNPCs = new NPC[] {};
+            NPC[] AreaNPCs = new NPC[] { };
 
             for (int k = 0; k < Main.npc.Length; k++)
             {
@@ -194,6 +192,29 @@ namespace CalamityVanilla
             if (includeKingSlime)
                 return (NPC.downedBoss1 || NPC.downedBoss2 || NPC.downedBoss3 || NPC.downedSlimeKing || Main.hardMode);
             return (NPC.downedBoss1 || NPC.downedBoss2 || NPC.downedBoss3 || Main.hardMode);
+        }
+
+        public static Vector2 FindRestingSpot(Vector2 pointPoisition)
+        {
+            bool flag = false;
+            int num = (int)pointPoisition.X / 16;
+            int i = (int)pointPoisition.Y / 16;
+            float worldX = num * 16 + 8;
+
+
+            if (!flag)
+            {
+                for (; i < Main.maxTilesY - 10 && Main.tile[num, i] != null && !WorldGen.SolidTile2(num, i) && Main.tile[num - 1, i] != null && !WorldGen.SolidTile2(num - 1, i) && Main.tile[num + 1, i] != null && !WorldGen.SolidTile2(num + 1, i); i++)
+                {
+                }
+
+                i++;
+            }
+
+            i--;
+            float worldY = i * 16;
+
+            return new Vector2(worldX, worldY);
         }
     }
 }

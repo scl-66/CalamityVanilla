@@ -20,7 +20,7 @@ namespace CalamityVanilla.Content.Projectiles
         {
             Projectile.QuickDefaults(true, 32);
             Projectile.alpha = 255;
-            Projectile.timeLeft = 60 * 7;
+            Projectile.timeLeft = 60 * 3;
         }
         public override bool PreDraw(ref Color lightColor)
         {
