@@ -17,6 +17,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
 {
     public partial class HiveMind
     {
+        int currentPhase = 0;
         private void Teleport()
         {
             NPC.ai[0]++;
@@ -46,16 +47,17 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
             }
             if (NPC.ai[0] == (512 / 5))
             {
-                phase = (byte)Main.rand.Next(1, 4);
+                phase = (byte)Main.rand.Next(1, 3);
                 //phase = 3;
                 NPC.ai[0] = 0;
                 NPC.netUpdate = true;
+                currentPhase = 1;
             }
         }
         private void ShootSporeBombs()
         {
             NPC.ai[0]++;
-            if (NPC.ai[0] > 40)
+            if (NPC.ai[0] > 40 && NPC.ai[1] < 3)
             {
                 NPC.ai[0] = 20;
                 NPC.ai[1]++;
@@ -63,17 +65,31 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
                     Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.1f) * Main.rand.NextFloat(6, 12), ModContent.ProjectileType<SporeBomb>(), 25, 1, -1, Main.rand.NextFloat(-1f, 1f));
             }
 
-            if (NPC.ai[1] == 3)
+            if (NPC.ai[1] == 3 && NPC.ai[0] > 80)
             {
                 NPC.ai[0] = 0;
                 NPC.ai[1] = 0;
-                phase = 0;
+                switch (currentPhase)
+                {
+                    case 1:
+                        currentPhase = 2;
+                        phase = (byte)Main.rand.Next(1, 3);
+                        break;
+                    case 2:
+                        currentPhase = 3;
+                        phase = 3;
+                        break;
+                    case 3:
+                        currentPhase = 0;
+                        phase = 0;
+                        break;
+                }
             }
         }
         private void VineAttack()
         {
             NPC.ai[0]++;
-            if (NPC.ai[0] > 40)
+            if (NPC.ai[0] > 40 && NPC.ai[1] < 3)
             {
                 NPC.ai[0] = 20;
 
@@ -100,11 +116,25 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
                 NPC.ai[1]++;
             }
 
-            if (NPC.ai[1] == 3)
+            if (NPC.ai[1] == 3 && NPC.ai[0] > 80)
             {
                 NPC.ai[0] = 0;
                 NPC.ai[1] = 0;
-                phase = 0;
+                switch (currentPhase)
+                {
+                    case 1:
+                        currentPhase = 2;
+                        phase = (byte)Main.rand.Next(1, 3);
+                        break;
+                    case 2:
+                        currentPhase = 3;
+                        phase = 3;
+                        break;
+                    case 3:
+                        currentPhase = 0;
+                        phase = 0;
+                        break;
+                }
             }
         }
 
@@ -137,12 +167,23 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
                 {
                     float rotAmount = 1f;
                     Vector2 spawnOffset = new Vector2(0, -1f).RotatedBy((rotAmount / spawnAmount * i) - rotAmount / 2) * Main.rand.NextFloat(3f,7f);
-                    NPC minnon = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X + (int)spawnOffset.X, (int)NPC.Center.Y + (int)spawnOffset.Y, ModContent.NPCType<HiveMindSwooper>());
-                    // Optional parameters allow for specifying a range of rotations. In this example, the start rotation is  MathHelper.Pi / 4 and it can be up to MathHelper.Pi / 2 more than that.
-                    minnon.velocity = spawnOffset;
-                    minnon.Opacity = 0f;
-
-                    HiveMindMinions.Add(minnon);
+                    
+                    if (Main.rand.Next (1,4) != 1)
+                    {
+                        NPC minnon = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X + (int)spawnOffset.X, (int)NPC.Center.Y + (int)spawnOffset.Y, ModContent.NPCType<HiveMindSwooper>());
+                        // Optional parameters allow for specifying a range of rotations. In this example, the start rotation is  MathHelper.Pi / 4 and it can be up to MathHelper.Pi / 2 more than that.
+                        minnon.velocity = spawnOffset;
+                        minnon.Opacity = 0f;
+                        HiveMindMinions.Add(minnon);
+                    }
+                    else
+                    {
+                        NPC minnon = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X + (int)spawnOffset.X, (int)NPC.Center.Y + (int)spawnOffset.Y, ModContent.NPCType<HiveMindWeeper>());
+                        // Optional parameters allow for specifying a range of rotations. In this example, the start rotation is  MathHelper.Pi / 4 and it can be up to MathHelper.Pi / 2 more than that.
+                        minnon.velocity = spawnOffset;
+                        minnon.Opacity = 0f;
+                        HiveMindMinions.Add(minnon);
+                    }
                 }
                 minionSummoned = true;
                 NPC.dontTakeDamage = true;
@@ -163,7 +204,21 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
             {
                 NPC.ai[0] = 0;
                 NPC.ai[1] = 0;
-                phase = 0;
+                switch (currentPhase)
+                {
+                    case 1:
+                        currentPhase = 2;
+                        phase = (byte)Main.rand.Next(1, 3);
+                        break;
+                    case 2:
+                        currentPhase = 3;
+                        phase = 3;
+                        break;
+                    case 3:
+                        currentPhase = 0;
+                        phase = 0;
+                        break;
+                }
                 minionSummoned = false;
                 HiveMindMinions = new List<NPC> { };
             }
