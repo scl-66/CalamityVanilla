@@ -15,6 +15,11 @@ Items: {
 		DisplayName: Mycelium Staff
 		Tooltip: Grows mushrooms that burst into spores
 	}
+
+	BlossomFlux: {
+		DisplayName: Blossom Flux
+		Tooltip: Converts wooden arrows into crystal leaves
+	}
 }
 
 Projectiles: {
@@ -23,4 +28,7 @@ Projectiles: {
 	HiveVine.DisplayName: Hive Vine
 	MyceliumShroom.DisplayName: Mycelium Shroom
 	MyceliumSpore.DisplayName: Mycelium Spore
+	BlossomFluxLeaf.DisplayName: Blossom Flux Leaf
+	BlossomFluxBomb.DisplayName: Blossom Flux Bomb
+	BlossomFluxSpores.DisplayName: Blossom Flux Spores
 }
