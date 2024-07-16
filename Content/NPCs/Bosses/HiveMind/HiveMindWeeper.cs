@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
 {
-    public class HiveMindSwooper : ModNPC
+    public class HiveMindWeeper : ModNPC
     {
         public Player target
         { get { return Main.player[NPC.target]; } }
@@ -41,7 +41,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
             {
                 for (int i = -1; i <= 1; i += 2) // larger smoke puffs
                 {
-                    for (int j = Main.rand.Next(-1,1); j <= 1; j += 2)
+                    for (int j = Main.rand.Next(-1, 1); j <= 1; j += 2)
                     {
                         int smoke = Gore.NewGore(NPC.GetSource_Death(), new Vector2(NPC.position.X, NPC.position.Y), default, Main.rand.Next(61, 64));
                         Main.gore[smoke].velocity *= 0.4f;
@@ -104,14 +104,14 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
         }
         public override void SetDefaults()
         {
-            NPC.CloneDefaults(NPCID.CaveBat);
+            NPC.CloneDefaults(NPCID.AngryNimbus);
 
-            NPC.lifeMax = 80;
-            NPC.defense = 20;
+            NPC.lifeMax = 120;
+            NPC.defense = 25;
 
-            NPC.width = 34;
-            NPC.height = 36;
-            
+            NPC.width = 60;
+            NPC.height = 38;
+
             NPC.value = 0;
 
             NPC.HitSound = SoundID.NPCHit1;
@@ -131,7 +131,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
 
             if (NPC.ai[0] % 10 == 0)
             {
-                Dust d = Dust.NewDustDirect(NPC.Center, NPC.width/2, NPC.height/2, DustID.Corruption, Scale: 0.75f);
+                Dust d = Dust.NewDustDirect(NPC.Center, NPC.width / 2, NPC.height / 2, DustID.Corruption, Scale: 0.75f);
                 d.velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
             }
         }
@@ -170,8 +170,8 @@ namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind
             bestiaryEntry.UIInfoProvider = new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[associatedNPCType], quickUnlock: true);
 
             bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
-                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,              
-                new FlavorTextBestiaryInfoElement("Released from the Hive Mind, these nasty, swooping spores serve their master to the very end.")
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
+                new FlavorTextBestiaryInfoElement("These malevolent spores are summoned by the Hive, with their only goal being to rain hell on whoever their master deems a threat.")
             });
         }
     }

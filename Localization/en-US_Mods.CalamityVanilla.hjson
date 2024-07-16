@@ -3,6 +3,7 @@ NPCs: {
 	Perforator.DisplayName: Perforator
 	PerforatorBigWorm.DisplayName: Perforator Big Worm
 	HiveMindSwooper.DisplayName: Hive Swooper
+	HiveMindWeeper.DisplayName: Hive Mind Weeper
 }
 
 Items: {
