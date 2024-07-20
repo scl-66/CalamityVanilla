@@ -27,6 +27,16 @@ namespace CalamityVanilla.Content.Items.Weapons.Ranged
             Item.rare = ItemRarityID.Lime;
             Item.value = Item.sellPrice(0, 5);
         }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddTile(TileID.MythrilAnvil)
+                .AddIngredient(ItemID.BeesKnees)
+                .AddIngredient(ItemID.HellwingBow)
+                .AddIngredient(ItemID.BloodRainBow)
+                .AddIngredient(ItemID.IceBow)
+                .AddIngredient(ItemID.ChlorophyteBar,10)
+                .Register();
+        }
         public override Vector2? HoldoutOffset()
         {
             return new Vector2(-10, 0);

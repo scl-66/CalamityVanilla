@@ -4,6 +4,7 @@ NPCs: {
 	PerforatorBigWorm.DisplayName: Perforator Big Worm
 	HiveMindSwooper.DisplayName: Hive Swooper
 	HiveMindWeeper.DisplayName: Hive Mind Weeper
+	Cryogen.DisplayName: Cryogen
 }
 
 Items: {
@@ -32,4 +33,7 @@ Projectiles: {
 	BlossomFluxLeaf.DisplayName: Blossom Flux Leaf
 	BlossomFluxBomb.DisplayName: Blossom Flux Bomb
 	BlossomFluxSpores.DisplayName: Blossom Flux Spores
+	CryogenIceBlock.DisplayName: Cryogen Ice Block
+	IceBomb.DisplayName: Ice Bomb
+	IceShrapnel.DisplayName: Ice Shrapnel
 }
