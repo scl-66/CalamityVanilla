@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 {
-    //[AutoloadBossHead]
+    [AutoloadBossHead]
     public partial class Cryogen : ModNPC
     {
         public byte phase = 0;
@@ -21,6 +21,30 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
         private static Asset<Texture2D> backTexture;
         public override void HitEffect(NPC.HitInfo hit)
         {
+            if (NPC.life <= 0)
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(6, 6), Mod.Find<ModGore>("Cryogen" + $"{i}").Type);
+                }
+                for (int i = 0; i < 100; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Ice);
+                    d.velocity = Main.rand.NextVector2Circular(6, 6);
+                    d.scale = Main.rand.NextFloat(1, 2);
+                    d.noGravity = !Main.rand.NextBool(3);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Ice);
+                    d.velocity = Main.rand.NextVector2Circular(6, 6);
+                    d.scale = Main.rand.NextFloat(1, 2);
+                    d.noGravity = !Main.rand.NextBool(3);
+                }
+            }
         }
         public override void SetStaticDefaults()
         {
@@ -39,7 +63,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             // Influences how the NPC looks in the Bestiary
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
             {
-                CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/HiveMind_Preview",
+                CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/Cryogen_Preview",
                 //PortraitScale = 0.6f, // Portrait refers to the full picture when clicking on the icon in the bestiary
                 PortraitPositionYOverride = 0f,
             };
@@ -74,13 +98,23 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             NPC.aiStyle = -1;
             NPC.noGravity = true;
             phase = 0;
-            Music = MusicID.Boss1;
+            Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Cryogen");
             NPC.Size = new Vector2(78);
             NPC.noTileCollide = true;
 
             NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
             NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
         }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            // Sets the description of this NPC that is listed in the bestiary
+            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Snow,
+                new FlavorTextBestiaryInfoElement("An incredible feat of magical architecture, this intricate fortress of ice and steel serves to trap a lonely soul inside...")
+            });
+        }
+
         public override void AI()
         {
             NPC.direction = Math.Sign(NPC.velocity.X);
