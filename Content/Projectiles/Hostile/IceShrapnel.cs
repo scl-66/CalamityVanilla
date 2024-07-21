@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Projectiles.Hostile
@@ -13,7 +14,7 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
     {
         public override void SetDefaults()
         {
-            Projectile.QuickDefaults(true, 8);
+            Projectile.QuickDefaults(true, 16);
             Projectile.tileCollide = false;
             Projectile.timeLeft = 60 * 3;
         }
@@ -23,6 +24,11 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
         }
         public override void AI()
         {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Frost);
+            d.velocity = Projectile.velocity;
+            d.noGravity = true;
+            d.scale = 1.5f;
+
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
     }

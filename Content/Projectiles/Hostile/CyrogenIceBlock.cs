@@ -27,6 +27,10 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
             {
                 Projectile.Kill();
             }
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.IceRod);
+            d.velocity = Projectile.velocity;
+            d.noGravity = true;
+            d.scale = 1.5f;
         }
         public override void OnKill(int timeLeft)
         {
@@ -36,15 +40,18 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
             switch (Projectile.ai[2])
             {
                 case 0:
-                    for (int x = -1; x <= 1; x++)
+
+                    int squaresize = 2;
+
+                    for (int x = -squaresize; x <= squaresize; x++)
                     {
-                        for (int y = -1; y <= 1; y++)
+                        for (int y = -squaresize; y <= squaresize; y++)
                         {
                             WorldGen.PlaceTile(placePos.X + x, placePos.Y + y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer);
                             CryogenIceBlockSystem.CryogenIceBlocks.Add(new Vector3(placePos.X + x, placePos.Y + y,CryogenIceBlockSystem.DEFAULT_ICE_TIMER + Main.rand.Next(0,60)));
                         }
                     }
-                    NetMessage.SendTileSquare(-1, placePos.X - 1, placePos.Y - 1,3,3);
+                    NetMessage.SendTileSquare(-squaresize, placePos.X - squaresize, placePos.Y - 1,(squaresize*2) + 1, (squaresize * 2) + 1);
                     break;
             }
         }

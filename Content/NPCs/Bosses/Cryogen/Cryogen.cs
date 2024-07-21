@@ -15,6 +15,8 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
     public partial class Cryogen : ModNPC
     {
         public byte phase = 0;
+
+        const bool ForTheWorthy = false;
         public Player target
         { get { return Main.player[NPC.target]; } }
 
@@ -83,15 +85,21 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             Asset<Texture2D> tex = TextureAssets.Npc[Type];
             Rectangle bigFlake = new Rectangle(0,0,270,270);
             Rectangle smallFlake = new Rectangle(0, 272, 126, 126);
-            spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, bigFlake, Color.White * 0.5f, NPC.rotation, bigFlake.Size() / 2, 1f, SpriteEffects.None, 0);
-            spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, smallFlake, Color.White * 0.7f, -NPC.rotation, smallFlake.Size() / 2, 1f, SpriteEffects.None, 0);
-            spriteBatch.Draw(tex.Value,NPC.Center - Main.screenPosition, NPC.frame,Color.White,NPC.velocity.X * 0.03f,NPC.frame.Size() / 2, 1f, SpriteEffects.None,0);
+            //Flakes
+            spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, bigFlake, Color.White * 0.5f, NPC.rotation, bigFlake.Size() / 2, !ForTheWorthy? 1f : 2f, SpriteEffects.None, 0);
+            spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, smallFlake, Color.White * 0.7f, -NPC.rotation, smallFlake.Size() / 2, !ForTheWorthy ? 1f : 2f, SpriteEffects.None, 0);
+
+            // The Hexagon
+            spriteBatch.Draw(tex.Value, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.velocity.X * 0.03f, NPC.frame.Size() / 2, !ForTheWorthy ? 1f : 0.5f, SpriteEffects.None, 0);
             return false;
+        }
+        public override void BossLoot(ref string name, ref int potionType)
+        {
+            potionType = ItemID.GreaterHealingPotion;
         }
         public override void SetDefaults()
         {
             NPC.CloneDefaults(NPCID.EyeofCthulhu);
-
             NPC.lifeMax = 16000;
             NPC.defense = 30;
 
@@ -104,6 +112,11 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 
             NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
             NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
+
+            if (ForTheWorthy)
+            {
+                NPC.Size = new Vector2(300);
+            }
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -120,8 +133,13 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             NPC.direction = Math.Sign(NPC.velocity.X);
             Lighting.AddLight(NPC.Center, new Vector3(0.8f,1f,1f));
             NPC.rotation += NPC.velocity.Length() * 0.01f * NPC.direction;
-            
 
+            if (Main.rand.NextBool(10))
+            {
+                Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Snow);
+                d.scale = 0.8f;
+                d.velocity += NPC.velocity;
+            }
             
             switch (phase)
             {
