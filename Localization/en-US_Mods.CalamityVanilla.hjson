@@ -22,6 +22,20 @@ Items: {
 		DisplayName: Blossom Flux
 		Tooltip: Converts wooden arrows into crystal leaves
 	}
+
+	CryogenSummon: {
+		DisplayName: Cryo Key
+		Tooltip: Summons Cryogen
+	}
+
+	CryogenSummonMold: {
+		DisplayName: Cryo Key Mold
+		Tooltip:
+			'''
+			Can be used infinitely
+			Used to craft a Cryo Key
+			'''
+	}
 }
 
 Projectiles: {
