@@ -47,6 +47,7 @@ namespace CalamityVanilla.Content.Items.Weapons.Ranged
 
             if (player.ItemAnimationJustStarted)
             {
+                SoundEngine.PlaySound(SoundID.Item102, player.position);
                 Projectile.NewProjectile(source, position, velocity * 0.7f + new Vector2(0,-1), ModContent.ProjectileType<BlossomFluxBomb>(), damage * 2, knockback * 2, player.whoAmI);
             }
 
