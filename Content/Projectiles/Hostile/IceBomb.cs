@@ -29,7 +29,7 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
                 SoundEngine.PlaySound(ContentSamples.ItemsByType[ItemID.CopperAxe].UseSound, Projectile.position);
             }
 
-            Projectile.velocity *= 0.993f;
+            Projectile.velocity *= 0.99f;
             Projectile.rotation += 0.1f;
             Projectile.scale = 1f + MathF.Sin(Projectile.timeLeft * 0.1f) * 0.1f;
         }
@@ -48,7 +48,7 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
             {
                 for(int i = 0; i < 4; i++)
                 {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 13).RotatedBy(MathHelper.PiOver2 * i).RotatedBy(Projectile.ai[0] == 0 ? 0 : MathHelper.PiOver4), ModContent.ProjectileType<IceShrapnel>(), 25, 0);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, Projectile.ai[1]).RotatedBy(MathHelper.PiOver2 * i).RotatedBy(Projectile.ai[0] == 0 ? 0 : MathHelper.PiOver4), ModContent.ProjectileType<IceShrapnel>(), 25, 0);
                 }
             }
         }

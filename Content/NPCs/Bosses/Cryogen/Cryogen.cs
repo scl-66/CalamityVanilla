@@ -16,6 +16,8 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
     {
         public byte phase = 0;
 
+        private static float _phase2HealthMultiplier = 0.6f;
+
         const bool ForTheWorthy = false;
         public Player target
         { get { return Main.player[NPC.target]; } }
@@ -74,23 +76,33 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 
         public override void FindFrame(int frameHeight)
         {
-            if (NPC.life < NPC.lifeMax / 3)
-                NPC.frame.Y = frameHeight * 2;
-            else if (NPC.life < NPC.lifeMax / 3 * 2)
+            if (NPC.life < NPC.lifeMax * _phase2HealthMultiplier)
+            {
                 NPC.frame.Y = frameHeight;
+            }
         }
-
+        public override bool? CanFallThroughPlatforms()
+        {
+            return true;
+        }
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Asset<Texture2D> tex = TextureAssets.Npc[Type];
             Rectangle bigFlake = new Rectangle(0,0,270,270);
             Rectangle smallFlake = new Rectangle(0, 272, 126, 126);
             //Flakes
+
+            for (int i = 0; i < 4; i++)
+            {
+                spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition + new Vector2((float)Math.Sin(Main.timeForVisualEffects * 0.03f) * 2).RotatedBy(MathHelper.PiOver2 * i), bigFlake, new Color(0.5f,1f,1f,0f) * 0.2f, NPC.rotation, bigFlake.Size() / 2, !ForTheWorthy ? 1f : 2f, SpriteEffects.None, 0);
+            }
+
             spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, bigFlake, Color.White * 0.5f, NPC.rotation, bigFlake.Size() / 2, !ForTheWorthy? 1f : 2f, SpriteEffects.None, 0);
+
             spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, smallFlake, Color.White * 0.7f, -NPC.rotation, smallFlake.Size() / 2, !ForTheWorthy ? 1f : 2f, SpriteEffects.None, 0);
 
             // The Hexagon
-            spriteBatch.Draw(tex.Value, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.velocity.X * 0.03f, NPC.frame.Size() / 2, !ForTheWorthy ? 1f : 0.5f, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex.Value, NPC.Center - Main.screenPosition, NPC.frame, Color.White, phase == 2? (float)Math.Sin(Main.timeForVisualEffects * 0.8f) * 0.1f: NPC.velocity.X * 0.03f, NPC.frame.Size() / 2, !ForTheWorthy ? 1f : 0.5f, SpriteEffects.None, 0);
             return false;
         }
         public override void BossLoot(ref string name, ref int potionType)
@@ -112,11 +124,6 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 
             NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
             NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
-
-            if (ForTheWorthy)
-            {
-                NPC.Size = new Vector2(300);
-            }
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -127,24 +134,46 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                 new FlavorTextBestiaryInfoElement("An incredible feat of magical architecture, this intricate fortress of ice and steel serves to trap a lonely soul inside...")
             });
         }
-
+        public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+        {
+            OnHitByAnything();
+        }
+        public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+        {
+            OnHitByAnything();
+        }
+        private void OnHitByAnything()
+        {
+            if(phase == 2 && NPC.ai[0] > 20) // if in the icy ball of scary
+            {
+                phase = 1;
+            }
+        }
         public override void AI()
         {
-            NPC.direction = Math.Sign(NPC.velocity.X);
+            NPC.direction = NPC.velocity.X == 0? 1 : Math.Sign(NPC.velocity.X);
             Lighting.AddLight(NPC.Center, new Vector3(0.8f,1f,1f));
             NPC.rotation += NPC.velocity.Length() * 0.01f * NPC.direction;
-
             if (Main.rand.NextBool(10))
             {
                 Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Snow);
                 d.scale = 0.8f;
                 d.velocity += NPC.velocity;
             }
-            
+            if (!NPC.HasValidTarget)
+            {
+                NPC.TargetClosest();
+            }
             switch (phase)
             {
                 case 0:
                     FlyAndShoot();
+                    break;
+                case 1:
+                    SlamAttack();
+                    break;
+                case 2:
+                    SpikyIceBarrier();
                     break;
             }
         }
