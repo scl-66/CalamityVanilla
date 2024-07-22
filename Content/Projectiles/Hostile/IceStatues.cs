@@ -61,7 +61,7 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
         }
         public override void OnKill(int timeLeft)
         {
-            SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+            SoundEngine.PlaySound(SoundID.Item50, Projectile.position);
             for(int i = 0; i < 20; i++)
             {
                 Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.IceRod);
