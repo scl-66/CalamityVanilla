@@ -107,7 +107,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             NPC.noGravity = true;
             phase = 0;
             Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Cryogen");
-            NPC.Size = new Vector2(78);
+            NPC.Size = new Vector2(120);
             NPC.noTileCollide = true;
 
             NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;

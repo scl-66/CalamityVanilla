@@ -55,26 +55,23 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                 switch(NPC.ai[1] % 3)
                 {
                     case 0: // Ice blocks
-                        if (NPC.ai[0] is -110 or -100 or -90) {
+                        if (NPC.ai[0] is -110 or -100 or -50 or -40 or -30) {
                             Vector2 blockPlacement = (target.Center + target.velocity * 40) + Main.rand.NextVector2Circular(16 * 4, 16 * 4);
                             Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(blockPlacement) * 48, ModContent.ProjectileType<CryogenIceBlock>(), 0, 0, ai0: blockPlacement.X, ai1: blockPlacement.Y);
                         }
                         break;
                     case 1: // Statues
-                        if (NPC.ai[0] == -110)
+                        if (NPC.ai[0] is -110 or -90 or - 70)
                         {
-                            for (int i = -1; i <= 1; i++)
-                            {
-                                Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(target.Center).RotatedBy(0.1 * i) * (i == 0 ? 10 : 8), ProjectileID.FrostBlastHostile, 24, 0);
-                            }
+                                Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextVector2CircularEdge(16,16), ModContent.ProjectileType<IceStatues>(), 40, 0,-1,target.whoAmI,NPC.whoAmI,-80);
                         }
                         break;
                     case 2: // Bombs
                         if (NPC.ai[0] == -110)
                         {
-                            for (int i = -1; i <= 1; i++)
+                            for (int i = -2; i <= 2; i++)
                             {
-                                Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(target.Center).RotatedBy(0.2 * i) * (i == 0 ? 10 : 8), ModContent.ProjectileType<IceBomb>(), 24, 0, -1, Main.rand.Next(2));
+                                Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(target.Center).RotatedBy(0.2 * i) * (10 - Math.Abs(i * 2)), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2));
                             }
                         }
                         break;

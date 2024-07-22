@@ -50,4 +50,5 @@ Projectiles: {
 	CryogenIceBlock.DisplayName: Cryogen Ice Block
 	IceBomb.DisplayName: Ice Bomb
 	IceShrapnel.DisplayName: Ice Shrapnel
+	IceStatues.DisplayName: Ice Statues
 }

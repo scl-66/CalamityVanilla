@@ -20,6 +20,7 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
         {
             Projectile.QuickDefaults(true, 32);
             Projectile.timeLeft = 60 * 3;
+            Projectile.tileCollide = false;
         }
         public override void AI()
         {
@@ -28,7 +29,7 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
                 SoundEngine.PlaySound(ContentSamples.ItemsByType[ItemID.CopperAxe].UseSound, Projectile.position);
             }
 
-            Projectile.velocity *= 0.99f;
+            Projectile.velocity *= 0.993f;
             Projectile.rotation += 0.1f;
             Projectile.scale = 1f + MathF.Sin(Projectile.timeLeft * 0.1f) * 0.1f;
         }

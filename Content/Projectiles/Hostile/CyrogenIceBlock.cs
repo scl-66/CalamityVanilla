@@ -36,19 +36,22 @@ namespace CalamityVanilla.Content.Projectiles.Hostile
         {
             Point placePos = Projectile.Center.ToTileCoordinates();
             //WorldGen.PlaceTile(placePos.X, placePos.Y, TileID.MagicalIceBlock);
-            SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+            SoundEngine.PlaySound(SoundID.NPCDeath15, Projectile.position);
             switch (Projectile.ai[2])
             {
                 case 0:
 
-                    int squaresize = 2;
+                    int squaresize = Main.rand.Next(1,3);
 
                     for (int x = -squaresize; x <= squaresize; x++)
                     {
                         for (int y = -squaresize; y <= squaresize; y++)
                         {
-                            WorldGen.PlaceTile(placePos.X + x, placePos.Y + y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer);
-                            CryogenIceBlockSystem.CryogenIceBlocks.Add(new Vector3(placePos.X + x, placePos.Y + y,CryogenIceBlockSystem.DEFAULT_ICE_TIMER + Main.rand.Next(0,60)));
+                            if (!Main.rand.NextBool(16)) 
+                            {
+                                WorldGen.PlaceTile(placePos.X + x, placePos.Y + y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer);
+                                CryogenIceBlockSystem.CryogenIceBlocks.Add(new Vector3(placePos.X + x, placePos.Y + y, CryogenIceBlockSystem.DEFAULT_ICE_TIMER + Main.rand.Next(0, 60)));
+                            }
                         }
                     }
                     NetMessage.SendTileSquare(-squaresize, placePos.X - squaresize, placePos.Y - 1,(squaresize*2) + 1, (squaresize * 2) + 1);
