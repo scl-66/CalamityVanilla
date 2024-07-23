@@ -33,7 +33,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                 NPC.velocity *= 0.9f;
                 NPC.rotation += MathF.Sin(NPC.ai[0] * 0.8f) * 0.01f;
 
-                if (NPC.ai[0] >= 60 && NPC.ai[0] % 50 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+                if (NPC.ai[0] >= 60 && NPC.ai[0] % 60 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
                 {
                     Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, new Vector2(0, 8).RotatedBy(NPC.ai[0] * 0.01f), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2),8);
                     Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, new Vector2(0, -8).RotatedBy(NPC.ai[0] * 0.01f), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2),8);
@@ -106,7 +106,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 
             if (NPC.ai[0] == 0)
             {
-                SoundEngine.PlaySound(SoundID.Item160, NPC.Center);
+                SoundEngine.PlaySound(SoundID.ForceRoarPitched, NPC.Center);
                 NPC.velocity = NPC.Center.DirectionTo(target.Center) * 24f;
             }
             else if (NPC.ai[0] == 60)
@@ -125,7 +125,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                     case 0: // Ice blocks or do the slam thing instead
                         if (NPC.ai[0] is -190 or -180 or -170 or -100 or -90 or -80) {
 
-                            if (NPC.ai[0] == -190 && Main.rand.NextBool(2))
+                            if (NPC.ai[0] == -190 && Main.rand.NextBool(3))
                             {
                                 NPC.ai[0] = -60;
                                 NPC.ai[2] = 0;
@@ -139,7 +139,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                         }
                         break;
                     case 1: // Statues
-                        if (NPC.ai[0] is -110 or -90 or - 70)
+                        if (NPC.ai[0] is -110 or -90 or - 70 or -50)
                         {
                                 Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextVector2CircularEdge(16,16), ModContent.ProjectileType<IceStatues>(), 40, 0,-1,target.whoAmI,NPC.whoAmI,-80);
                         }

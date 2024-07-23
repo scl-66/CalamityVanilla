@@ -18,7 +18,7 @@ namespace CalamityVanilla.Content.Projectiles.Ranged
         public override void SetDefaults()
         {
             Projectile.QuickDefaults(false, 36);
-            Projectile.timeLeft = 600;
+            Projectile.timeLeft = 60 * 3;
             Projectile.alpha = 128;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;

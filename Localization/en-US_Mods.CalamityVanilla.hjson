@@ -36,6 +36,11 @@ Items: {
 			Used to craft a Cryo Key
 			'''
 	}
+
+	Icebreaker: {
+		DisplayName: Icebreaker
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -51,4 +56,5 @@ Projectiles: {
 	IceBomb.DisplayName: Ice Bomb
 	IceShrapnel.DisplayName: Ice Shrapnel
 	IceStatues.DisplayName: Ice Statues
+	Icebreaker.DisplayName: Icebreaker
 }
