@@ -146,14 +146,18 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
         {
             if(phase == 2 && NPC.ai[0] > 20) // if in the icy ball of scary
             {
-                phase = 1;
+                NPC.ai[0] = 0;
+                NPC.ai[1] = 0;
+                NPC.ai[2] = 0;
+                phase = 3;
+                NPC.noTileCollide = true;
             }
         }
         public override void AI()
         {
             NPC.direction = NPC.velocity.X == 0? 1 : Math.Sign(NPC.velocity.X);
             Lighting.AddLight(NPC.Center, new Vector3(0.8f,1f,1f));
-            NPC.rotation += NPC.velocity.Length() * 0.01f * NPC.direction;
+            NPC.rotation += (NPC.velocity * new Vector2(0.01f,0.005f)).Length() * NPC.direction;
             if (Main.rand.NextBool(10))
             {
                 Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Snow);
@@ -167,13 +171,16 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             switch (phase)
             {
                 case 0:
-                    FlyAndShoot();
+                    FlyAndShoot_0();
                     break;
                 case 1:
-                    SlamAttack();
+                    SlamAttack_1();
                     break;
                 case 2:
-                    SpikyIceBarrier();
+                    SpikyIceBarrier_2();
+                    break;
+                case 3:
+                    Phase2Derping_3();
                     break;
             }
         }

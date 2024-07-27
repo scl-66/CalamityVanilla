@@ -16,7 +16,13 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 {
     public partial class Cryogen : ModNPC
     {
-        public void SpikyIceBarrier()
+        public void Phase2Derping_3()
+        {
+            NPC.ai[0]++;
+            NPC.velocity += NPC.Center.DirectionTo(target.Center + new Vector2(0, 300 + (100 * MathF.Sin(NPC.ai[0] * 0.01f))).RotatedBy(NPC.ai[0] * 0.03f)) * 0.8f;
+            NPC.velocity = NPC.velocity.LengthClamp(12);
+        }
+        public void SpikyIceBarrier_2()
         {
             if (NPC.ai[0] == -30)
             {
@@ -71,7 +77,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                 }
             }
         }
-        public void FlyAndShoot()
+        public void FlyAndShoot_0()
         {
 
             if (NPC.ai[0] <= 0)
@@ -90,12 +96,16 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
             }
             else
             {
-                NPC.rotation += NPC.direction * 0.3f;
+                NPC.rotation += NPC.direction * 0.1f;
                 NPC.velocity *= 0.99f;
             }
             if (NPC.ai[0] == -31)
             {
                 NPC.TargetClosest();
+                if (NPC.ai[1] % 4 == 0)
+                {
+                    NPC.ai[0] = 60;
+                }
             }
             if (NPC.ai[0] > -30 && NPC.ai[0] <= 0)
             {
@@ -106,7 +116,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 
             if (NPC.ai[0] == 0)
             {
-                SoundEngine.PlaySound(SoundID.ForceRoarPitched, NPC.Center);
+                SoundEngine.PlaySound(SoundID.DeerclopsRubbleAttack, NPC.Center);
                 NPC.velocity = NPC.Center.DirectionTo(target.Center) * 24f;
             }
             else if (NPC.ai[0] == 60)
@@ -156,7 +166,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                 }
             }
         }
-        public void SlamAttack()
+        public void SlamAttack_1()
         {
             NPC.ai[0]++;
             if (NPC.ai[2] == 0)
@@ -183,9 +193,9 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                         SoundEngine.PlaySound(SoundID.DeerclopsRubbleAttack);
                         if (Main.netMode != NetmodeID.MultiplayerClient)
                         {
-                            for (int i = 0; i < 10; i++)
+                            for (int i = 0; i < 15; i++)
                             {
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Bottom, Main.rand.NextVector2Circular(20,10) - new Vector2(0,15), ProjectileID.DeerclopsRangedProjectile, 20, 1, ai1: Main.rand.Next(6,10));
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Bottom, Main.rand.NextVector2Circular(30,10) - new Vector2(0,15), ModContent.ProjectileType<IceChunks>(), 20, 1);
                             }
                         }
                     }
