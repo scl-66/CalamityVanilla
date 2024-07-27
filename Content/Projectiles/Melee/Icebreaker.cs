@@ -24,7 +24,7 @@ namespace CalamityVanilla.Content.Projectiles.Melee
                 for (int i = 0; i < 6; i++)
                 {
                     Vector2 rotation = Vector2.UnitY.RotatedBy(MathHelper.TwoPi / 6 * i).RotatedByRandom(0.2f);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + rotation * 24, rotation * Main.rand.NextFloat(3,4), ModContent.ProjectileType<IcebreakerIcicles>(), Projectile.damage / 4, 2, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + rotation * 24, rotation * Main.rand.NextFloat(4,5), ModContent.ProjectileType<IcebreakerIcicles>(), Projectile.damage / 4, 2, Projectile.owner);
                 }
             }
         }

@@ -22,6 +22,7 @@ namespace CalamityVanilla.Content.Projectiles.Melee
             Projectile.timeLeft = 30;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
+            Projectile.DamageType = DamageClass.Melee;
         }
         public override void AI()
         {
@@ -29,6 +30,7 @@ namespace CalamityVanilla.Content.Projectiles.Melee
             Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
             Projectile.alpha += 255 / 30;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            Projectile.velocity *= 0.95f;
         }
     }
 }
