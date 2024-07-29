@@ -8,9 +8,6 @@
 		
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="Content\NPCs\Bosses\Perforators\PerforatorBigWorm_Head_Boss.png" />
-	</ItemGroup>
-	<ItemGroup>
 	  <Folder Include="Assets\Textures\Bestiary\" />
 	</ItemGroup>
 

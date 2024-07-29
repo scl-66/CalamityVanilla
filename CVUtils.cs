@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -215,6 +217,15 @@ namespace CalamityVanilla
             float worldY = i * 16;
 
             return new Vector2(worldX, worldY);
+        }
+
+        //Creates and returns a 16 byte array of replicable random values based on an MD5 hash
+        public static byte[] RepeatableRandom(string seed)
+        {
+            byte[] input = System.Text.Encoding.ASCII.GetBytes(seed);
+            MD5 hash = MD5.Create();
+            byte[] output = hash.ComputeHash(input);
+            return output;
         }
     }
 }

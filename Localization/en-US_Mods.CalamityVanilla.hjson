@@ -5,6 +5,12 @@ NPCs: {
 	HiveMindSwooper.DisplayName: Hive Swooper
 	HiveMindWeeper.DisplayName: Hive Mind Weeper
 	Cryogen.DisplayName: Cryogen
+	Ingestoid.DisplayName: Ingestoid
+	Hemaniac.DisplayName: Hemaniac
+	Malarasite.DisplayName: Malarasite
+	Hematode.DisplayName: Hematode
+	Ingestatode.DisplayName: Ingestatode
+	Malgestode.DisplayName: Malgestode
 }
 
 Items: {
