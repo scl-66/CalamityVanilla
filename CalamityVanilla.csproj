@@ -7,9 +7,6 @@
 	<PropertyGroup>
 		
 	</PropertyGroup>
-	<ItemGroup>
-	  <Folder Include="Assets\Textures\Bestiary\" />
-	</ItemGroup>
 
 	<!-- References -->
 
