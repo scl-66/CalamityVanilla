@@ -1,28 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Common;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria;
-using Terraria.GameContent;
-using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria;
+using Microsoft.Xna.Framework;
 
 namespace CalamityVanilla.Content.NPCs.Bosses.Perforators
 {
-    [AutoloadBossHead]
-    public partial class Perforator : ModNPC
+    internal class Malarasite : WormNPC
     {
-
-        public byte phase = 0;
-        public Player target
-        { get { return Main.player[NPC.target]; } }
-        public override string Texture => "CalamityVanilla/Content/NPCs/Bosses/Perforators/PerforatorBigWorm";
-
         public override void SetStaticDefaults()
         {
 
@@ -37,39 +28,34 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Perforators
             // Influences how the NPC looks in the Bestiary
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
             {
-                //CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/HiveMind_Preview",
+                CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/Malarasite_Preview",
                 //PortraitScale = 0.6f, // Portrait refers to the full picture when clicking on the icon in the bestiary
                 PortraitPositionYOverride = 0f,
             };
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
         }
+
+        
         public override void SetDefaults()
         {
-            NPC.CloneDefaults(NPCID.EyeofCthulhu);
+            segmentsizes = new int[] { 108, 26, 22, 26 };
+            segmentspriteposition = new int[] { 0, 108, 134, 156 };
+            sheetsegments = 4;
+            repeatingsegments = new int[] {1,2};
+            inwardsegmentoffset = 8;
+            maxlength = 3;
+            hitboxsize = 60;
 
-            NPC.lifeMax = 16000;
+            NPC.lifeMax = 100;
             NPC.defense = 30;
 
             NPC.aiStyle = -1;
-            NPC.behindTiles = true;
-            NPC.noGravity = false;
-            phase = 0;
-            Music = MusicID.Boss3;
-            NPC.Size = new Vector2(150);
-            NPC.noTileCollide = false;
-        }
+            NPC.noGravity = true;
+            NPC.Size = new Vector2(32);
+            NPC.noTileCollide = true;
 
-        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-        {
-            // Sets the description of this NPC that is listed in the bestiary
-            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
-                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
-                new FlavorTextBestiaryInfoElement("Heart of Cthulhu hehe.")
-            });
-        }
-        public override void AI()
-        {
-
+            NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
+            NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
         }
     }
 }
