@@ -41,6 +41,11 @@ Items: {
 		DisplayName: Icebreaker
 		Tooltip: ""
 	}
+
+	BileBelcher: {
+		DisplayName: Bile Belcher
+		Tooltip: Slows down as your mana depletes
+	}
 }
 
 Projectiles: {
@@ -59,4 +64,6 @@ Projectiles: {
 	Icebreaker.DisplayName: Icebreaker
 	IcebreakerIcicles.DisplayName: Icebreaker Icicles
 	IceChunks.DisplayName: Ice Chunks
+	BileBone.DisplayName: Bile Bone
+	IchorBlob.DisplayName: Ichor Blob
 }
