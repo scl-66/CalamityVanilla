@@ -50,6 +50,11 @@ namespace CalamityVanilla.Content.Projectiles.Ranged
         {
             if (Projectile.ai[0] == 0) // Flying
             {
+                Projectile.ai[2]++;
+                if (Projectile.ai[2] > 40)
+                {
+                    Projectile.velocity.Y += 0.17f;
+                }
                 if (Main.rand.NextBool(3))
                 {
                     Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.VampireHeal);
@@ -82,6 +87,7 @@ namespace CalamityVanilla.Content.Projectiles.Ranged
             Projectile.timeLeft = 60 * 6;
             Projectile.damage = 0;
             Projectile.ai[0] = 1;
+            Projectile.ai[2] = 0;
             Projectile.ai[1] = target.whoAmI;
             Projectile.velocity = Projectile.Center - target.Center;
             Projectile.netUpdate = true;
