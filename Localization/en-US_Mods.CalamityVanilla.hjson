@@ -52,6 +52,16 @@ Items: {
 		DisplayName: Bile Belcher
 		Tooltip: Slows down as your mana depletes
 	}
+
+	Cloudfall: {
+		DisplayName: Cloudfall Bow
+		Tooltip: Wooden arrows turn into cloud arrows
+	}
+
+	TheGothic: {
+		DisplayName: The Gothic
+		Tooltip: Fires a spread of life stealing vampire teeth
+	}
 }
 
 Projectiles: {
@@ -72,4 +82,6 @@ Projectiles: {
 	IceChunks.DisplayName: Ice Chunks
 	BileBone.DisplayName: Bile Bone
 	IchorBlob.DisplayName: Ichor Blob
+	CloudArrow.DisplayName: Cloud Arrow
+	GothicTooth.DisplayName: Gothic Tooth
 }

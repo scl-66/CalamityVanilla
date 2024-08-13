@@ -25,6 +25,8 @@ namespace CalamityVanilla.Content.Projectiles.Magic
             Projectile.QuickDefaults(false, 18);
             Projectile.penetrate = 5;
             Projectile.timeLeft = 60 * 10;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI()

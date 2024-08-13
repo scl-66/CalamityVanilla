@@ -63,7 +63,7 @@ namespace CalamityVanilla.Content.Projectiles.Magic
                 texture,
                 Projectile.Center + new Vector2(0,19) - Main.screenPosition,
                 new Rectangle(0, 42*Projectile.frame, 38, 42),
-                Color.White * Projectile.Opacity,
+                lightColor * Projectile.Opacity,
                 Projectile.rotation,
                 new Vector2(texture.Width/2, texture.Height/3),
                 new Vector2(Math.Clamp(stretch, 0f, 3f), stretch),
