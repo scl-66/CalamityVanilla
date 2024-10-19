@@ -16,68 +16,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
 {
     public partial class Cryogen : ModNPC
     {
-        public void Phase2Derping_3()
-        {
-            NPC.ai[0]++;
-            NPC.velocity += NPC.Center.DirectionTo(target.Center + new Vector2(0, 300 + (100 * MathF.Sin(NPC.ai[0] * 0.01f))).RotatedBy(NPC.ai[0] * 0.03f)) * 0.8f;
-            NPC.velocity = NPC.velocity.LengthClamp(12);
-        }
-        public void SpikyIceBarrier_2()
-        {
-            if (NPC.ai[0] == -30)
-            {
-                SoundEngine.PlaySound(SoundID.Item160,NPC.Center);
-                NPC.rotation += NPC.direction * 0.2f;
-            }
-            NPC.ai[0]++;
-            if (NPC.ai[0] == 19 && NPC.noTileCollide)
-            {
-                NPC.ai[0] = 19;
-            }
-            if (NPC.ai[0] > 0)
-            {
-                NPC.velocity *= 0.9f;
-                NPC.rotation += MathF.Sin(NPC.ai[0] * 0.8f) * 0.01f;
-
-                if (NPC.ai[0] >= 60 && NPC.ai[0] % 60 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
-                {
-                    Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, new Vector2(0, 8).RotatedBy(NPC.ai[0] * 0.01f), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2),8);
-                    Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, new Vector2(0, -8).RotatedBy(NPC.ai[0] * 0.01f), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2),8);
-                }
-            }
-            else
-            {
-                if (!Collision.SolidCollision(NPC.position, NPC.width, NPC.height))
-                    NPC.noTileCollide = false;
-                NPC.velocity += NPC.Center.DirectionTo(target.Center) * (Collision.SolidCollision(NPC.position,NPC.width,NPC.height)? 2f : -0.5f);
-            }
-            if (NPC.ai[0] == 20)
-            {
-                NPC.behindTiles = true;
-                NPC.noTileCollide = false;
-                SoundEngine.PlaySound(SoundID.DeerclopsIceAttack, NPC.Center);
-                // Make the ice barrier
-                if (Main.netMode != NetmodeID.MultiplayerClient)
-                {
-                    Point placePos = NPC.Center.ToTileCoordinates();
-                    int squaresize = 16;
-                    float sinMultipler = Main.rand.NextFloat(4, 8);
-                    for (int x = -squaresize; x <= squaresize; x++)
-                    {
-                        for (int y = -squaresize; y <= squaresize; y++)
-                        {
-                            if (new Vector2(placePos.X + x, placePos.Y + y).Distance(NPC.Center * (1 / 16f)) <= Math.Abs(MathF.Sin(new Vector2(placePos.X + x, placePos.Y + y).DirectionTo(NPC.Center * (1 / 16f)).ToRotation() * sinMultipler) * (squaresize - 8)) + 8)
-                            {
-                                WorldGen.PlaceTile(placePos.X + x, placePos.Y + y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer);
-                                CryogenIceBlockSystem.CryogenIceBlocks.Add(new Vector3(placePos.X + x, placePos.Y + y, CryogenIceBlockSystem.DEFAULT_ICE_TIMER * 20));
-                            }
-                        }
-                    }
-                    NetMessage.SendTileSquare(-squaresize, placePos.X - squaresize, placePos.Y - 1, (squaresize * 2) + 1, (squaresize * 2) + 1);
-                }
-            }
-        }
-        public void FlyAndShoot_0()
+        private void FlyAndShoot_0()
         {
 
             if (NPC.ai[0] <= 0)
@@ -166,7 +105,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                 }
             }
         }
-        public void SlamAttack_1()
+        private void SlamAttack_1()
         {
             NPC.ai[0]++;
             if (NPC.ai[2] == 0)
@@ -213,6 +152,82 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                     NPC.ai[2] = 0;
                 }
             }
+        }
+        private void SpikyIceBarrier_2()
+        {
+            if (NPC.ai[0] == -30)
+            {
+                SoundEngine.PlaySound(SoundID.Item160, NPC.Center);
+                NPC.rotation += NPC.direction * 0.2f;
+            }
+            NPC.ai[0]++;
+            if (NPC.ai[0] == 19 && NPC.noTileCollide)
+            {
+                NPC.ai[0] = 19;
+            }
+            if (NPC.ai[0] > 0)
+            {
+                NPC.velocity *= 0.9f;
+                NPC.rotation += MathF.Sin(NPC.ai[0] * 0.8f) * 0.01f;
+
+                if (NPC.ai[0] >= 60 && NPC.ai[0] % 60 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, new Vector2(0, 8).RotatedBy(NPC.ai[0] * 0.01f), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2), 8);
+                    Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, new Vector2(0, -8).RotatedBy(NPC.ai[0] * 0.01f), ModContent.ProjectileType<IceBomb>(), 30, 0, -1, Main.rand.Next(2), 8);
+                }
+            }
+            else
+            {
+                if (!Collision.SolidCollision(NPC.position, NPC.width, NPC.height))
+                    NPC.noTileCollide = false;
+                NPC.velocity += NPC.Center.DirectionTo(target.Center) * (Collision.SolidCollision(NPC.position, NPC.width, NPC.height) ? 2f : -0.5f);
+            }
+            if (NPC.ai[0] == 20)
+            {
+                NPC.behindTiles = true;
+                NPC.noTileCollide = false;
+                SoundEngine.PlaySound(SoundID.DeerclopsIceAttack, NPC.Center);
+                // Make the ice barrier
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Point placePos = NPC.Center.ToTileCoordinates();
+                    int squaresize = 16;
+                    float sinMultipler = Main.rand.NextFloat(4, 8);
+                    for (int x = -squaresize; x <= squaresize; x++)
+                    {
+                        for (int y = -squaresize; y <= squaresize; y++)
+                        {
+                            if (new Vector2(placePos.X + x, placePos.Y + y).Distance(NPC.Center * (1 / 16f)) <= Math.Abs(MathF.Sin(new Vector2(placePos.X + x, placePos.Y + y).DirectionTo(NPC.Center * (1 / 16f)).ToRotation() * sinMultipler) * (squaresize - 8)) + 8)
+                            {
+                                WorldGen.PlaceTile(placePos.X + x, placePos.Y + y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer);
+                                CryogenIceBlockSystem.CryogenIceBlocks.Add(new Vector3(placePos.X + x, placePos.Y + y, CryogenIceBlockSystem.DEFAULT_ICE_TIMER * 20));
+                            }
+                        }
+                    }
+                    NetMessage.SendTileSquare(-squaresize, placePos.X - squaresize, placePos.Y - 1, (squaresize * 2) + 1, (squaresize * 2) + 1);
+                }
+            }
+        }
+        private void Phase2DPanic_3()
+        {
+            NPC.ai[0]++;
+            NPC.velocity += NPC.Center.DirectionFrom(target.Center).RotatedBy(MathF.Sin(NPC.ai[0]));
+            NPC.velocity = NPC.velocity.LengthClamp(12);
+            if (NPC.ai[0] > 50)
+            {
+                phase++;
+                NPC.ai[0] = 0;
+            }
+        }
+        private void Phase2Derping_4()
+        {
+            NPC.ai[0]++;
+            NPC.velocity += NPC.Center.DirectionTo(target.Center + new Vector2(0, 300 + (100 * MathF.Sin(NPC.ai[0] * 0.01f))).RotatedBy(NPC.ai[0] * 0.03f)) * 0.8f;
+            NPC.velocity = NPC.velocity.LengthClamp(12);
+        }
+        private void Phase2Icicles_5()
+        {
+
         }
     }
 }

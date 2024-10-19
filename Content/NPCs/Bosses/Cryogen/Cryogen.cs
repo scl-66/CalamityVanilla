@@ -180,7 +180,13 @@ namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen
                     SpikyIceBarrier_2();
                     break;
                 case 3:
-                    Phase2Derping_3();
+                    Phase2DPanic_3();
+                    break;
+                case 4:
+                    Phase2Derping_4();
+                    break;
+                case 5:
+                    Phase2Icicles_5();
                     break;
             }
         }

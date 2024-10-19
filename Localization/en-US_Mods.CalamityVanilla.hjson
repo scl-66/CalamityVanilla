@@ -62,6 +62,21 @@ Items: {
 		DisplayName: The Gothic
 		Tooltip: Fires a spread of life stealing vampire teeth
 	}
+
+	CryogenMask: {
+		DisplayName: Cryogen Mask
+		Tooltip: ""
+	}
+
+	HiveMindMask: {
+		DisplayName: Hive Mind Mask
+		Tooltip: ""
+	}
+
+	PerforatorsMask: {
+		DisplayName: Perforators Mask
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
