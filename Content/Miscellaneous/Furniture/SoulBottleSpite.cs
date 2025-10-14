@@ -11,7 +11,7 @@ using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tiles.Furniture;
+namespace CalamityVanilla.Content.Miscellaneous.Furniture;
 
 public class SoulBottleSpite : ModItem
 {

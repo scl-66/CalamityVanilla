@@ -10,7 +10,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tiles.Furniture;
+namespace CalamityVanilla.Content.Bosses.HiveMind;
 
 public class HiveMindRelic : ModItem
 {

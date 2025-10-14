@@ -9,7 +9,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Pets;
+namespace CalamityVanilla.Content.Corruption.Items.FungiDish;
 
 public class FungiDish : ModItem
 {

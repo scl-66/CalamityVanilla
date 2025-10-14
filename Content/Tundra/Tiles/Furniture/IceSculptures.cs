@@ -12,7 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tiles.Furniture;
+namespace CalamityVanilla.Content.Tundra.Tiles.Furniture;
 
 public class IceSculptureAngel : ModItem
 {

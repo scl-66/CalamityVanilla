@@ -8,14 +8,7 @@
 		
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="Content\Dusts\SuperMagicFireDust.png" />
-	  <None Remove="Content\Dusts\SuperMagicIceDust.png" />
-	  <None Remove="Content\Items\Weapons\Ranged\CursedDagger.png" />
-	  <None Remove="Content\Items\Weapons\Ranged\IchorJavelin.png" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Content\Items\Material\" />
-	  <Folder Include="Content\Tundra\Tiles\" />
+	  <Folder Include="Content\Corruption\Items\" />
 	</ItemGroup>
 
 	<!-- References -->

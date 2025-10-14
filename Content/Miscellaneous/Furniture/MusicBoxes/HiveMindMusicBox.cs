@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Tiles.Furniture.MusicBoxes;
+namespace CalamityVanilla.Content.Miscellaneous.Furniture.MusicBoxes;
 
 public class HiveMindMusicBox : BaseMusicBox.MusicBoxItem
 {

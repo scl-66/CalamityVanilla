@@ -1,7 +1,7 @@
 ﻿using CalamityVanilla.Common;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Tiles.Furniture.MusicBoxes;
+namespace CalamityVanilla.Content.Miscellaneous.Furniture.MusicBoxes;
 
 public class CryogenMusicBox : BaseMusicBox.MusicBoxItem
 {

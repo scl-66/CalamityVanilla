@@ -5,14 +5,14 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tiles.Furniture;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
-public class HiveMindTrophy : ModItem
+public class CryogenTrophy : ModItem
 {
     public override void SetDefaults()
     {
         // Vanilla has many useful methods like these, use them! This substitutes setting Item.createTile and Item.placeStyle as well as setting a few values that are common across all placeable items
-        Item.DefaultToPlaceableTile(ModContent.TileType<HiveMindTrophyTile>());
+        Item.DefaultToPlaceableTile(ModContent.TileType<CryogenTrophyTile>());
 
         Item.width = 32;
         Item.height = 32;
@@ -21,7 +21,7 @@ public class HiveMindTrophy : ModItem
     }
 }
 // Simple 3x3 tile that can be placed on a wall
-public class HiveMindTrophyTile : ModTile
+public class CryogenTrophyTile : ModTile
 {
     public override void SetStaticDefaults()
     {

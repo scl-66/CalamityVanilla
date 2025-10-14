@@ -10,7 +10,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Pets;
+namespace CalamityVanilla.Content.Crimson.Items.HalfDigestedBrisket;
 
 public class HalfDigestedBrisket : ModItem
 {

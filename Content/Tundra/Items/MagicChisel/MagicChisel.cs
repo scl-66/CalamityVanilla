@@ -7,7 +7,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Pets;
+namespace CalamityVanilla.Content.Tundra.Items.MagicChisel;
 
 public class MagicChisel : ModItem
 {
