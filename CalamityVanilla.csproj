@@ -10,4 +10,10 @@
 
 	<!-- References -->
 
+	<ItemGroup>
+		<Reference Include="Daybreak">
+			<HintPath>lib\Daybreak.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
 </Project>
