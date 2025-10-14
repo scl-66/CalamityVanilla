@@ -10,7 +10,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Perforators;
+namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu.Worms;
 
 partial class Hematode : WormNPC
 {

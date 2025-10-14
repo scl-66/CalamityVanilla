@@ -10,9 +10,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Perforators;
+namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu.Worms;
 
-internal class Malgestode : WormNPC
+internal class Ingestatode : WormNPC
 {
     public override void SetStaticDefaults()
     {
@@ -28,7 +28,7 @@ internal class Malgestode : WormNPC
         // Influences how the NPC looks in the Bestiary
         NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
         {
-            CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/Malgestode_Preview",
+            CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/Ingestatode_Preview",
             //PortraitScale = 0.6f, // Portrait refers to the full picture when clicking on the icon in the bestiary
             PortraitPositionYOverride = 0f,
         };
@@ -38,12 +38,12 @@ internal class Malgestode : WormNPC
 
     public override void SetDefaults()
     {
-        segmentsizes = new int[] { 118, 42, 42, 64 };
-        segmentspriteposition = new int[] { 0, 118, 160, 202 };
+        segmentsizes = new int[] { 76, 42, 34, 46 };
+        segmentspriteposition = new int[] { 0, 76, 118, 152 };
         sheetsegments = 4;
         repeatingsegments = new int[] { 1, 2 };
-        inwardsegmentoffset = 14;
-        maxlength = 36;
+        inwardsegmentoffset = 12;
+        maxlength = 24;
 
         NPC.lifeMax = 100;
         NPC.defense = 30;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.WorldBuilding;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Perforators;
+namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu.Worms;
 
 internal partial class Ingestoid
 {

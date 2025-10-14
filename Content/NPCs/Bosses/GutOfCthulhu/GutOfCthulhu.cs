@@ -5,14 +5,23 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu;
 
-internal enum GutAttack
-{
-    Idle
-}
 
-internal sealed class GutOfCthulhu : ModNPC
+internal partial class GutOfCthulhu : ModNPC
 {
+    internal enum GutState
+    {
+        Idle
+    }
+    
     public override string Texture => "CalamityVanilla/Content/NPCs/Bosses/GutOfCthulhu/GutOfCthulhu_Body";
+    
+    private GutState State {
+        get => (GutState)NPC.ai[0];
+        set {
+            NPC.ai[0] = (int)value;
+            NPC.netUpdate = true;
+        }
+    }
 
     public override void SetDefaults()
     {
