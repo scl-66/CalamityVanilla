@@ -13,7 +13,7 @@ namespace CalamityVanilla.Common.NPCs;
 /// <summary>
 /// An abstract clas to facilitate the creation of worm NPCs. By default, this NPC has no movement to it and has to be set in AI() or HeadAI() preferably.
 /// </summary>
-public abstract class WormNPC : ModNPC
+internal abstract class WormNPC : ModNPC
 {
     public enum WormSegment
     {

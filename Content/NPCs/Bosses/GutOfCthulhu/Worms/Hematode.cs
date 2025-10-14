@@ -1,103 +1,120 @@
-﻿using CalamityVanilla.Common;
-using CalamityVanilla.Common.NPCs;
+﻿using CalamityVanilla.Common.NPCs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu.Worms;
 
-partial class Hematode : WormNPC
-{
-    byte[] chaosnumber = new byte[] { };
-    private enum HematodePhases
-    {
+internal sealed class Hematode : CustomWormNPC {
+    internal enum HematodePhases {
         Idle = 0,
         Chase = 1,
-        Wall = 2
+    }
+    
+    public HematodePhases CurrentPhase => Unsafe.BitCast<float, HematodePhases>(NPC.ai[3]);
+    
+    void ChangeState(HematodePhases state) {
+        NPC.ai[0] = Unsafe.BitCast<HematodePhases, float>(state);
+        _stateTimer = 0;
+        NPC.netUpdate = true;
     }
 
-    HematodePhases phase = HematodePhases.Idle;
-    public override void SetStaticDefaults()
-    {
+    private float _stateTimer = 0;
 
-        // Add this in for bosses that have a summon item, requires corresponding code in the item (See MinionBossSummonItem.cs)
+    private Player _targetPlayer;
+
+    public override void SetStaticDefaults() {
         NPCID.Sets.MPAllowedEnemies[Type] = true;
-        // Automatically group with other bosses
         NPCID.Sets.BossBestiaryPriority.Add(Type);
-
-        // Specify the debuffs it is immune to. Most NPCs are immune to Confused.
         NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
 
-        // Influences how the NPC looks in the Bestiary
-        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
-        {
+        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() {
             CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/Hematode_Preview",
-            //PortraitScale = 0.6f, // Portrait refers to the full picture when clicking on the icon in the bestiary
             PortraitPositionYOverride = 0f,
         };
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
     }
 
-
-    public override void SetDefaults()
-    {
-        segmentsizes = new int[] { 64, 28, 28, 36 };
-        segmentspriteposition = new int[] { 0, 64, 92, 120 };
-        sheetsegments = 4;
-        repeatingsegments = new int[] { 1, 2 };
-        inwardsegmentoffset = 8;
-        maxlength = 12;
-
+    public override void WormDefaults() {
+        (NPC.width, NPC.height) = (66, 48);
         NPC.lifeMax = 100;
         NPC.defense = 30;
 
-        NPC.aiStyle = -1;
-        NPC.noGravity = true;
-        NPC.Size = new Vector2(32);
         NPC.noTileCollide = true;
+        NPC.noGravity = true;
 
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
-    }
 
-    Player targetplayer = Main.player[0];
-    public override void AI()
-    {
-
-        NPC.TargetClosest();
-        targetplayer = Main.player[NPC.target];
-
-        if (NPC.ai[1] == (byte)WormSegment.Head)
-        {
-            chaosnumber = CVUtils.RepeatableRandom((targetplayer.position + NPC.position).ToString());
-
-            switch (phase)
-            {
-                case HematodePhases.Idle: Idle(); break;
-                case HematodePhases.Chase: Idle(); break;
-                case HematodePhases.Wall: Idle(); break;
-            }
+        int segments = 0;
+        
+        switch (Main.GameMode) {
+            case GameModeID.Normal: segments = 10; break;
+            case GameModeID.Expert: segments = 20; break;
+            case GameModeID.Master: segments = 30; break;
         }
 
-        base.AI();
+        MaxSegments = segments;
+        InwardSegmentOffset = 2;
+        
+        if (Kind == PartKind.Head)
+        {
+            ChangeState(HematodePhases.Idle);
+        }
     }
-    
-    private void Idle()
-    {
+
+    public override Rectangle GetSegmentFrame(int segmentIndex, PartKind kind) {
+        const int frameWidth = 66;
+        
+        //calc which frame to use, idx starts at 0 and the first body segment after is 1, and the tail is maxsegments + 1. so to get the 3rd to tail part, its segmentsFromTrail = 3
+        int segmentsFromTail = (MaxSegments + 1) - segmentIndex; 
+
+        switch (kind) {
+            case PartKind.Head:
+                return new Rectangle(0, 0, frameWidth, 48);
+            case PartKind.Tail:
+                return new Rectangle(0, 154, frameWidth, 30);
+            case PartKind.Body:
+                if (segmentsFromTail == 5) {
+                    return new Rectangle(0, 74, frameWidth, 18);
+                }
+                if (segmentsFromTail == 4) {
+                    return new Rectangle(0, 94, frameWidth, 18);
+                }
+                if (segmentsFromTail == 3) {
+                    return new Rectangle(0, 114, frameWidth, 18);
+                }
+                if (segmentsFromTail == 2) {
+                    return new Rectangle(0, 134, frameWidth, 18);
+                }
+                return new Rectangle(0, 50, frameWidth, 22);
+            default:
+                return new Rectangle(0, 0, 1, 1);
+        }
+    }
+
+    public override void FollowAI() { base.FollowAI(); }
+
+    public override void HeadAI() {
         NPC.TargetClosest();
-        NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.Center.DirectionTo(targetplayer.Center).ToRotation() + MathHelper.PiOver2, 0.05f);
+        _targetPlayer = Main.player[NPC.target];
 
-        float distmult = Math.Clamp(targetplayer.velocity.Length() / 2f, 1f, 5f);
+        switch (CurrentPhase) {
+            case HematodePhases.Idle:
+                IdleLogic();
+                break;
+        }
 
-        if (NPC.Center.Distance(targetplayer.Center) > 450f ||
-            CVUtils.AngleDifference(NPC.rotation - MathHelper.PiOver2, NPC.velocity.ToRotation()) > 0.5f) NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(targetplayer.Center) * 2f * distmult, 0.05f);
-        else NPC.velocity *= 0.97f;
+        base.HeadAI(); 
+    }
+
+    private void IdleLogic() {
+        NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.Center.DirectionTo(_targetPlayer.Center).ToRotation() + MathHelper.PiOver2, 0.05f);
+
+        float distmult = Math.Clamp(_targetPlayer.velocity.Length() / 2f, 1f, 5f);
+
+        NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(_targetPlayer.Center) * 2f * distmult, 0.05f);
     }
 }
