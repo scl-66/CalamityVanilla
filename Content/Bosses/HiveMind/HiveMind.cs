@@ -1,9 +1,8 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Items.Equipment.Vanity;
-using CalamityVanilla.Content.Items.Pets;
-using CalamityVanilla.Content.Items.Weapons.Magic;
-using CalamityVanilla.Content.Items.Weapons.Melee;
-using CalamityVanilla.Content.Tiles.Furniture;
+using CalamityVanilla.Content.Corruption.Items.FungiDish;
+using CalamityVanilla.Content.Corruption.Items.MyceliumStaff;
+using CalamityVanilla.Content.Corruption.Items.PerfectDark;
+using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

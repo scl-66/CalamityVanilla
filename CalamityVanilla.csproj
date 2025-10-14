@@ -7,9 +7,6 @@
 	<PropertyGroup>
 		
 	</PropertyGroup>
-	<ItemGroup>
-	  <Folder Include="Content\Corruption\Items\" />
-	</ItemGroup>
 
 	<!-- References -->
 

@@ -1,10 +1,9 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Items.Equipment.Vanity;
-using CalamityVanilla.Content.Items.Pets;
-using CalamityVanilla.Content.Items.Weapons.Melee;
-using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.Tiles;
-using CalamityVanilla.Content.Tiles.Furniture;
+using CalamityVanilla.Content.Tundra.Items.HoarfrostBow;
+using CalamityVanilla.Content.Tundra.Items.Icebreaker;
+using CalamityVanilla.Content.Tundra.Items.MagicChisel;
+using CalamityVanilla.Content.Tundra.Items.TheSnowman;
+using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

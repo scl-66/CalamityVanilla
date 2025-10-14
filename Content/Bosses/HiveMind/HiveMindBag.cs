@@ -1,9 +1,6 @@
-﻿using CalamityVanilla.Content.Items.Equipment.Vanity;
-using CalamityVanilla.Content.Items.Weapons.Magic;
-using CalamityVanilla.Content.Items.Weapons.Melee;
-using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.Bosses.Cryogen;
-using CalamityVanilla.Content.Bosses.HiveMind;
+﻿using CalamityVanilla.Content.Corruption.Items.MyceliumStaff;
+using CalamityVanilla.Content.Corruption.Items.PerfectDark;
+using CalamityVanilla.Content.Vanity.BossMasks;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

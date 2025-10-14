@@ -5,7 +5,6 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.GutOfCthulhu;
 
-
 internal partial class GutOfCthulhu : ModNPC
 {
     internal enum GutState : sbyte

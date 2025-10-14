@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Common.Interfaces;
-using CalamityVanilla.Content.Items.Weapons.Magic;
+using CalamityVanilla.Content.Underground.Items.GraniteTome;
 using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;

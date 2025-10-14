@@ -1,8 +1,8 @@
-﻿using CalamityVanilla.Content.Items.Equipment.Vanity;
-using CalamityVanilla.Content.Items.Weapons.Melee;
-using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.Bosses.Cryogen;
+﻿using CalamityVanilla.Content.Tundra.Items.HoarfrostBow;
+using CalamityVanilla.Content.Tundra.Items.Icebreaker;
 using CalamityVanilla.Content.Tundra.Items.PermafrostHook;
+using CalamityVanilla.Content.Tundra.Items.TheSnowman;
+using CalamityVanilla.Content.Vanity.BossMasks;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

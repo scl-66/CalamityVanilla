@@ -1,12 +1,7 @@
-﻿using CalamityVanilla.Common.ItemDropRules.DropConditions;
-using CalamityVanilla.Content.Items.Weapons.Magic;
-using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.Items.Weapons.Ranged.Throwing;
-using CalamityVanilla.Content.Items.Weapons.Summon;
+﻿using CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
+using CalamityVanilla.Content.Underworld.Items.FleshLauncher;
+using CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using System;
-using System.Diagnostics.Contracts;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;

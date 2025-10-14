@@ -1,5 +1,4 @@
 ﻿using CalamityVanilla.Content.Bosses.Cryogen;
-using CalamityVanilla.Content.Tiles;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;

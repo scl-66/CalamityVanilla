@@ -1,12 +1,13 @@
 ﻿using CalamityVanilla.Common.ItemDropRules.DropConditions;
 using CalamityVanilla.Content.Emotes;
-using CalamityVanilla.Content.Items.Weapons.Magic;
-using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.Items.Weapons.Ranged.Throwing;
-using CalamityVanilla.Content.Items.Weapons.Summon;
 using CalamityVanilla.Content.Miscellaneous.Items;
+using CalamityVanilla.Content.Miscellaneous.Items.BouncingEyeball;
+using CalamityVanilla.Content.Miscellaneous.Items.TheGothic;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
+using CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
+using CalamityVanilla.Content.Underworld.Items.FleshLauncher;
+using CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
