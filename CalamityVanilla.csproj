@@ -14,8 +14,8 @@
 	  <None Remove="Content\Items\Weapons\Ranged\IchorJavelin.png" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Content\Bosses\" />
 	  <Folder Include="Content\Items\Material\" />
+	  <Folder Include="Content\Tundra\Tiles\" />
 	</ItemGroup>
 
 	<!-- References -->

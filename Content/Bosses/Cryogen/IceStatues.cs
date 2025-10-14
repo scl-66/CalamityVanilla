@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Content.Tiles;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ public class IceStatues : ModProjectile
     {
         Main.projFrames[Type] = 5;
     }
-
+    public int TilesBroken = 0;
     public override Color? GetAlpha(Color lightColor)
     {
         return new Color(0.8f, 0.8f, 0.8f, 0.5f) * Projectile.Opacity;
@@ -28,9 +29,15 @@ public class IceStatues : ModProjectile
         Projectile.QuickDefaults(true, 64);
         Projectile.tileCollide = false;
         Projectile.timeLeft = 60 * 10;
+        TilesBroken = 0;
     }
     public override void AI()
     {
+        if(TilesBroken > 9)
+        {
+            Projectile.Kill();
+            return;
+        }
         Projectile.frame = Projectile.whoAmI % 5;
         if (Projectile.alpha > 0)
         {
@@ -53,7 +60,7 @@ public class IceStatues : ModProjectile
         else if (Projectile.ai[2] == 30)
         {
             SoundEngine.PlaySound(SoundID.Item1, Projectile.position);
-            Projectile.extraUpdates = 1;
+            Projectile.extraUpdates = 2;
             Projectile.velocity = Projectile.Center.DirectionTo(Main.player[(int)Projectile.ai[0]].Center) * 20;
         }
         else
@@ -64,8 +71,27 @@ public class IceStatues : ModProjectile
             if (Projectile.velocity.Y > 20)
                 Projectile.velocity.Y = 20;
 
-            if (!Projectile.tileCollide && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
-                Projectile.tileCollide = true;
+            //if (!Projectile.tileCollide && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+            //    Projectile.tileCollide = true;
+
+            List<Point> tiles = Collision.GetTilesIn(Projectile.position, Projectile.BottomRight);
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                if (Main.tile[tiles[i]].HasTile && Main.tile[tiles[i]].TileType == ModContent.TileType<CryogenIceTile>())
+                {
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        WorldGen.KillTile(tiles[i].X, tiles[i].Y, false, false, true);
+                        NetMessage.SendTileSquare(-1, tiles[i].X, tiles[i].Y);
+                        TilesBroken++;
+                    }
+                }
+                else if(Main.tile[tiles[i]].HasTile && Main.tileSolid[Main.tile[tiles[i]].TileType] && !Main.tileSolidTop[Main.tile[tiles[i]].TileType])
+                {
+                    Projectile.Kill();
+                    break;
+                }
+            }
         }
     }
     public override void OnKill(int timeLeft)

@@ -35,6 +35,7 @@ public class IcebreakerProjectile : ModProjectile
         Projectile.penetrate = 100;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
+        Projectile.tileCollide = false;
     }
     private void OnHitAnything()
     {

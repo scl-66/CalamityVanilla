@@ -1,17 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tundra.Tiles;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 public class CryogenIceTile : ModTile
 {
@@ -20,6 +14,7 @@ public class CryogenIceTile : ModTile
         Main.tileSolid[Type] = true;
         DustType = DustID.IceRod;
         HitSound = SoundID.Item27;
+        TileID.Sets.ClearedOnWorldLoad[Type] = true;
     }
     public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
     {
