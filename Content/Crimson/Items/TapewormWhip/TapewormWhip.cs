@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Content.Rarities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ internal sealed class TapewormWhipItem : ModItem
         Item.DamageType = DamageClass.SummonMeleeSpeed;
         Item.damage = 50;
         Item.knockBack = 2;
-        Item.rare = ItemRarityID.Green;
+        Item.rare = ModContent.RarityType<BlackAndGoldRarity>();
 
         Item.shoot = ModContent.ProjectileType<TapewormWhipProjectile>();
         Item.shootSpeed = 6;
