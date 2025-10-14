@@ -1,10 +1,8 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Items.Consumable;
 using CalamityVanilla.Content.Items.Equipment.Vanity;
 using CalamityVanilla.Content.Items.Pets;
 using CalamityVanilla.Content.Items.Weapons.Magic;
 using CalamityVanilla.Content.Items.Weapons.Melee;
-using CalamityVanilla.Content.Items.Weapons.Ranged;
 using CalamityVanilla.Content.Tiles.Furniture;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

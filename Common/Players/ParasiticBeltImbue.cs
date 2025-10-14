@@ -1,5 +1,4 @@
-﻿using CalamityVanilla.Content.Items.Equipment.Accessories;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.DataStructures;

@@ -1,5 +1,4 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Items.Consumable;
 using CalamityVanilla.Content.Items.Equipment.Vanity;
 using CalamityVanilla.Content.Items.Pets;
 using CalamityVanilla.Content.Items.Weapons.Melee;

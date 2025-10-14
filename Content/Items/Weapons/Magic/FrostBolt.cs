@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Items.Material;
+using CalamityVanilla.Content.Tundra.Items;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;

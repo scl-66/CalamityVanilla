@@ -13,7 +13,7 @@ internal partial class GutOfCthulhu : ModNPC
         Idle
     }
     
-    public override string Texture => "CalamityVanilla/Content/NPCs/Bosses/GutOfCthulhu/GutOfCthulhu_Body";
+    public override string Texture => "CalamityVanilla/Content/Bosses/GutOfCthulhu/GutOfCthulhu_Body";
     
     private GutState State {
         get => (GutState)NPC.ai[0];

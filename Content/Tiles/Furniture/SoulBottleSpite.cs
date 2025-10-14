@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Items.Material;
+﻿using CalamityVanilla.Content.Underworld.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

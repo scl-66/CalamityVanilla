@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Content.Tiles;
+using CalamityVanilla.Content.Tundra.Tiles;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
