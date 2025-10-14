@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+﻿using CalamityVanilla.Content.Bosses.Cryogen;
 using CalamityVanilla.Content.Tiles;
 using Microsoft.Xna.Framework;
 using System;

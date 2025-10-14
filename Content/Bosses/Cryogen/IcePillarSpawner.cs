@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+using CalamityVanilla.Content.Bosses.Cryogen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -13,7 +13,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 public class IcePillarSpawner : ModProjectile
 {

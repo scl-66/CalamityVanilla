@@ -10,9 +10,9 @@ using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+namespace CalamityVanilla.Content.Bosses.HiveMind;
 
-public class HiveMindSwooper : ModNPC
+public class HiveMindWeeper : ModNPC
 {
     public Player target
     { get { return Main.player[NPC.target]; } }
@@ -104,13 +104,13 @@ public class HiveMindSwooper : ModNPC
     }
     public override void SetDefaults()
     {
-        NPC.CloneDefaults(NPCID.CaveBat);
+        NPC.CloneDefaults(NPCID.AngryNimbus);
 
-        NPC.lifeMax = 80;
-        NPC.defense = 20;
+        NPC.lifeMax = 120;
+        NPC.defense = 25;
 
-        NPC.width = 34;
-        NPC.height = 36;
+        NPC.width = 60;
+        NPC.height = 38;
 
         NPC.value = 0;
 
@@ -171,7 +171,7 @@ public class HiveMindSwooper : ModNPC
 
         bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
-            new FlavorTextBestiaryInfoElement($"Mods.CalamityVanilla.NPCs.HiveMindSwooper.Bestiary")
+            new FlavorTextBestiaryInfoElement($"Mods.CalamityVanilla.NPCs.HiveMindWeeper.Bestiary")
         });
     }
 }

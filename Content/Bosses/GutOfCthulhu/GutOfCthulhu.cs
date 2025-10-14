@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu;
+namespace CalamityVanilla.Content.Bosses.GutOfCthulhu;
 
 
 internal partial class GutOfCthulhu : ModNPC

@@ -13,6 +13,9 @@
 	  <None Remove="Content\Items\Weapons\Ranged\CursedDagger.png" />
 	  <None Remove="Content\Items\Weapons\Ranged\IchorJavelin.png" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Content\Bosses\" />
+	</ItemGroup>
 
 	<!-- References -->
 

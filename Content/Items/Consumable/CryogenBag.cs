@@ -2,7 +2,7 @@
 using CalamityVanilla.Content.Items.Equipment.Vanity;
 using CalamityVanilla.Content.Items.Weapons.Melee;
 using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+using CalamityVanilla.Content.Bosses.Cryogen;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

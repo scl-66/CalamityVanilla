@@ -18,7 +18,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+namespace CalamityVanilla.Content.Bosses.HiveMind;
 
 [AutoloadBossHead]
 public partial class HiveMind : ModNPC

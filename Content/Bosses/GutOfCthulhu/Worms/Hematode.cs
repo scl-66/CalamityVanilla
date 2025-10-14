@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu.Worms;
+namespace CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
 
 internal sealed class Hematode : CustomWormNPC {
     internal enum HematodePhases {

@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+﻿using CalamityVanilla.Content.Bosses.HiveMind;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

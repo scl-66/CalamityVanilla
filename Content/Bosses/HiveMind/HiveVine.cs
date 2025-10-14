@@ -12,7 +12,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+namespace CalamityVanilla.Content.Bosses.HiveMind;
 
 public class HiveVine : ModProjectile
 {

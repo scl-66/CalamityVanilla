@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Content.Items.Material;
-using CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+using CalamityVanilla.Content.Bosses.Cryogen;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

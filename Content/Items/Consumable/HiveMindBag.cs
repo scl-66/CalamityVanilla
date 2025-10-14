@@ -2,8 +2,8 @@
 using CalamityVanilla.Content.Items.Weapons.Magic;
 using CalamityVanilla.Content.Items.Weapons.Melee;
 using CalamityVanilla.Content.Items.Weapons.Ranged;
-using CalamityVanilla.Content.NPCs.Bosses.Cryogen;
-using CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+using CalamityVanilla.Content.Bosses.Cryogen;
+using CalamityVanilla.Content.Bosses.HiveMind;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

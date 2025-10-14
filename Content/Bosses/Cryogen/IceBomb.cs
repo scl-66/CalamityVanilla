@@ -1,6 +1,6 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+using CalamityVanilla.Content.Bosses.Cryogen;
 using Microsoft.Build.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +17,7 @@ using Terraria.Graphics.Renderers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 public class IceBomb : ModProjectile
 {

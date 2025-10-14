@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Terraria.Utilities.Terraria.Utilities;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+namespace CalamityVanilla.Content.Bosses.HiveMind;
 
 public partial class HiveMind
 {

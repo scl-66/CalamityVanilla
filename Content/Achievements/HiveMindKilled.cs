@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.NPCs.Bosses.HiveMind;
+﻿using CalamityVanilla.Content.Bosses.HiveMind;
 using Terraria.Achievements;
 using Terraria.ModLoader;
 

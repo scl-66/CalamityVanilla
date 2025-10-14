@@ -7,7 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 public partial class Cryogen : ModNPC
 {

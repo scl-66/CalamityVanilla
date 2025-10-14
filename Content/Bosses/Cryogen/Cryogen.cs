@@ -17,7 +17,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.Bosses.Cryogen;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 [AutoloadBossHead]
 public partial class Cryogen : ModNPC
