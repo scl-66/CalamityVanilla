@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Common;
+namespace CalamityVanilla.Common.NPCs;
 
 /// <summary>
 /// An abstract clas to facilitate the creation of worm NPCs. By default, this NPC has no movement to it and has to be set in AI() or HeadAI() preferably.

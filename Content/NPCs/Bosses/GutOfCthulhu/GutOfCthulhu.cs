@@ -8,7 +8,7 @@ namespace CalamityVanilla.Content.NPCs.Bosses.GutOfCthulhu;
 
 internal partial class GutOfCthulhu : ModNPC
 {
-    internal enum GutState
+    internal enum GutState : sbyte
     {
         Idle
     }
@@ -36,6 +36,11 @@ internal partial class GutOfCthulhu : ModNPC
 
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
+    }
+
+    public override void AI()
+    {
+        
     }
 
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
