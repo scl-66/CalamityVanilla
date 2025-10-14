@@ -1,5 +1,4 @@
 ﻿using CalamityVanilla.Common.Players;
-using CalamityVanilla.Content.Buffs;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -7,7 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Equipment.Accessories;
+namespace CalamityVanilla.Content.Crimson.Items.ParasiticBelt;
 
 [AutoloadEquip(EquipType.Waist)]
 public class ParasiticBelt : ModItem
@@ -80,5 +79,14 @@ public class ParasiticBeltEffect : ModProjectile
         Projectile.ai[1]++;
         Projectile.position.X += ((float)Math.Cos(Siner / 5f) * 2f / (Siner / 10f)) - 2f / (Siner / 5f);
         Projectile.rotation = (float)Math.Sin(Siner / 5f) * (1f - Siner / 60f);
+    }
+}
+
+public class ParasiticBeltBuff : ModBuff
+{
+    public override void SetStaticDefaults()
+    {
+        Main.buffNoSave[Type] = true;
+        Main.buffNoTimeDisplay[Type] = true;
     }
 }

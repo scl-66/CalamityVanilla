@@ -15,6 +15,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Content\Bosses\" />
+	  <Folder Include="Content\Items\Material\" />
 	</ItemGroup>
 
 	<!-- References -->

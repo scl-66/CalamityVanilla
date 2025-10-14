@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tiles;
+namespace CalamityVanilla.Content.Tundra.Tiles;
 
 public class CryogenIceTile : ModTile
 {

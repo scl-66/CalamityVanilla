@@ -12,7 +12,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Equipment.Other;
+namespace CalamityVanilla.Content.Tundra.Items.PermafrostHook;
 
 public class PermafrostHook : ModItem
 {

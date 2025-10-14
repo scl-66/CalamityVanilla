@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Content.Bosses.HiveMind;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tiles;
+namespace CalamityVanilla.Content.Corruption.Tiles;
 
 public class SinisterRoot : ModTile
 {
@@ -52,7 +53,7 @@ public class SinisterRoot : ModTile
 
         HitSound = SoundID.Grass;
         DustType = DustID.Corruption;
-        RegisterItemDrop(ModContent.ItemType<Items.Consumable.HiveMindSummon>());
+        RegisterItemDrop(ModContent.ItemType<HiveMindSummon>());
     }
     public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
     {

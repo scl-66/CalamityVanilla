@@ -1,10 +1,12 @@
 ﻿using CalamityVanilla.Common.ItemDropRules.DropConditions;
 using CalamityVanilla.Content.Emotes;
-using CalamityVanilla.Content.Items.Material;
 using CalamityVanilla.Content.Items.Weapons.Magic;
 using CalamityVanilla.Content.Items.Weapons.Ranged;
 using CalamityVanilla.Content.Items.Weapons.Ranged.Throwing;
 using CalamityVanilla.Content.Items.Weapons.Summon;
+using CalamityVanilla.Content.Miscellaneous.Items;
+using CalamityVanilla.Content.Tundra.Items;
+using CalamityVanilla.Content.Underworld.Items;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;

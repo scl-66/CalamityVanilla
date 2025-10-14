@@ -9,7 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Material;
+namespace CalamityVanilla.Content.Underworld.Items;
 
 public class HavocSoul : ModItem // thanks example mod lmao
 {

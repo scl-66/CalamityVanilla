@@ -9,7 +9,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Consumable;
+namespace CalamityVanilla.Content.Bosses.HiveMind;
 
 // Basic code for a boss treasure bag
 public class HiveMindBag : ModItem

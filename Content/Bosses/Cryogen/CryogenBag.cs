@@ -1,14 +1,14 @@
-﻿using CalamityVanilla.Content.Items.Equipment.Other;
-using CalamityVanilla.Content.Items.Equipment.Vanity;
+﻿using CalamityVanilla.Content.Items.Equipment.Vanity;
 using CalamityVanilla.Content.Items.Weapons.Melee;
 using CalamityVanilla.Content.Items.Weapons.Ranged;
 using CalamityVanilla.Content.Bosses.Cryogen;
+using CalamityVanilla.Content.Tundra.Items.PermafrostHook;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Items.Consumable;
+namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 // Basic code for a boss treasure bag
 public class CryogenBag : ModItem
