@@ -1,9 +1,11 @@
 ﻿using CalamityVanilla.Common.NPCs;
 using Microsoft.Xna.Framework;
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
 
@@ -13,10 +15,14 @@ internal sealed class Hematode : CustomWormNPC {
         Chase = 1,
     }
     
-    public HematodePhases CurrentPhase => Unsafe.BitCast<float, HematodePhases>(NPC.ai[3]);
+    public ref float CurrentPhaseAsFloat => ref NPC.ai[1]; 
+    private HematodePhases CurrentPhase {
+        get => (HematodePhases)(int)CurrentPhaseAsFloat;
+        set => CurrentPhaseAsFloat = (float)(int)value;
+    }
     
     void ChangeState(HematodePhases state) {
-        NPC.ai[0] = Unsafe.BitCast<HematodePhases, float>(state);
+        CurrentPhase = state;
         _stateTimer = 0;
         NPC.netUpdate = true;
     }
@@ -24,6 +30,9 @@ internal sealed class Hematode : CustomWormNPC {
     private float _stateTimer = 0;
 
     private Player _targetPlayer;
+
+    private int _rechargeTimer;
+    private int _shotCooldownTimer;
 
     public override void SetStaticDefaults() {
         NPCID.Sets.MPAllowedEnemies[Type] = true;
@@ -59,17 +68,21 @@ internal sealed class Hematode : CustomWormNPC {
         MaxSegments = segments;
         InwardSegmentOffset = 2;
         
-        if (Kind == PartKind.Head)
-        {
-            ChangeState(HematodePhases.Idle);
+        if (Kind == PartKind.Head) {
+            CurrentPhase = HematodePhases.Idle;
         }
+        
+        _rechargeTimer = 0;
+        _shotCooldownTimer = Main.rand.Next(300, 600);
     }
 
     public override Rectangle GetSegmentFrame(int segmentIndex, PartKind kind) {
         const int frameWidth = 66;
-        
-        //calc which frame to use, idx starts at 0 and the first body segment after is 1, and the tail is maxsegments + 1. so to get the 3rd to tail part, its segmentsFromTrail = 3
         int segmentsFromTail = (MaxSegments + 1) - segmentIndex; 
+
+        if (kind == PartKind.Body && _rechargeTimer > 0) {
+            return new Rectangle(66, 50, frameWidth, 22);
+        }
 
         switch (kind) {
             case PartKind.Head:
@@ -95,7 +108,42 @@ internal sealed class Hematode : CustomWormNPC {
         }
     }
 
-    public override void FollowAI() { base.FollowAI(); }
+    public override void FollowAI() {
+        base.FollowAI();
+        if (Kind == PartKind.Body) {
+            _rechargeTimer--;
+            
+            if (_rechargeTimer < 0) {
+                _rechargeTimer = 0;
+            }
+            
+            if (_rechargeTimer == 0) {
+                _shotCooldownTimer--;
+                if (_shotCooldownTimer <= 0) {
+                    NPC.TargetClosest(false); 
+                    _targetPlayer = Main.player[NPC.target];
+
+                    if (_targetPlayer.active && !_targetPlayer.dead) {
+                        var projectileVelocity = NPC.DirectionTo(_targetPlayer.Center) * 8f;
+
+                        Projectile.NewProjectile(
+                            NPC.GetSource_FromAI(),
+                            NPC.Center,
+                            projectileVelocity,
+                            ModContent.ProjectileType<HematodeShot>(),
+                            NPC.damage / 2,
+                            0.5f,
+                            Main.myPlayer 
+                        );
+                        
+                        _rechargeTimer = 60 * 20;
+                        _shotCooldownTimer = Main.rand.Next(60, 180);
+                        NPC.netUpdate = true;
+                    }
+                }
+            }
+        }
+    }
 
     public override void HeadAI() {
         NPC.TargetClosest();
@@ -116,5 +164,41 @@ internal sealed class Hematode : CustomWormNPC {
         float distmult = Math.Clamp(_targetPlayer.velocity.Length() / 2f, 1f, 5f);
 
         NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(_targetPlayer.Center) * 2f * distmult, 0.05f);
+    }
+
+    public override void SendExtraAI(BinaryWriter writer)
+    {
+        base.SendExtraAI(writer);
+
+        writer.Write(_rechargeTimer);
+        writer.Write(_shotCooldownTimer);
+        writer.Write((byte)CurrentPhase);
+        writer.Write(_stateTimer);
+    }
+
+    public override void ReceiveExtraAI(BinaryReader reader)
+    {
+        base.ReceiveExtraAI(reader);
+
+        _rechargeTimer = reader.ReadInt32();
+        _shotCooldownTimer = reader.ReadInt32();
+        CurrentPhase = (HematodePhases)reader.ReadByte();
+        _stateTimer = reader.ReadSingle();
+    }
+}
+
+public class HematodeShot : ModProjectile {
+    public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.IceSpike;
+
+    public override void SetDefaults() {
+        Projectile.width = 10;
+        Projectile.height = 10;
+        Projectile.friendly = false; 
+        Projectile.hostile = true;
+        Projectile.ignoreWater = true;
+        Projectile.tileCollide = true;
+        Projectile.penetrate = 1;
+        Projectile.timeLeft = 300;
+        AIType = ProjectileID.IceSpike;
     }
 }

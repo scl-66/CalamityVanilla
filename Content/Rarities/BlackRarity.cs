@@ -7,7 +7,7 @@ using Terraria.UI.Chat;
 
 namespace CalamityVanilla.Content.Rarities;
 
-internal sealed class BlackAndGoldRarity : ModRarity, ISpeciallyRenderedRarity {
+internal sealed class BlackRarity : ModRarity, ISpeciallyRenderedRarity {
     public override Color RarityColor => new Color(0, 0, 0);
 
     void ISpeciallyRenderedRarity.RenderRarityText(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 position, Color color,
@@ -25,14 +25,12 @@ internal sealed class BlackAndGoldRarity : ModRarity, ISpeciallyRenderedRarity {
             new Vector2(-outlineOffset, outlineOffset),
             new Vector2(outlineOffset, outlineOffset)
         };
-
-        var gold = new Color(225, 221, 82);
         
         var size = ChatManager.GetStringSize(font, text, scale);
         
         foreach (var offset in offsets)
         {
-            ChatManager.DrawColorCodedString(sb, font, text, position + offset + size / 2, gold, 0f, size / 2, scale);
+            ChatManager.DrawColorCodedString(sb, font, text, position + offset + size / 2, Color.White, 0f, size / 2, scale);
         }
         
         ChatManager.DrawColorCodedString(sb, font, text, position + size / 2, Color.Black, 0f, size / 2, scale);
