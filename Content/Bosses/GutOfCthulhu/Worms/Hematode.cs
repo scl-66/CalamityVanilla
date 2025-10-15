@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
 
+[AutoloadBossHead]
 internal sealed class Hematode : CustomWormNPC
 {
     internal enum HematodePhases
@@ -55,16 +56,18 @@ internal sealed class Hematode : CustomWormNPC
     public override void WormDefaults()
     {
         (NPC.width, NPC.height) = (66, 48);
-        NPC.lifeMax = 100;
+        NPC.lifeMax = 3000;
         NPC.defense = 30;
         NPC.friendly = false;
         NPC.damage = 20;
+        NPC.boss = true;
 
         NPC.noTileCollide = true;
         NPC.noGravity = true;
+        NPC.knockBackResist = 0.1f;
 
-        NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
-        NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
+        NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.FaceMonster].HitSound;
+        NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.FaceMonster].DeathSound;
 
         int segments = 0;
 
@@ -151,6 +154,11 @@ internal sealed class Hematode : CustomWormNPC
         }
     }
 
+    public override void BossHeadSlot(ref int index)
+    {
+        if (Kind != PartKind.Head) index = -1;
+    }
+
     public override void FollowAI()
     {
         base.FollowAI();
@@ -215,7 +223,7 @@ internal sealed class Hematode : CustomWormNPC
 
         float distmult = Math.Clamp(_targetPlayer.velocity.Length() / 2f, 1f, 5f);
 
-        NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(_targetPlayer.Center) * 3f * distmult, 0.05f);
+        NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(_targetPlayer.Center) * 2.4f * distmult, 0.05f);
     }
 
     public override void SendExtraAI(BinaryWriter writer)

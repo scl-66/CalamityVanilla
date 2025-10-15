@@ -2,8 +2,6 @@
 using CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Terraria;
@@ -30,12 +28,9 @@ internal partial class GutOfCthulhu : ModNPC
 
     public VerletRope Rope;
     
-    private int rope_segments = 30;
-    private Vector2 _ropeAnchor;
-    
     private VerletRope[] _ropes = new VerletRope[2];
-    private  int RopeParticleSegments = 20;
-    private  float RopeSegmentLength = 20f;
+    private int RopeParticleSegments = 20;
+    private float RopeSegmentLength = 20f;
     private Vector2[] _ropeLocalAnchorOffsets = new Vector2[2];
     
     void ChangeState(GutState state)
@@ -259,8 +254,8 @@ internal class GutOfCthulhuEye : ModNPC
         NPC.noGravity = true;
         NPC.noTileCollide = true;
 
-        NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
-        NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
+        NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.FaceMonster].HitSound;
+        NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.FaceMonster].DeathSound;
     }
 
     public override void DrawBehind(int index)
