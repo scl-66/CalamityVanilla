@@ -25,7 +25,7 @@ public class HoarfrostBow : ModItem
         {
             type = ModContent.ProjectileType<MistArrow>();
         }
-        position += new Vector2(10, MathHelper.SmoothStep(-10 * player.direction, 10 * player.direction, player.itemAnimation / (float)player.itemAnimationMax)).RotatedBy(velocity.ToRotation());
+        position += new Vector2(10, MathHelper.SmoothStep(-15 * player.direction, 15 * player.direction, player.itemAnimation / (float)player.itemAnimationMax)).RotatedBy(velocity.ToRotation());
     }
     public override Vector2? HoldoutOffset()
     {

@@ -1,7 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Content.Bosses.Cryogen;
+using CalamityVanilla.Content.Dusts;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -28,6 +32,36 @@ public class Icebreaker : ModItem
 public class IcebreakerProjectile : ModProjectile
 {
     public override string Texture => ModContent.GetModItem(ModContent.ItemType<Icebreaker>()).Texture;
+
+    public override void SetStaticDefaults()
+    {
+        ProjectileID.Sets.TrailCacheLength[Type] = 8;
+        ProjectileID.Sets.TrailingMode[Type] = 2;
+    }
+    public override bool PreDraw(ref Color lightColor)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            float percent = 1f - (i / 8f);
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)Main.timeForVisualEffects + (i * 15)) with { A = 0 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale *  (0.8f + (percent * 0.3f)), SpriteEffects.None);
+        }
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value,Projectile.Center - Main.screenPosition,null,lightColor,Projectile.rotation,new Vector2(21,17),Projectile.scale,SpriteEffects.None);
+        return false;
+    }
+    public override void AI()
+    {
+        if (Main.rand.NextBool(3))
+        {
+            Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.width / 2), ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.1f));
+            d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 0 };
+            d.noGravity = true;
+        }
+        if (Main.rand.NextBool())
+        {
+            Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Snow, Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f));
+            d.noGravity = true;
+        }
+    }
     public override void SetDefaults()
     {
         Projectile.CloneDefaults(ProjectileID.ThornChakram);
@@ -80,6 +114,20 @@ public class IcebreakerIcicles : ModProjectile
     }
     public override void AI()
     {
+        if(Projectile.alpha == 0)
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f,2f));
+                d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 0 };
+                d.noGravity = true;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Snow, Projectile.velocity.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 4f));
+                d.noGravity = true;
+            }
+        }
         Projectile.frame = Projectile.whoAmI % 3;
         Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
         Projectile.alpha += 255 / 30;

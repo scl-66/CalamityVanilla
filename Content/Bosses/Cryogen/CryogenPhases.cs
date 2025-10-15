@@ -19,7 +19,7 @@ public partial class Cryogen : ModNPC
         else
         {
             NPC.velocity += NPC.Center.DirectionTo(target.Center) * 0.4f;
-            NPC.velocity = NPC.velocity.LengthClamp(9, 0);
+            NPC.velocity = NPC.velocity.LengthClamp(Math.Max(9,target.velocity.Length() * 1.1f), 0);
         }
         if (NPC.ai[0] > 60 && NPC.ai[0] % 10 == 0 && NPC.ai[0] < 130)
         {
@@ -76,6 +76,8 @@ public partial class Cryogen : ModNPC
             NPC.velocity *= 0.98f;
             NPC.velocity += NPC.Center.DirectionTo(target.Center) * -0.1f;
             NPC.rotation += NPC.direction * (NPC.ai[0] - 60) * 0.01f;
+            _snowOverlayOpacity += 1f / 60;
+            _snowOverlaySpinDirection = NPC.direction;
         }
         else if (Main.netMode != NetmodeID.MultiplayerClient)
         {
@@ -176,7 +178,7 @@ public partial class Cryogen : ModNPC
             if (NPC.ai[0] < slamStart)
             {
                 NPC.velocity += NPC.Center.DirectionTo(target.Center + new Vector2(0, -400)) * 1.4f;
-                NPC.velocity = NPC.velocity.LengthClamp(9, 0);
+                NPC.velocity = NPC.velocity.LengthClamp(Math.Max(9, target.velocity.Length() * 1.1f), 0);
             }
             else
             {
@@ -186,31 +188,34 @@ public partial class Cryogen : ModNPC
                 NPC.velocity.Y += NPC.localAI[1] - 1f;
                 NPC.velocity = NPC.velocity.LengthClamp(32, 0);
 
-                List<Point> tiles = Collision.GetTilesIn(NPC.position, NPC.BottomRight);
-                for (int i = 0; i < tiles.Count; i++)
+                if (NPC.velocity.Y > 5)
                 {
-                    if (Main.tile[tiles[i]].HasTile && Main.tile[tiles[i]].TileType == ModContent.TileType<CryogenIceTile>())
+                    List<Point> tiles = Collision.GetTilesIn(NPC.position, NPC.BottomRight);
+                    for (int i = 0; i < tiles.Count; i++)
                     {
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        if (Main.tile[tiles[i]].HasTile && Main.tile[tiles[i]].TileType == ModContent.TileType<CryogenIceTile>())
                         {
-                            WorldGen.KillTile(tiles[i].X, tiles[i].Y, false, false, true);
-                            NetMessage.SendTileSquare(-1, tiles[i].X, tiles[i].Y);
-                        }
-                    }
-                    else if (Main.tile[tiles[i]].HasTile && Main.tileSolid[Main.tile[tiles[i]].TileType] && !Main.tileSolidTop[Main.tile[tiles[i]].TileType])
-                    {
-                        NPC.ai[1] = 1;
-                        NPC.ai[0] = 0;
-                        NPC.velocity.Y = -20;
-                        SoundEngine.PlaySound(SoundID.DeerclopsRubbleAttack);
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
-                        {
-                            for (int i2 = 0; i2 < 15; i2++)
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
                             {
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Bottom, Main.rand.NextVector2Circular(10, 10) - new Vector2(0, 15), ModContent.ProjectileType<IceChunks>(), 20, 1);
+                                WorldGen.KillTile(tiles[i].X, tiles[i].Y, false, false, true);
+                                NetMessage.SendTileSquare(-1, tiles[i].X, tiles[i].Y);
                             }
                         }
-                        break;
+                        else if (Main.tile[tiles[i]].HasTile && Main.tileSolid[Main.tile[tiles[i]].TileType] && !Main.tileSolidTop[Main.tile[tiles[i]].TileType])
+                        {
+                            NPC.ai[1] = 1;
+                            NPC.ai[0] = 0;
+                            NPC.velocity.Y = -20;
+                            SoundEngine.PlaySound(SoundID.DeerclopsRubbleAttack);
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
+                            {
+                                for (int i2 = 0; i2 < 15; i2++)
+                                {
+                                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Bottom, Main.rand.NextVector2Circular(10, 10) - new Vector2(0, 15), ModContent.ProjectileType<IceChunks>(), 20, 1);
+                                }
+                            }
+                            break;
+                        }
                     }
                 }
             }

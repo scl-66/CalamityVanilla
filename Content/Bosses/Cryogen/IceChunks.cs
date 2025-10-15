@@ -2,8 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.Cryogen;
@@ -31,6 +33,39 @@ public class IceChunks : ModProjectile
         Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
         //Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         Projectile.rotation += Projectile.velocity.X * 0.02f;
+
+        if (Projectile.localAI[0] > 9)
+            Projectile.Kill();
+
+        if (Projectile.timeLeft < 590)
+        {
+            List<Point> tiles = Collision.GetTilesIn(Projectile.position, Projectile.BottomRight);
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                if (Main.tile[tiles[i]].HasTile && Main.tile[tiles[i]].TileType == ModContent.TileType<CryogenIceTile>())
+                {
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        WorldGen.KillTile(tiles[i].X, tiles[i].Y, false, false, true);
+                        NetMessage.SendTileSquare(-1, tiles[i].X, tiles[i].Y);
+                        Projectile.localAI[0]++;
+                    }
+                }
+                else if (Main.tile[tiles[i]].HasTile && Main.tileSolid[Main.tile[tiles[i]].TileType] && !Main.tileSolidTop[Main.tile[tiles[i]].TileType])
+                {
+                    Projectile.Kill();
+                    break;
+                }
+            }
+        }
+    }
+    public override void OnKill(int timeLeft)
+    {
+        for (int i = 0; i < 25; i++)
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position,Projectile.width,Projectile.height,DustID.Ice);
+            d.velocity = -Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat();
+        }
     }
     public override bool PreDraw(ref Color lightColor)
     {
