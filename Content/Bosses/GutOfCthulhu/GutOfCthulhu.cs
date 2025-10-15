@@ -34,7 +34,7 @@ internal partial class GutOfCthulhu : ModNPC
 
     public override void SetDefaults()
     {
-        (NPC.width, NPC.height) = (200, 200);
+        (NPC.width, NPC.height) = (326, 332);
 
         NPC.lifeMax = 16000;
         NPC.defense = 30;
@@ -85,6 +85,8 @@ internal partial class GutOfCthulhu : ModNPC
     {
         NPC.TargetClosest();
         Player targetPlayer = Main.player[NPC.target];
+        
+        //NPC.rotation += 0.02f;
 
         for (int i = 0; i < _eyeNPCs.Length; i++)
         {
@@ -94,21 +96,19 @@ internal partial class GutOfCthulhu : ModNPC
             {
                 NPC eyeNPC = Main.npc[eyeWhoAmI];
 
-                var relativeOffset = Vector2.One;
+                Vector2 localOffset;
                 switch (i)
                 {
-                    case 0: relativeOffset = new Vector2(0, -230); break;
-                    case 1: relativeOffset = new Vector2(0, -180); break;
-                    case 2: relativeOffset = new Vector2(0, -120); break;
+                    case 0: localOffset = new Vector2(20, -150); break;
+                    case 1: localOffset = new Vector2(20, -90); break;
+                    case 2: localOffset = new Vector2(20, -30); break;
+                    default: localOffset = Vector2.Zero; break;
                 }
+                Vector2 targetEyeCenter = NPC.Center + localOffset.RotatedBy(NPC.rotation);
 
-                relativeOffset.RotatedBy(NPC.rotation);
-                var targetEyePosition = NPC.Center + relativeOffset;
-
-                eyeNPC.position = targetEyePosition;
+                eyeNPC.Center = targetEyeCenter;
                 eyeNPC.velocity = Vector2.Zero;
-
-                //eyeNPC.rotation = (targetPlayer.Center - eyeNPC.Center).ToRotation() + MathHelper.PiOver2; 
+                eyeNPC.rotation = NPC.rotation;
             }
             else
             {
