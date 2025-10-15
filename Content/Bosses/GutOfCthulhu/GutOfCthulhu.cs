@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Terraria;
-using Terraria.Achievements;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
