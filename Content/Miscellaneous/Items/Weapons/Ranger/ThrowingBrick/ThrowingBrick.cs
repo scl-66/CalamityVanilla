@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Bosses.Cryogen;
+﻿using CalamityVanilla.Content.Achievements;
+using CalamityVanilla.Content.Bosses.Cryogen;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -87,6 +88,9 @@ public class ThrowingBrickProjectile : ModProjectile
             {
                 if (Main.tile[tileCoord.X + i, tileCoord.Y + j].TileType == ModContent.TileType<CryogenIceTile>() || Main.tile[tileCoord.X + i, tileCoord.Y + j].TileType is TileID.Glass or TileID.BreakableIce or TileID.MagicalIceBlock or TileID.Waterfall or TileID.Lavafall or TileID.Honeyfall or TileID.SandFallBlock or TileID.Confetti or TileID.ConfettiBlack or TileID.BlueStarryGlassBlock or TileID.GoldStarryGlassBlock or TileID.SnowFallBlock)
                 {
+                    // set throwing glass achievement to complete
+                    ModContent.GetInstance<ThrowBrickAtGlass>().Condition.Complete();
+
                     // create liquid if tile destroyed is a liquidfall block
                     Tile tile = Main.tile[tileCoord.X + i, tileCoord.Y + j];
                     byte amt = 100;

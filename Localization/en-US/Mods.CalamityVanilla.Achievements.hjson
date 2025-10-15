@@ -7,3 +7,8 @@ CryogenKilled: {
 	FriendlyName: Breaking the Ice
 	Description: Defeat Cryogen, the arctic fortress protected by a magic spell.
 }
+
+ThrowBrickAtGlass: {
+	FriendlyName: Watch Where You're Throwing That!
+	Description: Lob a throwing brick at some glass or thin ice. Don't forget to clean up the mess!
+}
