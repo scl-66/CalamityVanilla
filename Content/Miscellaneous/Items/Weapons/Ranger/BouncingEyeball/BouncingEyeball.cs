@@ -30,7 +30,7 @@ public class BouncingEyeball : ModItem
 
 public class BouncingEyeballCluster : ModProjectile
 {
-    public override string Texture => "CalamityVanilla/Content/Miscellaneous/Items/BouncingEyeball/BouncingEyeball";
+    public override string Texture => "CalamityVanilla/Content/Miscellaneous/Items/Weapons/Ranger/BouncingEyeball/BouncingEyeball";
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(false, 20);

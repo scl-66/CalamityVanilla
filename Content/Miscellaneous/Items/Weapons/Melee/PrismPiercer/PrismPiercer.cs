@@ -65,7 +65,7 @@ public class PrismPiercer : ModItem
     }
     public override void AddRecipes()
     {
-        CreateRecipe().AddTile(TileID.MythrilAnvil).AddIngredient(ModContent.ItemType<CalamityVanilla.Content.Miscellaneous.Items.Weapons.WindowPain.WindowPain>()).AddIngredient(ItemID.Starfury).AddIngredient(ItemID.Ectoplasm, 15).Register();
+        CreateRecipe().AddTile(TileID.MythrilAnvil).AddIngredient(ModContent.ItemType<WindowPain.WindowPain>()).AddIngredient(ItemID.Starfury).AddIngredient(ItemID.Ectoplasm, 15).Register();
     }
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {

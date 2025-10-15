@@ -103,7 +103,7 @@ public class CatastropheClaymoreGlow : PlayerDrawLayer
     private static Asset<Texture2D> texture;
     public override void Load()
     {
-        texture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Miscellaneous/Items/CatastropheClaymore/CatastropheClaymore_Overlay");
+        texture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Miscellaneous/Items/Weapons/Melee/CatastropheClaymore/CatastropheClaymore_Overlay");
     }
     private void drawSword(ref PlayerDrawSet drawInfo, Color color, int frame)
     {
