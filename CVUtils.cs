@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -234,5 +236,41 @@ public static class CVUtils
         float from = Math.Abs(fromangle % MathHelper.TwoPi);
         float to = Math.Abs(toangle % MathHelper.TwoPi);
         return Math.Abs(from - to);
+    }
+    
+    public static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
+        Vector2 edge = end - start;
+        float angle = (float)Math.Atan2(edge.Y, edge.X);
+        float length = edge.Length();
+
+        var tex = ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/Pixel");
+        
+        spriteBatch.Draw(
+            tex.Value,
+            start,
+            null,
+            color,
+            angle,
+            Vector2.Zero,
+            new Vector2(length, thickness),
+            SpriteEffects.None,
+            0
+        );
+    }
+    
+    public static void DrawPixel(SpriteBatch spriteBatch, Vector2 pos, Color color) {
+        var tex = ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/Pixel");
+        
+        spriteBatch.Draw(
+            tex.Value,
+            pos,
+            new Rectangle(0, 0, 10, 10),
+            color,
+            0,
+            Vector2.Zero,
+            new Vector2(0, 0),
+            SpriteEffects.None,
+            0
+        );
     }
 }

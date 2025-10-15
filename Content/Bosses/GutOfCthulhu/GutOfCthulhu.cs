@@ -1,6 +1,9 @@
-﻿using CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
+﻿using CalamityVanilla.Common.Verlet;
+using CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Terraria;
@@ -22,9 +25,20 @@ internal partial class GutOfCthulhu : ModNPC
     public GutState CurrentState => Unsafe.BitCast<float, GutState>(NPC.ai[0]);
     public ref float Timer => ref NPC.ai[1];
 
-    private int[] _eyeNPCs = new int[3] { -1, -1, -1 };
-    public int EyesKilledCount = 0;
+    private int[] _eyeNPCs = new[] { -1, -1, -1 };
+    public int EyesKilledCount;
 
+    public VerletRope Rope;
+    
+    private int rope_segments = 30;
+    private Vector2 _ropeAnchor;
+    private Vector2 RopeAnchorLocalOffset = new(50, -400);
+    
+    private VerletRope[] _ropes = new VerletRope[2]; // Example: 2 ropes
+    private  int RopeParticleSegments = 20; // Number of segments per rope (11 particles)
+    private  float RopeSegmentLength = 20f; // Length of each rope segment
+    private Vector2[] _ropeLocalAnchorOffsets = new Vector2[2];
+    
     void ChangeState(GutState state)
     {
         NPC.ai[0] = Unsafe.BitCast<GutState, float>(state);
@@ -47,7 +61,8 @@ internal partial class GutOfCthulhu : ModNPC
 
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
-        //NPC.hide = true;
+        
+        //ChangeState(GutState.Idle);
     }
 
     public override void OnSpawn(IEntitySource source)
@@ -76,22 +91,35 @@ internal partial class GutOfCthulhu : ModNPC
 
             _eyeNPCs[i] = eyeWhoAmI;
         }
+
+        _ropeLocalAnchorOffsets[0] = new Vector2(-200, -450); // Left top anchor
+        _ropeLocalAnchorOffsets[1] = new Vector2(200, -450);  // Right top anchor
+
+        for (int i = 0; i < _ropes.Length; i++)
+        {
+            Vector2[] initialPoints = new Vector2[RopeParticleSegments + 1];
+            
+            // Calculate initial world position for the anchor point (top of rope)
+            // This assumes initial NPC.rotation is 0.
+            Vector2 initialWorldAnchor = NPC.Center + _ropeLocalAnchorOffsets[i]; 
+
+            initialPoints[0] = initialWorldAnchor;
+            for (int p = 1; p <= RopeParticleSegments; p++)
+            {
+                initialPoints[p] = initialPoints[p - 1] + new Vector2(0, RopeSegmentLength); // Vertically hanging
+            }
+            _ropes[i] = new VerletRope(initialPoints, RopeSegmentLength, iterations: 10);
+            _ropes[i].SetFixedPoint(0, initialWorldAnchor); // Fix the top particle
+        }
     }
 
-    public override void DrawBehind(int index)
-    {
-        Main.instance.DrawCacheProjsBehindNPCs.Add(index);
-    }
+    public override void DrawBehind(int index) => Main.instance.DrawCacheProjsBehindNPCs.Add(index);
 
-    public override void AI()
-    {
+    public override void AI() {
         NPC.TargetClosest();
-        Player targetPlayer = Main.player[NPC.target];
-        
-        //NPC.rotation += 0.02f;
 
         for (int i = 0; i < _eyeNPCs.Length; i++)
-        {   
+        {  
             int eyeWhoAmI = _eyeNPCs[i];
 
             if (eyeWhoAmI != -1 && Main.npc[eyeWhoAmI].active && Main.npc[eyeWhoAmI].type == ModContent.NPCType<GutOfCthulhuEye>())
@@ -121,8 +149,20 @@ internal partial class GutOfCthulhu : ModNPC
                 }
                 _eyeNPCs[i] = -1;
             }
+        }
+        
+        Vector2 ropeGravity = new Vector2(0, 0.5f); 
+        float damping = 0.99f;
+        float deltaTime = 1f;
 
-            Main.Achievements.ClearAll();
+        for (int i = 0; i < _ropes.Length; i++) {
+            Vector2 currentWorldAnchor = NPC.Center + _ropeLocalAnchorOffsets[i];
+            _ropes[i].SetFixedPoint(0, currentWorldAnchor);
+                
+            Vector2 gutAttachmentLocalOffset = new Vector2(i == 0 ? -120 : 120, 0);
+            _ropes[i].SetFixedPoint(_ropes[i].ParticleCount - 1, NPC.Center + gutAttachmentLocalOffset);
+
+            _ropes[i].Update(ropeGravity, damping, deltaTime);
         }
     }
 
@@ -150,7 +190,58 @@ internal partial class GutOfCthulhu : ModNPC
 
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
     {
-        return true;
+        if (NPC.IsABestiaryIconDummy) return false;
+
+
+        Texture2D bodyTexture = ModContent.Request<Texture2D>(Texture).Value;
+        
+        Vector2 drawPosition = NPC.Center - screenPos;
+        Vector2 origin = bodyTexture.Size() / 2f;
+        
+        foreach (var rope in _ropes)
+        {
+            DrawRope(spriteBatch, rope);
+        }
+
+        spriteBatch.Draw(
+            bodyTexture,
+            drawPosition,
+            null,
+            drawColor,
+            NPC.rotation,
+            origin,
+            NPC.scale,
+            SpriteEffects.None,
+            0f
+        );
+
+        return false; 
+    }
+
+    void DrawRope(SpriteBatch batch, VerletRope rope)
+    {
+        for (int i = 0; i < rope.ParticleCount - 1; i++)
+        {
+            var start = rope[i] - Main.screenPosition;
+            var end = rope[i + 1] - Main.screenPosition;
+            
+            var difference = end - start;
+            float rotation = difference.ToRotation();
+            
+            var tex = ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/Pixel");
+            
+            batch.Draw
+            (
+                tex.Value,
+                new Rectangle((int)start.X, (int)start.Y, (int)difference.Length(), tex.Height()),
+                null, 
+                Color.White, 
+                rotation,
+                tex.Size() / 2f,
+                SpriteEffects.None,
+                0f
+            );
+        }
     }
 }
 
@@ -205,12 +296,9 @@ internal class GutOfCthulhuEye : ModNPC
         NPC.NewNPCDirect(source, NPC.Center, npcToSpawnType);
     }
 
-    public override void AI()
-    {
-        if (!Main.npc[(int)ParentWhoAmI].active || Main.npc[(int)ParentWhoAmI].type != ModContent.NPCType<GutOfCthulhu>())
-        {
+    public override void AI() {
+        if (!Main.npc[(int)ParentWhoAmI].active || Main.npc[(int)ParentWhoAmI].type != ModContent.NPCType<GutOfCthulhu>()) {
             NPC.active = false;
-            return;
         }
     }
 }
