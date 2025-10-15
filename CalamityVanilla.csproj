@@ -5,7 +5,8 @@
 
 	<!-- General -->
 	<PropertyGroup>
-		
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 	</PropertyGroup>
  
 	<!-- References -->

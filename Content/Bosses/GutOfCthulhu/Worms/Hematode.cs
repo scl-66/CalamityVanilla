@@ -50,6 +50,8 @@ internal sealed class Hematode : CustomWormNPC {
         (NPC.width, NPC.height) = (66, 48);
         NPC.lifeMax = 100;
         NPC.defense = 30;
+        NPC.friendly = false;
+        NPC.damage = 20;
 
         NPC.noTileCollide = true;
         NPC.noGravity = true;
@@ -68,9 +70,7 @@ internal sealed class Hematode : CustomWormNPC {
         MaxSegments = segments;
         InwardSegmentOffset = 2;
         
-        if (Kind == PartKind.Head) {
-            CurrentPhase = HematodePhases.Idle;
-        }
+        if (Kind == PartKind.Head) ChangeState(HematodePhases.Idle);
         
         _rechargeTimer = 0;
         _shotCooldownTimer = Main.rand.Next(300, 600);
@@ -80,37 +80,55 @@ internal sealed class Hematode : CustomWormNPC {
         const int frameWidth = 66;
         int segmentsFromTail = (MaxSegments + 1) - segmentIndex; 
 
-        if (kind == PartKind.Body && _rechargeTimer > 0) {
-            return new Rectangle(66, 50, frameWidth, 22);
-        }
-
         switch (kind) {
             case PartKind.Head:
                 return new Rectangle(0, 0, frameWidth, 48);
             case PartKind.Tail:
+                if (_rechargeTimer > 0) {
+                    return new Rectangle(66, 154, frameWidth, 30);
+                }
                 return new Rectangle(0, 154, frameWidth, 30);
+            
             case PartKind.Body:
                 if (segmentsFromTail == 5) {
+                    if (_rechargeTimer > 0) {
+                        return new Rectangle(66, 74, frameWidth, 18);
+                    }
+                    
                     return new Rectangle(0, 74, frameWidth, 18);
                 }
                 if (segmentsFromTail == 4) {
+                    if (_rechargeTimer > 0) {
+                        return new Rectangle(66, 94, frameWidth, 18);
+                    }
                     return new Rectangle(0, 94, frameWidth, 18);
                 }
                 if (segmentsFromTail == 3) {
+                    if (_rechargeTimer > 0) {
+                        return new Rectangle(66, 114, frameWidth, 18);
+                    }
                     return new Rectangle(0, 114, frameWidth, 18);
                 }
                 if (segmentsFromTail == 2) {
+                    if (_rechargeTimer > 0) {
+                        return new Rectangle(66, 134, frameWidth, 18);
+                    }
                     return new Rectangle(0, 134, frameWidth, 18);
                 }
+
+                if (_rechargeTimer > 0) {
+                    return new Rectangle(66, 50, frameWidth, 22);
+                }
+
                 return new Rectangle(0, 50, frameWidth, 22);
             default:
-                return new Rectangle(0, 0, 1, 1);
+                return new Rectangle(0, 0, 0, 0);
         }
     }
 
     public override void FollowAI() {
         base.FollowAI();
-        if (Kind == PartKind.Body) {
+        if (Kind == PartKind.Body || Kind == PartKind.Tail) {
             _rechargeTimer--;
             
             if (_rechargeTimer < 0) {
@@ -136,7 +154,7 @@ internal sealed class Hematode : CustomWormNPC {
                             Main.myPlayer 
                         );
                         
-                        _rechargeTimer = 60 * 20;
+                        _rechargeTimer = 60 * 2;
                         _shotCooldownTimer = Main.rand.Next(60, 180);
                         NPC.netUpdate = true;
                     }
@@ -163,7 +181,7 @@ internal sealed class Hematode : CustomWormNPC {
 
         float distmult = Math.Clamp(_targetPlayer.velocity.Length() / 2f, 1f, 5f);
 
-        NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(_targetPlayer.Center) * 2f * distmult, 0.05f);
+        NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.Center.DirectionTo(_targetPlayer.Center) * 3f * distmult, 0.05f);
     }
 
     public override void SendExtraAI(BinaryWriter writer)
@@ -188,7 +206,7 @@ internal sealed class Hematode : CustomWormNPC {
 }
 
 public class HematodeShot : ModProjectile {
-    public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.IceSpike;
+    public override string Texture => ModContent.GetModNPC(ModContent.NPCType<Hematode>()).Texture + "_Shot";
 
     public override void SetDefaults() {
         Projectile.width = 10;
