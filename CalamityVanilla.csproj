@@ -17,4 +17,8 @@
 		</Reference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Content\Corruption\Tiles\" />
+	</ItemGroup>
+
 </Project>

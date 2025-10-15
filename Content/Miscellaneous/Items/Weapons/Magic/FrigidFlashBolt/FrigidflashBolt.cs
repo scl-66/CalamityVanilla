@@ -12,8 +12,6 @@ namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Magic.FrigidFlashB
 
 public class FrigidflashBolt : ModItem
 {
-    public override string Texture => "CalamityVanilla/Content/Miscellaneous/Items/Weapons/Magic/FrigidFlashBolt/FrigidflashBolt";
-
     public override void SetDefaults()
     {
         Item.width = 28;
@@ -155,8 +153,6 @@ public abstract class FrigidflashBoltProjectile : ModProjectile
 
 public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 {
-    public override string Texture => "CalamityVanilla/Content/Miscellaneous/Items/Weapons/Magic/FrigidFlashBolt/FrigidflashColdBoltProjectile";
-    
     public override void SetDefaults()
     {
         base.SetDefaults();
@@ -244,9 +240,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 }
 
 public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
-{
-    public override string Texture => "CalamityVanilla/Content/Miscellaneous/Items/Weapons/Magic/FrigidFlashBolt/FrigidflashHotBoltProjectile";
-    
+{  
     public override void AI()
     {
         if (Projectile.timeLeft > 115)

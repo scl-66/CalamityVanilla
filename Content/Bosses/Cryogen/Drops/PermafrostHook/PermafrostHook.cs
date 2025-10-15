@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -45,8 +46,11 @@ public class PermafrostHookProjectile : ModProjectile
         IL_Projectile.AI_007_GrapplingHooks -= FreezePlayerOnHookAttach;
     }
 
+    private static Asset<Texture2D> chainTexture;
+
     public override void SetStaticDefaults()
     {
+        chainTexture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Bosses/Cryogen/Drops/PermafrostHook/PermafrostHookChain");
         ProjectileID.Sets.SingleGrappleHook[Type] = true;
     }
 
@@ -144,8 +148,6 @@ public class PermafrostHookProjectile : ModProjectile
 
     public override bool PreDrawExtras()
     {
-        Asset<Texture2D> chainTexture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Items/Equipment/Other/PermafrostHookChain");
-
         Vector2 mountedCenter = Main.player[Projectile.owner].MountedCenter;
         Vector2 projectileCenter = Projectile.Center;
         Vector2 directionToPlayer = Main.player[Projectile.owner].MountedCenter - projectileCenter;
