@@ -2,5 +2,5 @@
 
 internal partial class GutOfCthulhu
 {
-    
+
 }

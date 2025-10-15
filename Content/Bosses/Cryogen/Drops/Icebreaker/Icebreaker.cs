@@ -43,9 +43,9 @@ public class IcebreakerProjectile : ModProjectile
         for (int i = 0; i < 8; i++)
         {
             float percent = 1f - i / 8f;
-            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)Main.timeForVisualEffects + i * 15) with { A = 0 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale *  (0.8f + percent * 0.3f), SpriteEffects.None);
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)Main.timeForVisualEffects + i * 15) with { A = 0 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale * (0.8f + percent * 0.3f), SpriteEffects.None);
         }
-        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value,Projectile.Center - Main.screenPosition,null,lightColor,Projectile.rotation,new Vector2(21,17),Projectile.scale,SpriteEffects.None);
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(21, 17), Projectile.scale, SpriteEffects.None);
         return false;
     }
     public override void AI()
@@ -114,11 +114,11 @@ public class IcebreakerIcicles : ModProjectile
     }
     public override void AI()
     {
-        if(Projectile.alpha == 0)
+        if (Projectile.alpha == 0)
         {
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f,2f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f));
                 d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 0 };
                 d.noGravity = true;
             }

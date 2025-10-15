@@ -40,7 +40,7 @@ public class IceStatues : ModProjectile
     }
     public override void AI()
     {
-        if(TilesBroken > 9)
+        if (TilesBroken > 9)
         {
             Projectile.Kill();
             return;
@@ -93,7 +93,7 @@ public class IceStatues : ModProjectile
                         TilesBroken++;
                     }
                 }
-                else if(Projectile.localAI[0] == 1 && Main.tile[tiles[i]].HasTile && Main.tileSolid[Main.tile[tiles[i]].TileType] && !Main.tileSolidTop[Main.tile[tiles[i]].TileType])
+                else if (Projectile.localAI[0] == 1 && Main.tile[tiles[i]].HasTile && Main.tileSolid[Main.tile[tiles[i]].TileType] && !Main.tileSolidTop[Main.tile[tiles[i]].TileType])
                 {
                     Projectile.Kill();
                     break;

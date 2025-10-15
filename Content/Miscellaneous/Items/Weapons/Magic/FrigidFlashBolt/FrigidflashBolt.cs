@@ -240,7 +240,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 }
 
 public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
-{  
+{
     public override void AI()
     {
         if (Projectile.timeLeft > 115)

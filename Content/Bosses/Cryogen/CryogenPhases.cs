@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 namespace CalamityVanilla.Content.Bosses.Cryogen;
+
 public partial class Cryogen : ModNPC
 {
     private void ShootIceBlocks_0()
@@ -19,7 +20,7 @@ public partial class Cryogen : ModNPC
         else
         {
             NPC.velocity += NPC.Center.DirectionTo(target.Center) * 0.4f;
-            NPC.velocity = NPC.velocity.LengthClamp(Math.Max(9,target.velocity.Length() * 1.1f), 0);
+            NPC.velocity = NPC.velocity.LengthClamp(Math.Max(9, target.velocity.Length() * 1.1f), 0);
         }
         if (NPC.ai[0] > 60 && NPC.ai[0] % 10 == 0 && NPC.ai[0] < 130)
         {
@@ -173,7 +174,7 @@ public partial class Cryogen : ModNPC
 
         if (NPC.ai[1] == 0)
         {
-            if(Math.Abs(NPC.Center.X - target.Center.X) < 100)
+            if (Math.Abs(NPC.Center.X - target.Center.X) < 100)
                 NPC.ai[0]++;
             if (NPC.ai[0] < slamStart)
             {

@@ -98,7 +98,7 @@ public partial class Cryogen : ModNPC
         Rectangle SnowOverlay = new Rectangle(272, 0, 212, 208);
         //Flakes
 
-        Color baseColor = Color.Lerp(Color.White, new Color(0.7f,0.7f,0.9f), _snowOverlayOpacity);
+        Color baseColor = Color.Lerp(Color.White, new Color(0.7f, 0.7f, 0.9f), _snowOverlayOpacity);
 
         // snow behind
         spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, SnowOverlay, Color.White * _snowOverlayOpacity * 0.75f, (float)Main.timeForVisualEffects * -0.075f * _snowOverlaySpinDirection, SnowOverlay.Size() / 2, 1.4f, SpriteEffects.None, 0);
@@ -203,7 +203,7 @@ public partial class Cryogen : ModNPC
         prettySparkleParticle.FadeInEnd = num / 2;
         prettySparkleParticle.FadeOutStart = num / 2;
         prettySparkleParticle.AdditiveAmount = 0.5f;
-        prettySparkleParticle.Velocity = settings.MovementVector + Main.rand.NextVector2Circular(2,2);
+        prettySparkleParticle.Velocity = settings.MovementVector + Main.rand.NextVector2Circular(2, 2);
         prettySparkleParticle.LocalPosition -= prettySparkleParticle.Velocity * 4f;
         prettySparkleParticle.DrawVerticalAxis = false;
         Main.ParticleSystem_World_OverPlayers.Add(prettySparkleParticle);
@@ -214,7 +214,7 @@ public partial class Cryogen : ModNPC
         for (int i = 0; i < centerInWorld.Distance(NPC.Center) - 40; i += 20)
         {
             ParticleOrchestraSettings settings = new ParticleOrchestraSettings() with { PositionInWorld = NPC.Center + NPC.Center.DirectionTo(centerInWorld) * i, MovementVector = NPC.Center.DirectionTo(centerInWorld) * 5 };
-            SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f,0.2f,1f,0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), MathF.Sin(i * 0.05f)));
+            SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f, 0.2f, 1f, 0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), MathF.Sin(i * 0.05f)));
             if (Main.rand.NextBool(3))
             {
                 Dust d = Dust.NewDustPerfect(settings.PositionInWorld, DustID.Frost, settings.MovementVector.RotatedByRandom(0.3f) * 3);
@@ -222,12 +222,12 @@ public partial class Cryogen : ModNPC
                 d.noGravity = true;
             }
         }
-        for(int i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++)
         {
             Dust d = Dust.NewDustPerfect(centerInWorld, DustID.Frost, Main.rand.NextVector2Circular(halfwidth, halfheight) * 2);
             d.noGravity = Main.rand.NextBool();
 
-            ParticleOrchestraSettings settings = new ParticleOrchestraSettings() with { PositionInWorld = centerInWorld, MovementVector = Main.rand.NextVector2Circular(16,16) };
+            ParticleOrchestraSettings settings = new ParticleOrchestraSettings() with { PositionInWorld = centerInWorld, MovementVector = Main.rand.NextVector2Circular(16, 16) };
             SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f, 0.2f, 1f, 0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), Main.rand.NextFloat()));
             settings = new ParticleOrchestraSettings() with { PositionInWorld = NPC.Center, MovementVector = Main.rand.NextVector2Circular(8, 8) + NPC.Center.DirectionTo(centerInWorld) * 5 };
             SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f, 0.2f, 1f, 0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), Main.rand.NextFloat()));

@@ -63,7 +63,7 @@ public class IceChunks : ModProjectile
     {
         for (int i = 0; i < 25; i++)
         {
-            Dust d = Dust.NewDustDirect(Projectile.position,Projectile.width,Projectile.height,DustID.Ice);
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Ice);
             d.velocity = -Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat();
         }
     }

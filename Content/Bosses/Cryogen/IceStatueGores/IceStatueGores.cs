@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.Cryogen.IceStatueGores;
+
 public class IceStatueGoreGeneric_0 : ModGore
 {
     public override Color? GetAlpha(Gore gore, Color lightColor)
@@ -41,5 +42,3 @@ public class IceStatueGore4_0 : IceStatueGoreGeneric_0;
 public class IceStatueGore4_1 : IceStatueGoreGeneric_0;
 public class IceStatueGore4_2 : IceStatueGoreGeneric_0;
 public class IceStatueGore4_3 : IceStatueGoreGeneric_0;
-
-

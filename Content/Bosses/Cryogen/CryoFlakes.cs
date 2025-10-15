@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.Cryogen;
+
 public class CryoFlake1 : ModProjectile
 {
     public override void SetDefaults()
@@ -21,7 +22,7 @@ public class CryoFlake1 : ModProjectile
     }
     public override Color? GetAlpha(Color lightColor)
     {
-        return Color.Lerp(lightColor,new Color(1f,1f,1f,0f),0.5f);
+        return Color.Lerp(lightColor, new Color(1f, 1f, 1f, 0f), 0.5f);
     }
     public override void SetStaticDefaults()
     {
@@ -46,7 +47,7 @@ public class CryoFlake1 : ModProjectile
 
         if (Projectile.ai[1] < 1f)
         {
-            Projectile.ai[1] += 1 / 150f * Projectile.ai[2] * (Projectile.ai[1] > 0.5f? 2f : 1f);
+            Projectile.ai[1] += 1 / 150f * Projectile.ai[2] * (Projectile.ai[1] > 0.5f ? 2f : 1f);
             Projectile.velocity *= 1.01f;
 
             Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.width / 2), ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.1f));
@@ -56,8 +57,8 @@ public class CryoFlake1 : ModProjectile
         if (Projectile.ai[1] > 1f)
             Projectile.ai[1] = 1f;
         Projectile.velocity = new Vector2(Projectile.velocity.Length(), 0).RotatedBy(Utils.AngleLerp(Projectile.velocity.ToRotation(), Projectile.Center.DirectionTo(target.Center).ToRotation(), MathF.Sin(Projectile.ai[1] * MathHelper.Pi) * 0.075f));
-    
-        if(Projectile.timeLeft < 30)
+
+        if (Projectile.timeLeft < 30)
         {
             Projectile.Opacity = Projectile.timeLeft / 30f;
         }

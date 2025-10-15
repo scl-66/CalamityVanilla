@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Common;
+
 public class CryogenIceBlockSystem : ModSystem
 {
     public const int DEFAULT_ICE_TIMER = 2400;
