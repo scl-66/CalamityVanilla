@@ -73,9 +73,9 @@ internal partial class GutOfCthulhu : ModNPC
         }
     }
     
-    // public override void DrawBehind(int index) {
-    //     Main.instance.DrawCacheProjsBehindProjectiles.Add(index);
-    // }
+    public override void DrawBehind(int index) {
+        Main.instance.DrawCacheProjsBehindNPCs.Add(index);  
+    }
 
     public override void AI() {
         NPC.TargetClosest();

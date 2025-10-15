@@ -67,6 +67,10 @@ internal partial class Ingestoid : WormNPC
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
     }
+    
+    public override void DrawBehind(int index) {
+        Main.instance.DrawCacheNPCsOverPlayers.Add(index);  
+    }
 
     Player targetplayer = Main.player[0];
     public override void AI()

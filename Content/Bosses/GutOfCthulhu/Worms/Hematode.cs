@@ -75,6 +75,10 @@ internal sealed class Hematode : CustomWormNPC {
         _rechargeTimer = 0;
         _shotCooldownTimer = Main.rand.Next(300, 600);
     }
+    
+    public override void DrawBehind(int index) {
+        Main.instance.DrawCacheNPCsOverPlayers.Add(index);  
+    }
 
     public override Rectangle GetSegmentFrame(int segmentIndex, PartKind kind) {
         const int frameWidth = 66;

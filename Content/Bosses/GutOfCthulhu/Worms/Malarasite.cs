@@ -58,4 +58,8 @@ internal class Malarasite : WormNPC
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
     }
+    
+    public override void DrawBehind(int index) {
+        Main.instance.DrawCacheNPCsOverPlayers.Add(index);  
+    }
 }
