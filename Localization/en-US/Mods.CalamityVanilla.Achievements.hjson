@@ -8,6 +8,11 @@ CryogenKilled: {
 	Description: Defeat Cryogen, the arctic fortress protected by a magic spell.
 }
 
+GutOfCthulhuKilled: {
+	FriendlyName: Impromptu Colonoscopy
+	Description: Defeat the Gut of Cthulhu, the Crimson's raging stomach with a parasite problem.
+}
+
 ThrowBrickAtGlass: {
 	FriendlyName: Watch Where You're Throwing That!
 	Description: Lob a throwing brick at some glass or thin ice. Don't forget to clean up the mess!
