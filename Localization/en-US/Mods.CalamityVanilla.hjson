@@ -3,3 +3,5 @@ Emotes: {
 	GutofCthulhuEmote.Command: gutofcthulhu
 	HiveMindEmote.Command: hivemind
 }
+
+Commands.RevokeAchievement.Description: Revokes the requested achievement
