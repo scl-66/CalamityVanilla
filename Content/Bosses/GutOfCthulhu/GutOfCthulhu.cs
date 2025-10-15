@@ -32,11 +32,10 @@ internal partial class GutOfCthulhu : ModNPC
     
     private int rope_segments = 30;
     private Vector2 _ropeAnchor;
-    private Vector2 RopeAnchorLocalOffset = new(50, -400);
     
-    private VerletRope[] _ropes = new VerletRope[2]; // Example: 2 ropes
-    private  int RopeParticleSegments = 20; // Number of segments per rope (11 particles)
-    private  float RopeSegmentLength = 20f; // Length of each rope segment
+    private VerletRope[] _ropes = new VerletRope[2];
+    private  int RopeParticleSegments = 20;
+    private  float RopeSegmentLength = 20f;
     private Vector2[] _ropeLocalAnchorOffsets = new Vector2[2];
     
     void ChangeState(GutState state)
@@ -92,24 +91,21 @@ internal partial class GutOfCthulhu : ModNPC
             _eyeNPCs[i] = eyeWhoAmI;
         }
 
-        _ropeLocalAnchorOffsets[0] = new Vector2(-200, -450); // Left top anchor
-        _ropeLocalAnchorOffsets[1] = new Vector2(200, -450);  // Right top anchor
+        _ropeLocalAnchorOffsets[0] = new Vector2(-200, -450);
+        _ropeLocalAnchorOffsets[1] = new Vector2(200, -450);
 
         for (int i = 0; i < _ropes.Length; i++)
         {
             Vector2[] initialPoints = new Vector2[RopeParticleSegments + 1];
             
-            // Calculate initial world position for the anchor point (top of rope)
-            // This assumes initial NPC.rotation is 0.
             Vector2 initialWorldAnchor = NPC.Center + _ropeLocalAnchorOffsets[i]; 
 
             initialPoints[0] = initialWorldAnchor;
-            for (int p = 1; p <= RopeParticleSegments; p++)
-            {
-                initialPoints[p] = initialPoints[p - 1] + new Vector2(0, RopeSegmentLength); // Vertically hanging
+            for (int p = 1; p <= RopeParticleSegments; p++) {
+                initialPoints[p] = initialPoints[p - 1] + new Vector2(0, RopeSegmentLength);
             }
             _ropes[i] = new VerletRope(initialPoints, RopeSegmentLength, iterations: 10);
-            _ropes[i].SetFixedPoint(0, initialWorldAnchor); // Fix the top particle
+            _ropes[i].SetFixedPoint(0, initialWorldAnchor);
         }
     }
 
