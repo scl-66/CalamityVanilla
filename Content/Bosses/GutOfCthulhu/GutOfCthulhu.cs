@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Content.Bosses.GutOfCthulhu.Worms;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using System.Runtime.CompilerServices;
+using Terraria;
+using Terraria.Achievements;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -19,6 +23,8 @@ internal partial class GutOfCthulhu : ModNPC
     public GutState CurrentState => Unsafe.BitCast<float, GutState>(NPC.ai[0]);
     public ref float Timer => ref NPC.ai[1];
     
+    private int[] _eyeNPCs = new int[3] { -1, -1, -1 };
+    
     void ChangeState(GutState state) {
         NPC.ai[0] = Unsafe.BitCast<GutState, float>(state);
         Timer = 0;
@@ -29,29 +35,96 @@ internal partial class GutOfCthulhu : ModNPC
     {
         (NPC.width, NPC.height) = (200, 200);
         
-        NPC.lifeMax = 100;
+        NPC.lifeMax = 16000;
         NPC.defense = 30;
 
         NPC.aiStyle = -1;
         NPC.noGravity = true;
         NPC.noTileCollide = true;
 
+        NPC.dontTakeDamage = true;
+
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
+        //NPC.hide = true;
     }
 
     public override void OnSpawn(IEntitySource source)
     {
-        base.OnSpawn(source);
-    }
+        if (Main.netMode == NetmodeID.MultiplayerClient) return;
 
-    public override void AI()
-    {
+        for (int i = 0; i < 3; i++) {
+            Vector2 pos = Vector2.One;
+            switch (i) {
+                case 0: pos = new Vector2(0, -50); break;
+                case 1: pos = new Vector2(0, -70); break;
+                case 2: pos = new Vector2(0, -90); break;
+            }
+
+            int eyeWhoAmI = NPC.NewNPCDirect(
+                source,
+                pos,
+                ModContent.NPCType<GutOfCthulhuEye>(),
+                ai0: NPC.whoAmI,
+                ai1: i
+            ).whoAmI;
+
+            _eyeNPCs[i] = eyeWhoAmI;
+        }
+    }
+    
+    // public override void DrawBehind(int index) {
+    //     Main.instance.DrawCacheProjsBehindProjectiles.Add(index);
+    // }
+
+    public override void AI() {
+        NPC.TargetClosest();
+        Player targetPlayer = Main.player[NPC.target];
         
+        for (int i = 0; i < _eyeNPCs.Length; i++) {
+            int eyeWhoAmI = _eyeNPCs[i];
+        
+            if (eyeWhoAmI != -1 && Main.npc[eyeWhoAmI].active && Main.npc[eyeWhoAmI].type == ModContent.NPCType<GutOfCthulhuEye>()) {
+                NPC eyeNPC = Main.npc[eyeWhoAmI];
+        
+                var relativeOffset = Vector2.One;
+                switch (i) {
+                    case 0: relativeOffset = new Vector2(0, -230); break;
+                    case 1: relativeOffset = new Vector2(0, -180); break;
+                    case 2: relativeOffset = new Vector2(0, -120); break;
+                }
+
+                relativeOffset.RotatedBy(NPC.rotation);
+                var targetEyePosition = NPC.Center + relativeOffset;
+        
+                eyeNPC.position = targetEyePosition;
+                eyeNPC.velocity = Vector2.Zero;
+        
+                //eyeNPC.rotation = (targetPlayer.Center - eyeNPC.Center).ToRotation() + MathHelper.PiOver2; 
+            }
+            else {
+                _eyeNPCs[i] = -1; 
+                NPC.netUpdate = true; 
+            }
+
+            Main.Achievements.ClearAll();
+        }  
+    }
+    
+    public override void SendExtraAI(BinaryWriter writer) {
+        for (int i = 0; i < _eyeNPCs.Length; i++)
+        {
+            writer.Write(_eyeNPCs[i]);
+        }
     }
 
-    public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-    {
+    public override void ReceiveExtraAI(BinaryReader reader) {
+        for (int i = 0; i < _eyeNPCs.Length; i++) {
+            _eyeNPCs[i] = reader.ReadInt32();
+        }
+    }
+
+    public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         return true;
     }
 }
@@ -60,11 +133,14 @@ internal class GutOfCthulhuEye : ModNPC
 {
     public override string Texture => "CalamityVanilla/Content/Bosses/GutOfCthulhu/GutOfCthulhu_Eye";
     
+    public ref float ParentWhoAmI => ref NPC.ai[0];
+    public ref float EyeIndex => ref NPC.ai[1];
+    
     public override void SetDefaults()
     {
         (NPC.width, NPC.height) = (56, 56);
         
-        NPC.lifeMax = 100;
+        NPC.lifeMax = 10;
         NPC.defense = 30;
 
         NPC.aiStyle = -1;
@@ -73,5 +149,35 @@ internal class GutOfCthulhuEye : ModNPC
 
         NPC.HitSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
+    }
+
+    public override void DrawBehind(int index) {
+        Main.instance.DrawCacheNPCProjectiles.Add(index);
+    }
+    
+    public override void OnKill() {
+        if (Main.netMode == NetmodeID.MultiplayerClient) return;
+
+        int eyeIndex = (int)EyeIndex;
+
+        int npcToSpawnType;
+        switch (eyeIndex)
+        {
+            case 0: npcToSpawnType = ModContent.NPCType<Malarasite>(); break;
+            case 1: npcToSpawnType = ModContent.NPCType<Hematode>(); break;
+            case 2: npcToSpawnType = ModContent.NPCType<Ingestoid>(); break;
+            default: npcToSpawnType = NPCID.Pinky; break;
+        }
+
+        IEntitySource source = NPC.GetSource_FromThis(); 
+
+        NPC.NewNPCDirect(source, NPC.Center, npcToSpawnType);
+    }
+
+    public override void AI() {
+        if (!Main.npc[(int)ParentWhoAmI].active || Main.npc[(int)ParentWhoAmI].type != ModContent.NPCType<GutOfCthulhu>()) {
+            NPC.active = false;
+            return;
+        }
     }
 }
