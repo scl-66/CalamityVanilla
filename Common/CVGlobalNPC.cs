@@ -1,8 +1,8 @@
 ﻿using CalamityVanilla.Common.ItemDropRules.DropConditions;
 using CalamityVanilla.Content.Emotes;
 using CalamityVanilla.Content.Miscellaneous.Items;
-using CalamityVanilla.Content.Miscellaneous.Items.BouncingEyeball;
-using CalamityVanilla.Content.Miscellaneous.Items.TheGothic;
+using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.BouncingEyeball;
+using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
 using CalamityVanilla.Content.Underworld.Items.FighterJetRemote;

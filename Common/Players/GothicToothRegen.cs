@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Miscellaneous.Items.TheGothic;
+﻿using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

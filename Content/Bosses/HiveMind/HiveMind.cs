@@ -1,7 +1,8 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Corruption.Items.FungiDish;
-using CalamityVanilla.Content.Corruption.Items.MyceliumStaff;
-using CalamityVanilla.Content.Corruption.Items.PerfectDark;
+using CalamityVanilla.Content.Bosses.HiveMind.Drops;
+using CalamityVanilla.Content.Bosses.HiveMind.Drops.FungiDish;
+using CalamityVanilla.Content.Bosses.HiveMind.Drops.MyceliumStaff;
+using CalamityVanilla.Content.Bosses.HiveMind.Drops.PerfectDark;
 using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

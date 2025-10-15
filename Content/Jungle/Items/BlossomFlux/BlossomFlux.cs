@@ -1,5 +1,5 @@
-﻿using CalamityVanilla.Content.Miscellaneous.Items.TheGothic;
-using CalamityVanilla.Content.Miscellaneous.Items.Twiflight;
+﻿using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
+using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.Twiflight;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
