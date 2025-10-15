@@ -24,6 +24,7 @@ internal partial class GutOfCthulhu : ModNPC
     public ref float Timer => ref NPC.ai[1];
 
     private int[] _eyeNPCs = new int[3] { -1, -1, -1 };
+    public int EyesKilledCount = 0;
 
     void ChangeState(GutState state)
     {
@@ -54,6 +55,8 @@ internal partial class GutOfCthulhu : ModNPC
     {
         if (Main.netMode == NetmodeID.MultiplayerClient) return;
 
+        EyesKilledCount = 0;
+        
         for (int i = 0; i < 3; i++)
         {
             Vector2 pos = Vector2.One;
@@ -89,7 +92,7 @@ internal partial class GutOfCthulhu : ModNPC
         //NPC.rotation += 0.02f;
 
         for (int i = 0; i < _eyeNPCs.Length; i++)
-        {
+        {   
             int eyeWhoAmI = _eyeNPCs[i];
 
             if (eyeWhoAmI != -1 && Main.npc[eyeWhoAmI].active && Main.npc[eyeWhoAmI].type == ModContent.NPCType<GutOfCthulhuEye>())
@@ -112,8 +115,12 @@ internal partial class GutOfCthulhu : ModNPC
             }
             else
             {
+                if (_eyeNPCs[i] != -1)
+                {
+                    EyesKilledCount++;
+                    NPC.netUpdate = true;
+                }
                 _eyeNPCs[i] = -1;
-                NPC.netUpdate = true;
             }
 
             Main.Achievements.ClearAll();
@@ -122,18 +129,24 @@ internal partial class GutOfCthulhu : ModNPC
 
     public override void SendExtraAI(BinaryWriter writer)
     {
+        base.SendExtraAI(writer);
+
         for (int i = 0; i < _eyeNPCs.Length; i++)
         {
             writer.Write(_eyeNPCs[i]);
         }
+        writer.Write(EyesKilledCount);
     }
 
     public override void ReceiveExtraAI(BinaryReader reader)
     {
+        base.ReceiveExtraAI(reader);
+
         for (int i = 0; i < _eyeNPCs.Length; i++)
         {
             _eyeNPCs[i] = reader.ReadInt32();
         }
+        EyesKilledCount = reader.ReadInt32();
     }
 
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -172,20 +185,24 @@ internal class GutOfCthulhuEye : ModNPC
     public override void OnKill()
     {
         if (Main.netMode == NetmodeID.MultiplayerClient) return;
+        
+        NPC parentNPC = Main.npc[(int)ParentWhoAmI];
+        
+        if (parentNPC.ModNPC is not GutOfCthulhu parentGut) {
+            return;
+        }
 
-        int eyeIndex = (int)EyeIndex;
+        int spawnOrder = parentGut.EyesKilledCount;
 
         int npcToSpawnType;
-        switch (eyeIndex)
-        {
-            case 0: npcToSpawnType = ModContent.NPCType<Malarasite>(); break;
+        switch (spawnOrder) {
+            case 0: npcToSpawnType = ModContent.NPCType<Ingestoid>(); break;
             case 1: npcToSpawnType = ModContent.NPCType<Hematode>(); break;
-            case 2: npcToSpawnType = ModContent.NPCType<Ingestoid>(); break;
+            case 2: npcToSpawnType = ModContent.NPCType<Malarasite>(); break;
             default: npcToSpawnType = NPCID.Pinky; break;
         }
 
         IEntitySource source = NPC.GetSource_FromThis();
-
         NPC.NewNPCDirect(source, NPC.Center, npcToSpawnType);
     }
 
