@@ -1,8 +1,9 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Tundra.Items.HoarfrostBow;
-using CalamityVanilla.Content.Tundra.Items.Icebreaker;
-using CalamityVanilla.Content.Tundra.Items.MagicChisel;
-using CalamityVanilla.Content.Tundra.Items.TheSnowman;
+using CalamityVanilla.Content.Bosses.Cryogen.Drops;
+using CalamityVanilla.Content.Bosses.Cryogen.Drops.HoarfrostBow;
+using CalamityVanilla.Content.Bosses.Cryogen.Drops.Icebreaker;
+using CalamityVanilla.Content.Bosses.Cryogen.Drops.MagicChisel;
+using CalamityVanilla.Content.Bosses.Cryogen.Drops.TheSnowman;
 using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
