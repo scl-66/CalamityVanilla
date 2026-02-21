@@ -38,16 +38,7 @@ public class CatastropheClaymore : ModItem
     {
         CreateRecipe().AddTile(TileID.MythrilAnvil)
             .AddIngredient(ItemID.HallowedBar, 10)
-            .AddIngredient(ItemID.CursedFlame, 10)
-            .AddIngredient(ItemID.SoulofFright, 5)
-            .AddIngredient(ItemID.SoulofMight, 5)
-            .AddIngredient(ItemID.SoulofSight, 5)
-            .AddIngredient(ModContent.ItemType<EleumSoul>(), 5)
-            .AddIngredient(ModContent.ItemType<HavocSoul>(), 5).Register();
-
-        CreateRecipe().AddTile(TileID.MythrilAnvil)
-            .AddIngredient(ItemID.HallowedBar, 10)
-            .AddIngredient(ItemID.Ichor, 10)
+            .AddRecipeGroup("CalamityVanillaAnyCursedFlame", 10)
             .AddIngredient(ItemID.SoulofFright, 5)
             .AddIngredient(ItemID.SoulofMight, 5)
             .AddIngredient(ItemID.SoulofSight, 5)

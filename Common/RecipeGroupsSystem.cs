@@ -14,13 +14,16 @@ public class RecipeGroupsSystem : ModSystem
 {
     public override void AddRecipeGroups()
     {
-        RecipeGroup group = new RecipeGroup(() => $"{Language.GetTextValue("LegacyMisc.37")} {Lang.GetItemNameValue(ItemID.IceBlock)}", new int[]
+        RecipeGroup ice = new RecipeGroup(() => $"{Language.GetTextValue("LegacyMisc.37")} {Lang.GetItemNameValue(ItemID.IceBlock)}", new int[]
         {
             ItemID.IceBlock,
             ItemID.PurpleIceBlock,
             ItemID.RedIceBlock,
             ItemID.PinkIceBlock,
         });
-        RecipeGroup.RegisterGroup("CalamityVanillaAnyIceBlock", group);
+        RecipeGroup.RegisterGroup("CalamityVanillaAnyIceBlock", ice);
+
+        RecipeGroup cursedflame = new RecipeGroup(() => $"{Language.GetTextValue("LegacyMisc.37")} {Lang.GetItemNameValue(ItemID.CursedFlame)}", ItemID.CursedFlame, ItemID.Ichor);
+        RecipeGroup.RegisterGroup("CalamityVanillaAnyCursedFlame", cursedflame);
     }
 }
