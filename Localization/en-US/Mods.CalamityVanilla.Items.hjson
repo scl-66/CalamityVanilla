@@ -370,12 +370,14 @@ TapewormWhipGiblet3: {
 
 FilthyGrip: {
 	DisplayName: Filthy Grip
-	Tooltip: 
+	Tooltip:
 		'''
-		Critical hits have 30 additional points of armor penetration
+		Critical hits slash the target
+		Slashes ignore all enemy defense
 		'Rip and tear!'
 		'''
 }
+
 SkinBoilHat: {
 	DisplayName: Skin-Boil Hat
 	Tooltip:
