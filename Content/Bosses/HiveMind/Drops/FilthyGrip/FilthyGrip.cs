@@ -43,6 +43,8 @@ public class FilthyGripSlash : ModProjectile
         Projectile.localNPCHitCooldown = 7;
         Projectile.penetrate = 3;
         Projectile.stopsDealingDamageAfterPenetrateHits = true;
+        Projectile.ignoreWater = true;
+        Projectile.tileCollide = false;
         DrawOffsetX = 7;
         DrawOriginOffsetY = -10;
     }
