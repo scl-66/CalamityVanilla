@@ -367,3 +367,12 @@ TapewormWhipGiblet3: {
 	DisplayName: Giblet
 	Tooltip: ""
 }
+
+SkinBoilHat: {
+	DisplayName: Skin-Boil Hat
+	Tooltip:
+		'''
+		Summons a cursed stormcloud overhead that rains cursed inferno upon your foes
+		‘It’s not normal, man! Someone’s gotta be behind this!’
+		'''
+}
