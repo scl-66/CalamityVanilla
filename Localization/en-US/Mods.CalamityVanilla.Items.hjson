@@ -370,5 +370,17 @@ TapewormWhipGiblet3: {
 
 FilthyGrip: {
 	DisplayName: Filthy Grip
-	Tooltip: ""
+	Tooltip: 
+		'''
+		Critical hits have 30 additional points of armor penetration
+		'Rip and tear!'
+		'''
+}
+SkinBoilHat: {
+	DisplayName: Skin-Boil Hat
+	Tooltip:
+		'''
+		Summons a cursed stormcloud overhead that rains cursed inferno upon your foes
+		'It's not normal, man! Someone's gotta be behind this!'
+		'''
 }

@@ -1,5 +1,4 @@
-﻿using CalamityVanilla.Content.Bosses.HiveMind.Drops.MyceliumStaff;
-using CalamityVanilla.Content.Bosses.HiveMind.Drops.PerfectDark;
+﻿using CalamityVanilla.Content.Bosses.HiveMind.Drops.SkinBoilHat;
 using CalamityVanilla.Content.Vanity.BossMasks;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
@@ -46,6 +45,7 @@ public class HiveMindBag : ModItem
         // We have to replicate the expert drops from MinionBossBody here
 
         itemLoot.Add(ItemDropRule.NotScalingWithLuck(ModContent.ItemType<HiveMindMask>(), 7));
+        itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<SkinBoilHat.SkinBoilHat>()));
         //marble tome is here just as a placeholder idk if i need to clarify that
         itemLoot.Add(ItemDropRule.OneFromOptions(1, ModContent.ItemType<MyceliumStaff.MyceliumStaff>(), ModContent.ItemType<PerfectDark.PerfectDark>()));
         itemLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(ModContent.NPCType<HiveMind>()));
