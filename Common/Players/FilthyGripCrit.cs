@@ -20,9 +20,12 @@ public class FilthyGripCrit : ModPlayer
     {
         if (hit.Crit && filthyGripEquipped)
         {
-            float randWidth = Main.rand.NextFloat(-target.width, target.width) / 8;
-            float randHeight = Main.rand.NextFloat(-target.height, target.height) / 8;
-            Projectile.NewProjectile(Player.GetSource_FromThis(), target.Center + new Vector2(randWidth, randHeight), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                float randWidth = Main.rand.NextFloat(-target.width, target.width) / 8;
+                float randHeight = Main.rand.NextFloat(-target.height, target.height) / 8;
+                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Center + new Vector2(randWidth, randHeight), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
+            }
         }
     }
 }

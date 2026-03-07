@@ -61,7 +61,8 @@ public class SkinBoilHatRaincloud : ModProjectile
             Projectile.Kill();
 
         Projectile.timeLeft = 2;
-        Projectile.position = position;
+        //interpolated cloud movement to make it more fluid
+        Projectile.position = new Vector2(MathHelper.Lerp(Projectile.oldPosition.X, position.X, 0.5f), MathHelper.Lerp(Projectile.position.Y, position.Y, 0.45f));
         if (++Projectile.frameCounter >= 10)
         {
             Projectile.frameCounter = 0;
@@ -91,6 +92,7 @@ public class SkinBoilHatRain : ModProjectile
     public override void AI()
     {
         Projectile.velocity.Y = 10f;
+        Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
