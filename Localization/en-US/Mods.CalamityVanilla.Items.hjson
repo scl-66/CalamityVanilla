@@ -367,3 +367,8 @@ TapewormWhipGiblet3: {
 	DisplayName: Giblet
 	Tooltip: ""
 }
+
+ForsakenSaber: {
+	DisplayName: Forsaken Saber
+	Tooltip: ""
+}
