@@ -367,3 +367,8 @@ TapewormWhipGiblet3: {
 	DisplayName: Giblet
 	Tooltip: ""
 }
+
+FilthyGrip: {
+	DisplayName: Filthy Grip
+	Tooltip: ""
+}
