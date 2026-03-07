@@ -79,7 +79,7 @@ public partial class Cryogen : ModNPC
     }
     public override void FindFrame(int frameHeight)
     {
-        if (NPC.life < NPC.lifeMax * _phase2HealthMultiplier)
+        if (phase >= 10)
         {
             NPC.frame.Y = frameHeight;
         }
@@ -145,7 +145,7 @@ public partial class Cryogen : ModNPC
     public override void SetDefaults()
     {
         NPC.CloneDefaults(NPCID.EyeofCthulhu);
-        NPC.lifeMax = 16000;
+        NPC.lifeMax = 20000;
         NPC.defense = 30;
         NPC.value = 200000;
         NPC.damage = 70;
@@ -156,7 +156,7 @@ public partial class Cryogen : ModNPC
         NPC.Size = new Vector2(120);
         NPC.noTileCollide = true;
 
-        NPC.HitSound = SoundID.Item50; //ContentSamples.NpcsByNetId[NPCID.IceElemental].HitSound;
+        NPC.HitSound = SoundID.Item50;
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
         _snowOverlayOpacity = 0f;
         _snowOverlaySpinDirection = 1;
@@ -260,7 +260,7 @@ public partial class Cryogen : ModNPC
     }
     public override void AI()
     {
-        _snowOverlayOpacity *= 0.99f;
+        _snowOverlayOpacity *= 0.96f;
         NPC.direction = NPC.velocity.X == 0 ? 1 : Math.Sign(NPC.velocity.X);
         Lighting.AddLight(NPC.Center, new Vector3(0.8f, 1f, 1f));
         if (Main.rand.NextBool(10))
@@ -289,7 +289,10 @@ public partial class Cryogen : ModNPC
         switch (phase)
         {
             case 0:
-                ShootIceBlocks_0();
+                if (NPC.life < NPC.lifeMax * _phase2HealthMultiplier)
+                    PhaseTransition_0();
+                else
+                    ShootIceBlocks_0();
                 break;
             case 1:
                 DashAndChase_1();

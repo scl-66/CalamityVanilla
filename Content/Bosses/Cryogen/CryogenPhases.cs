@@ -9,6 +9,28 @@ namespace CalamityVanilla.Content.Bosses.Cryogen;
 
 public partial class Cryogen : ModNPC
 {
+    private void PhaseTransition_0()
+    {
+        NPC.ai[0]++;
+        NPC.velocity *= 0.99f;
+        NPC.velocity = NPC.velocity.LengthClamp(100, 1);
+        NPC.rotation += NPC.direction * 0.2f * NPC.ai[0] / 360;
+        _snowOverlayOpacity = NPC.ai[0] / 360;
+        _snowOverlaySpinDirection = NPC.direction;
+        if (NPC.ai[0] > 360)
+        {
+            for(int i = 0; i < 150; i++)
+            {
+                Dust d = Dust.NewDustPerfect(NPC.Center, DustID.Ice, Main.rand.NextVector2Circular(12, 12));
+                d.noGravity = Main.rand.NextBool();
+                d.scale += Main.rand.NextFloat() * 2;
+                Dust d2 = Dust.NewDustPerfect(NPC.Center, DustID.Snow, Main.rand.NextVector2Circular(12, 12));
+                d2.noGravity = Main.rand.NextBool();
+            }
+            NPC.ai[0] = 0;
+            phase = 10;
+        }
+    }
     private void ShootIceBlocks_0()
     {
         if (NPC.ai[0] > 0 || NPC.Center.Distance(target.Center) < 240)
@@ -22,7 +44,7 @@ public partial class Cryogen : ModNPC
             NPC.velocity += NPC.Center.DirectionTo(target.Center) * 0.4f;
             NPC.velocity = NPC.velocity.LengthClamp(Math.Max(9, target.velocity.Length() * 1.1f), 0);
         }
-        if (NPC.ai[0] > 60 && NPC.ai[0] % 10 == 0 && NPC.ai[0] < 130)
+        if (NPC.ai[0] > 30 && NPC.ai[0] % 10 == 0 && NPC.ai[0] < 100)
         {
             for (int i = 0; i < 10; i++)
             {
@@ -56,7 +78,7 @@ public partial class Cryogen : ModNPC
                 }
             }
         }
-        if (NPC.ai[0] > 130)
+        if (NPC.ai[0] > 100)
         {
             NPC.ai[0] = 0;
             NPC.ai[3]++;
@@ -77,7 +99,7 @@ public partial class Cryogen : ModNPC
             NPC.velocity *= 0.98f;
             NPC.velocity += NPC.Center.DirectionTo(target.Center) * -0.1f;
             NPC.rotation += NPC.direction * (NPC.ai[0] - 60) * 0.01f;
-            _snowOverlayOpacity += 1f / 60;
+            _snowOverlayOpacity += 1f / 40;
             _snowOverlaySpinDirection = NPC.direction;
         }
         else if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -128,14 +150,14 @@ public partial class Cryogen : ModNPC
         NPC.velocity += NPC.Center.DirectionTo(target.Center) * 0.2f;
         NPC.velocity = NPC.velocity.LengthClamp(4.5f, 0);
 
-        if (NPC.ai[0] > 60 && NPC.ai[0] % 8 == 0 && NPC.ai[0] < 130)
+        if (NPC.ai[0] > 60 && NPC.ai[0] % 8 == 0 && NPC.ai[0] < 230)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(3f, 5f), ModContent.ProjectileType<CryoFlake1>() + Main.rand.Next(3), 15, 1, -1, NPC.target, 0, Main.rand.NextFloat(0.8f, 1.1f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(1f, 4f), ModContent.ProjectileType<CryoFlake1>() + Main.rand.Next(3), 15, 1, -1, NPC.target, 0, Main.rand.NextFloat(0.8f, 1.1f));
             }
         }
-        if (NPC.ai[0] > 130)
+        if (NPC.ai[0] > 230)
         {
             NPC.ai[0] = 0;
             phase = 0;

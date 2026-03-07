@@ -22,7 +22,7 @@ public class CryoFlake1 : ModProjectile
     }
     public override Color? GetAlpha(Color lightColor)
     {
-        return Color.Lerp(lightColor, new Color(1f, 1f, 1f, 0f), 0.5f);
+        return Color.Lerp(lightColor, new Color(1f, 1f, 1f, 0f), 0.5f) * Projectile.Opacity;
     }
     public override void SetStaticDefaults()
     {
