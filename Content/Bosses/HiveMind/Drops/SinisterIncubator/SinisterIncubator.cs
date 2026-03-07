@@ -37,7 +37,7 @@ public class SinisterIncubator : ModItem
         Item.buffType = ModContent.BuffType<FungusmiteBuff>();
         Item.shootSpeed = 1f;
 
-        Item.UseSound = SoundID.Item1;
+        Item.UseSound = SoundID.Item44;
         Item.autoReuse = true;
 
 

@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -104,7 +105,7 @@ public class MyceliumShroom : ModProjectile
 
     public override bool PreDraw(ref Color lightColor)
     {
-        Texture2D texture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Items/Weapons/Magic/MyceliumShroom").Value;
+        Texture2D texture = TextureAssets.Projectile[Type].Value;
         float stretch = Projectile.ai[0] < 40 ? (float)(Math.Sin(Projectile.ai[0] * 6) / Math.Pow(Projectile.ai[0] / 8, 3) + 0.95f) : 1;
 
         Main.EntitySpriteDraw(
