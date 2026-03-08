@@ -16,7 +16,7 @@ public class FilthyGripCrit : ModPlayer
     {
         filthyGripEquipped = false;
     }
-    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
     {
         if (hit.Crit && filthyGripEquipped)
         {
@@ -24,7 +24,19 @@ public class FilthyGripCrit : ModPlayer
             {
                 float randWidth = Main.rand.NextFloat(-target.width, target.width) / 8;
                 float randHeight = Main.rand.NextFloat(-target.height, target.height) / 8;
-                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Center + new Vector2(randWidth, randHeight), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
+                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Hitbox.ClosestPointInRect(Player.Center), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
+            }
+        }
+    }
+    public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        if (hit.Crit && filthyGripEquipped)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                float randWidth = Main.rand.NextFloat(-target.width, target.width) / 8;
+                float randHeight = Main.rand.NextFloat(-target.height, target.height) / 8;
+                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Hitbox.ClosestPointInRect(proj.Center), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
             }
         }
     }

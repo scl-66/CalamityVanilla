@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops;
+using CalamityVanilla.Content.Bosses.HiveMind.Drops.FilthyGrip;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.FungiDish;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.MyceliumStaff;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.PerfectDark;
@@ -220,7 +221,7 @@ public partial class HiveMind : ModNPC
         // Boss masks are spawned with 1/7 chance
         notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HiveMindMask>(), 7));
 
-        //marble tome is here just as a placeholder idk if i need to clarify that
+        notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<FilthyGrip>(), 3));
         notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<MyceliumStaff>(), ModContent.ItemType<PerfectDark>()));
 
         // Finally add the leading rule

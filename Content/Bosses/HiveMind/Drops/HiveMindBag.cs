@@ -45,6 +45,7 @@ public class HiveMindBag : ModItem
         // We have to replicate the expert drops from MinionBossBody here
 
         itemLoot.Add(ItemDropRule.NotScalingWithLuck(ModContent.ItemType<HiveMindMask>(), 7));
+        itemLoot.Add(ItemDropRule.NotScalingWithLuck(ModContent.ItemType<FilthyGrip.FilthyGrip>(), 3));
         itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<SkinBoilHat.SkinBoilHat>()));
         //marble tome is here just as a placeholder idk if i need to clarify that
         itemLoot.Add(ItemDropRule.OneFromOptions(1, ModContent.ItemType<MyceliumStaff.MyceliumStaff>(), ModContent.ItemType<PerfectDark.PerfectDark>()));

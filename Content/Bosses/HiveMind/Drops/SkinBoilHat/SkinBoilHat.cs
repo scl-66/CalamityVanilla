@@ -88,6 +88,8 @@ public class SkinBoilHatRain : ModProjectile
         Projectile.height = 40;
         Projectile.friendly = true;
         Projectile.penetrate = 5;
+        Projectile.ignoreWater = true;
+        Projectile.timeLeft = 180;
     }
     public override void AI()
     {
@@ -101,6 +103,10 @@ public class SkinBoilHatRain : ModProjectile
     public override void OnKill(int timeLeft)
     {   
         Dust.NewDustPerfect(Projectile.Bottom, DustID.Rain, new(0, -1), 0, Color.Lime);
+    }
+    public override bool? CanCutTiles()
+    {
+        return false;
     }
 }
 
