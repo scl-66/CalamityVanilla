@@ -32,7 +32,7 @@ public class FilthyGripSlash : ModProjectile
     int frameSpeed = 2;
     public override void SetStaticDefaults()
     {
-        Main.projFrames[Type] = 7;
+        Main.projFrames[Type] = 8;
     }
     public override void SetDefaults()
     {
