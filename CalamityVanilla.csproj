@@ -19,6 +19,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Content\Corruption\Tiles\" />
+	  <Folder Include="Content\AuthorTags\" />
 	</ItemGroup>
 
 </Project>

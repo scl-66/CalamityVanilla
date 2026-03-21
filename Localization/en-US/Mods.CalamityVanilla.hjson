@@ -5,3 +5,11 @@ Emotes: {
 }
 
 Commands.RevokeAchievement.Description: Revokes the requested achievement
+
+AuthorTags: {
+	JonaTag.DisplayName: Jona
+	SixtyTag.DisplayName: sixtydegrees
+	Marc0Tag.DisplayName: Marc0
+	WaffTag.DisplayName: Waff
+	Math2Tag.DisplayName: math2
+}

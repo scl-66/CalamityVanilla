@@ -1,10 +1,14 @@
+using Daybreak.Common.Features.Authorship;
+using Daybreak.Common.Features.ModPanel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla;
 
-public partial class CalamityVanilla : Mod;
+public partial class CalamityVanilla : Mod, IHasCustomAuthorMessage
+{
+    public string GetAuthorText()
+    {
+        return AuthorText.GetAuthorTooltip(this, headerText: null);
+    }
+}
