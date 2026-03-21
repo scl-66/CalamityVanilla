@@ -23,6 +23,11 @@ public class UrchinSpineProj : ModProjectile
 {
     public override LocalizedText DisplayName => ModContent.GetInstance<UrchinSpine>().DisplayName;
     public override string Texture => ModContent.GetInstance<UrchinSpine>().Texture;
+
+    public override void SetStaticDefaults()
+    {
+        ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
+    }
     public override void SetDefaults()
     {
         Projectile.width = 16;

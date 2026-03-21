@@ -53,6 +53,10 @@ public class MushroomBomberShotSmall : ModProjectile
 }
 public class MushroomBomberShotMedium : ModProjectile
 {
+    public override void SetStaticDefaults()
+    {
+        ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
+    }
     public override void SetDefaults()
     {
         Projectile.width = 14;

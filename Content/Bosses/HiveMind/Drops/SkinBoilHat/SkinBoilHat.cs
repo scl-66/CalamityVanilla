@@ -34,7 +34,14 @@ public class SkinBoilHat : ModItem
         }
     }
 }
-
+public class SkinBoilHatPlayer : ModPlayer
+{
+    public bool skinBoilHat = false;
+    public override void ResetEffects()
+    {
+        skinBoilHat = false;
+    }
+}
 public class SkinBoilHatRaincloud : ModProjectile
 {
     public override void SetStaticDefaults()
