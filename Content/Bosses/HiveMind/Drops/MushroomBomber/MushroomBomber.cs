@@ -93,7 +93,7 @@ public class MushroomBomberHeld : ModProjectile
                             mouthPos,
                             Projectile.velocity * Utils.Remap(Power, 0, 1, 0.7f, 1.5f),
                             ModContent.ProjectileType<MushroomBomberShotSmall>(),
-                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(Utils.Remap(Power, 0, 1, 5, 40)),
+                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(Utils.Remap(Power, 0, 1, 30, 80)),
                             Utils.Remap(Power, 0, 1, 3, 5),
                             owner.whoAmI);
                         break;
@@ -102,7 +102,7 @@ public class MushroomBomberHeld : ModProjectile
                             mouthPos,
                             Projectile.velocity * Utils.Remap(Power, 0, 1, 1.5f, 1.8f),
                             ModContent.ProjectileType<MushroomBomberShotMedium>(),
-                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(Utils.Remap(Power, 0, 1, 30, 50)),
+                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(Utils.Remap(Power, 0, 1, 120, 300)),
                             Utils.Remap(Power, 0, 1, 3, 5),
                             owner.whoAmI);
                         break;
@@ -111,7 +111,7 @@ public class MushroomBomberHeld : ModProjectile
                             mouthPos,
                             Projectile.velocity * 1.8f,
                             ModContent.ProjectileType<MushroomBomberShotLarge>(),
-                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(200),
+                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(520),
                             10,
                             owner.whoAmI);
                         break;

@@ -404,5 +404,5 @@ SeaUrchinBanner: {
 
 UrchinSpine: {
 	DisplayName: Urchin Spine
-	Tooltip: "Can be used as a dart"
+	Tooltip: Can be used as a dart
 }
