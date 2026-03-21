@@ -13,10 +13,16 @@ public class UrchinSpine : ModItem
 {
     public override void SetDefaults()
     {
-        Item.DefaultToThrownWeapon(ModContent.ProjectileType<UrchinSpineProj>(), 16, 6, true);
+        Item.DefaultToThrownWeapon(ModContent.ProjectileType<UrchinSpineProj>(), 16, 7, true);
         Item.SetWeaponValues(25, 2);
         Item.value = 25;
         Item.noUseGraphic = true;
+        Item.ammo = AmmoID.Dart;
+    }
+    public override void PickAmmo(Item weapon, Player player, ref int type, ref float speed, ref StatModifier damage, ref float knockback)
+    {
+        damage *= 0.5f;
+        speed *= 0.5f;
     }
 }
 public class UrchinSpineProj : ModProjectile
@@ -35,14 +41,15 @@ public class UrchinSpineProj : ModProjectile
         Projectile.friendly = true;
         Projectile.penetrate = -1;
         Projectile.DamageType = DamageClass.Ranged;
+        Projectile.extraUpdates = 2;
     }
     public override void AI()
     {
         if (Projectile.ai[0] == 0)
         {
             Projectile.ai[2]++;
-            if (Projectile.ai[2] > 20)
-                Projectile.velocity.Y += 0.15f;
+            if (Projectile.ai[2] > 40)
+                Projectile.velocity.Y += 0.075f;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Venom);
@@ -90,7 +97,7 @@ public class UrchinSpineProj : ModProjectile
     private readonly Point[] _sticking = new Point[6];
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        Projectile.timeLeft = 60 * 5;
+        Projectile.timeLeft = 60 * 10;
         Projectile.damage = 0;
         Projectile.ai[0] = 1;
         Projectile.ai[1] = target.whoAmI;
