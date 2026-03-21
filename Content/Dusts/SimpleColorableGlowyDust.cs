@@ -10,7 +10,7 @@ public class SimpleColorableGlowyDust : ModDust
 {
     public override void OnSpawn(Dust dust)
     {
-        dust.frame = new Rectangle(0, Main.rand.Next(2) * 10, 10, 10);
+        dust.frame = new Rectangle(0, Main.rand.Next(3) * 10, 10, 10);
         dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
     }
 

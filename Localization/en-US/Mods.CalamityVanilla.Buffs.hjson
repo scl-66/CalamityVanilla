@@ -42,3 +42,13 @@ MinorBottomFeederBuff: {
 	DisplayName: Bottom Feeder
 	Description: Minor improvements to all stats
 }
+
+MushroomBomberInfection: {
+	DisplayName: Mushroom Bomber Infection
+	Description: Mods.CalamityVanilla.Buffs.MushroomBomberInfection.Description
+}
+
+UrchinSpineDebuff: {
+	DisplayName: Urchin Spine Debuff
+	Description: Mods.CalamityVanilla.Buffs.UrchinSpineDebuff.Description
+}

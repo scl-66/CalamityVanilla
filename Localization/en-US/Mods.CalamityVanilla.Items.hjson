@@ -386,3 +386,18 @@ SkinBoilHat: {
 		'It's not normal, man! Someone's gotta be behind this!'
 		'''
 }
+
+MushroomBomber: {
+	DisplayName: Mushroom Bomber
+	Tooltip: ""
+}
+
+SeaUrchinBanner: {
+	DisplayName: Sea Urchin Banner
+	Tooltip: ""
+}
+
+UrchinSpine: {
+	DisplayName: Urchin Spine
+	Tooltip: ""
+}

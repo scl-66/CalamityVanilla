@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Common;
+﻿using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Space.Items.Cloudfall;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,7 +42,7 @@ public class Twiflight : ModItem
     }
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
-        PrettySparkleParticle sparkle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
         sparkle.LocalPosition = position + Vector2.Normalize(velocity) * 10;
         sparkle.Scale = new Vector2(6f, 1.3f);
         sparkle.Rotation = velocity.ToRotation();
@@ -111,7 +111,7 @@ public class TwiflightFeather : ModProjectile
             d.fadeIn = Main.rand.NextFloat(0, 1.5f);
         }
 
-        PrettySparkleParticle sparkle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
         sparkle.LocalPosition = Projectile.Center;
         sparkle.Scale = new Vector2(6f, 1.3f);
         sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f);
@@ -147,7 +147,7 @@ public class TwiflightFeather : ModProjectile
         }
         else
         {
-            PrettySparkleParticle sparkle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+            PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
             sparkle.LocalPosition = Projectile.Center;
             sparkle.Scale = new Vector2(3f, 1f);
             sparkle.Rotation = Projectile.rotation;
@@ -168,7 +168,7 @@ public class TwiflightFeather : ModProjectile
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        PrettySparkleParticle sparkle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
         sparkle.LocalPosition = Projectile.Center;
         sparkle.Scale = new Vector2(3f, 1f);
         sparkle.Rotation = Projectile.rotation + MathHelper.PiOver2;

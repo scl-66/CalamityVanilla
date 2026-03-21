@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Common;
+﻿using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using System;
 using System.IO;
@@ -241,7 +241,7 @@ public class GraniteTomeBolt : ModProjectile
             }
         }
 
-        PrettySparkleParticle prettySparkleParticle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+        PrettySparkleParticle prettySparkleParticle = VanillaParticles.RequestPrettySparkleParticle();
         float rotation = MathHelper.PiOver2;
         Vector2 scale = new Vector2(Main.rand.NextFloat() * 0.2f + 0.4f);
         Vector2 offset = Main.rand.NextVector2Circular(4f, 4f) * scale;

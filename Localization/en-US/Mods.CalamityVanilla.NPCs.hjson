@@ -29,3 +29,8 @@ Ingestatode.DisplayName: Ingestatode
 Malgestode.DisplayName: Malgestode
 GutOfCthulhu.DisplayName: Gut Of Cthulhu
 GutOfCthulhuEye.DisplayName: Gut Of Cthulhu Eye
+
+SeaUrchin: {
+	DisplayName: Sea Urchin
+	Bestiary: I dunno man, I just work here.
+}

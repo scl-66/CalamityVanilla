@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Common;
+﻿using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
 using Microsoft.Xna.Framework;
@@ -285,7 +285,7 @@ public class CatastropheClaymoreBall : ModProjectile
 
         for (int i = 0; i < 3; i++)
         {
-            PrettySparkleParticle sparkle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+            PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
             sparkle.ColorTint = GetDustColor();
             sparkle.LocalPosition = Projectile.Center;
             sparkle.Scale = Projectile.ai[0] == MIGHT ? new Vector2(Main.rand.NextFloat(4f, 5f), Main.rand.NextFloat(1.5f, 2f)) : new Vector2(Main.rand.NextFloat(2f, 3.5f), Main.rand.NextFloat(0.6f, 1f));

@@ -4,6 +4,7 @@ using CalamityVanilla.Content.Bosses.Cryogen.Drops.HoarfrostBow;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.Icebreaker;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.MagicChisel;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.TheSnowman;
+using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -190,7 +191,7 @@ public partial class Cryogen : ModNPC
     private static void SpawnCryoBlockLaserParticle(ParticleOrchestraSettings settings, Color color)
     {
         int num = 30;
-        PrettySparkleParticle prettySparkleParticle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+        PrettySparkleParticle prettySparkleParticle = VanillaParticles.RequestPrettySparkleParticle();
         Vector2 movementVector = settings.MovementVector;
         prettySparkleParticle.ColorTint = color;
         prettySparkleParticle.LocalPosition = settings.PositionInWorld;

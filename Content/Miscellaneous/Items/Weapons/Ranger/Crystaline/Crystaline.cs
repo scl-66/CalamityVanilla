@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Common;
+﻿using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -69,7 +69,7 @@ public class CrystalineProjectile : ModProjectile
             }
             SoundEngine.PlaySound(SoundID.Item110 with { Pitch = 0.5f, PitchVariance = 0.6f }, Projectile.position);
 
-            PrettySparkleParticle sparkle = CVParticleOrchestrator.RequestPrettySparkleParticle();
+            PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
             sparkle.LocalPosition = Projectile.Center;
             sparkle.Scale = new Vector2(Main.rand.NextFloat(2.7f, 3.3f), Main.rand.NextFloat(0.9f, 1.1f));
             sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.1f, 0.1f);
