@@ -389,7 +389,12 @@ SkinBoilHat: {
 
 MushroomBomber: {
 	DisplayName: Mushroom Bomber
-	Tooltip: ""
+	Tooltip:
+		'''
+		Fires Sinister Mushrooms that bounce off enemies
+		Charged shots latch on and infect enemies
+		Fully charged shots unleash fungal destruction
+		'''
 }
 
 SeaUrchinBanner: {
@@ -399,5 +404,5 @@ SeaUrchinBanner: {
 
 UrchinSpine: {
 	DisplayName: Urchin Spine
-	Tooltip: ""
+	Tooltip: "Can be used as a dart"
 }

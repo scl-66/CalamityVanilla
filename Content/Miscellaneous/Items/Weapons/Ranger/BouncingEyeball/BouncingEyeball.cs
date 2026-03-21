@@ -16,7 +16,7 @@ public class BouncingEyeball : ModItem
     }
     public override void SetDefaults()
     {
-        Item.DefaultToThrownWeapon(ModContent.ProjectileType<BouncingEyeballCluster>(), 20, 15, true);
+        Item.DefaultToThrownWeapon(ModContent.ProjectileType<BouncingEyeballCluster>(), 30, 13, true);
         Item.noUseGraphic = true;
         Item.damage = 12;
         Item.knockBack = 2;
@@ -142,11 +142,11 @@ public class BouncingEyeProj : ModProjectile
         Projectile.height = widthAndHeight;
 
         Projectile.velocity.Y += 0.5f;
-        Projectile.velocity.X *= 0.99f;
+        Projectile.velocity.X *= 0.985f;
 
-        if (Projectile.velocity.Y > 16f)
+        if (Projectile.velocity.Y > 12f)
         {
-            Projectile.velocity.Y = 16f;
+            Projectile.velocity.Y = 12f;
         }
 
         Projectile.rotation += Projectile.velocity.X / 45f;
@@ -162,7 +162,7 @@ public class BouncingEyeProj : ModProjectile
         else if (Projectile.ai[0] == penetrateTime)
         {
             Projectile.damage = 16;
-            Projectile.penetrate = 3;
+            Projectile.penetrate = 2;
         }
 
         if (Main.rand.NextBool(5))
@@ -194,7 +194,7 @@ public class BouncingEyeProj : ModProjectile
 
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.NPCDeath11, Projectile.position);
+        SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = 0.1f}, Projectile.position);
 
         for (int i = 0; i < 10; i++)
         {

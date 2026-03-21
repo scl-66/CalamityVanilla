@@ -13,15 +13,16 @@ public class UrchinSpine : ModItem
 {
     public override void SetDefaults()
     {
-        Item.DefaultToThrownWeapon(ModContent.ProjectileType<UrchinSpineProj>(), 16, 7, true);
-        Item.SetWeaponValues(25, 2);
+        Item.DefaultToThrownWeapon(ModContent.ProjectileType<UrchinSpineProj>(), 18, 5, true);
+        Item.SetWeaponValues(35, 2);
         Item.value = 25;
         Item.noUseGraphic = true;
         Item.ammo = AmmoID.Dart;
+        Item.UseSound = SoundID.Item1;
     }
     public override void PickAmmo(Item weapon, Player player, ref int type, ref float speed, ref StatModifier damage, ref float knockback)
     {
-        damage *= 0.5f;
+        damage *= 0.25f;
         speed *= 0.5f;
     }
 }
@@ -148,7 +149,7 @@ public class UrchinSpineDebuffNPC : GlobalNPC
                 if (p.type == type && p.ai[1] == npc.whoAmI)
                     stacks++;
             }
-            npc.lifeRegen -= 20 * stacks;
+            npc.lifeRegen -= 25 * stacks;
             damage = Math.Max(damage, 5 * stacks);
         }
     }

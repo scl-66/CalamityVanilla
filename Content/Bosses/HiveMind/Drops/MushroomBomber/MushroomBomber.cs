@@ -65,6 +65,11 @@ public class MushroomBomberHeld : ModProjectile
             Projectile.ai[0]++;
             if (Projectile.ai[0] == _mediumTime || Projectile.ai[0] == _bigTime)
             {
+                if (Projectile.ai[0] == _mediumTime) {
+                    SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.position);
+                } else if (Projectile.ai[0] == _bigTime) {
+                    SoundEngine.PlaySound(SoundID.DD2_KoboldIgnite with { Pitch = 0.7f, Volume = 1.1f }, Projectile.position);
+                }
                 Projectile.frame++;
                 Vector2 mouthPos = Projectile.Center + new Vector2(Projectile.spriteDirection * 13, -8).RotatedBy(Projectile.rotation);
                 for (int i = 0; i < 15; i++)
