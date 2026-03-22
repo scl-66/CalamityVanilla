@@ -416,3 +416,8 @@ PlutoniumOre: {
 	DisplayName: Plutonium Ore
 	Tooltip: "'Highly radioactive!'"
 }
+
+RadiationSupplements: {
+	DisplayName: Radiation Supplements
+	Tooltip: Grants immunity to Irradiated
+}

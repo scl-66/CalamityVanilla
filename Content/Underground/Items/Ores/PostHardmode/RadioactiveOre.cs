@@ -57,11 +57,11 @@ public class UraniumOreTile : ModTile
 
     public override void NearbyEffects(int i, int j, bool closer)
     {
-        float dist = Vector2.Distance(Main.LocalPlayer.position, new Vector2(i * 16f, j * 16f));
-        if (dist < 100f)
+        float dist = Vector2.Distance(Main.LocalPlayer.Hitbox.ClosestPointInRect(new Vector2(i * 16f + 8f, j * 16f + 8f)), new Vector2(i * 16f + 8f, j * 16f + 8f));
+        if (dist < 70f)
         {
             Main.LocalPlayer.AddBuff(ModContent.BuffType<IrradiatedDebuff>(), 5);
-            Main.LocalPlayer.GetModPlayer<IrradiatedRegen>().damage = (int)(Math.Pow(1 / dist * 300, 1.4)); //placeholder damage value
+            Main.LocalPlayer.GetModPlayer<IrradiatedRegen>().damage = (int)(1/(dist) * 380);
         }
     }
 

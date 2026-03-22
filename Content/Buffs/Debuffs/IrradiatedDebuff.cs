@@ -63,9 +63,13 @@ public class IrradiatedRegen : ModPlayer
     {
         if (lifeRegenDebuff)
         {
-            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.RadiationPoisoned{Main.rand.Next(1, 3)}");
+            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.RadiationPoisoned{Main.rand.Next(1, 4)}");
             damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name));
         }
         return true;
+    }
+    public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+    {
+        base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
     }
 }
