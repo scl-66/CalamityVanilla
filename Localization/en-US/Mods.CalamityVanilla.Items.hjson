@@ -335,7 +335,7 @@ HalfDigestedBrisket: {
 	Tooltip:
 		'''
 		Summons a Stomach Bug
-		‘It eats what you eat!'
+		'It eats what you eat!'
 		'''
 }
 
@@ -405,4 +405,14 @@ SeaUrchinBanner: {
 UrchinSpine: {
 	DisplayName: Urchin Spine
 	Tooltip: Can be used as a dart
+}
+
+UraniumOre: {
+	DisplayName: Uranium Ore
+	Tooltip: "'Highly radioactive!'"
+}
+
+PlutoniumOre: {
+	DisplayName: Plutonium Ore
+	Tooltip: "'Highly radioactive!'"
 }
