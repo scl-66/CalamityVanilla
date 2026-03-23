@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.Underground.Items.Ores.PostHardmode;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,10 +39,41 @@ public class IrradiatedRegen : ModPlayer
     // Flag checking when life regen debuff should be activated
     public bool lifeRegenDebuff;
     public int damage;
+    public int dustChance;
 
     public override void ResetEffects()
     {
         lifeRegenDebuff = false;
+    }
+
+    public override void PreUpdate()
+    {
+        float closestDist = 10000f;
+        for (int x = -3; x < 4; x++) {
+            for (int y = -3; y < 4; y++)
+            {
+                Point tPos = new Point(Player.Center.ToTileCoordinates().X + x, Player.Center.ToTileCoordinates().Y + y);
+                Vector2 tCenter = tPos.ToWorldCoordinates();
+                Tile t = Framing.GetTileSafely(tPos);
+                if (Main.tile[tPos].TileType == ModContent.TileType<UraniumOreTile>() || Main.tile[tPos].TileType == ModContent.TileType<PlutoniumOreTile>())
+                {
+                    float dist = Vector2.Distance(Player.Hitbox.ClosestPointInRect(tCenter), tCenter);
+                    if (dist < 90f)
+                    {
+                        if (dist < closestDist)
+                        {
+                            closestDist = dist;
+                        }
+                    }
+                }
+            }
+        }
+        if (closestDist < 90f)
+        {
+            Main.LocalPlayer.AddBuff(ModContent.BuffType<IrradiatedDebuff>(), 5);
+            Main.LocalPlayer.GetModPlayer<IrradiatedRegen>().damage = (int)(1/closestDist * 150);
+            Main.LocalPlayer.GetModPlayer<IrradiatedRegen>().dustChance = (int)Math.Clamp(closestDist/4, 2, 1000);
+        }
     }
 
     // Allows you to give the player a negative life regeneration based on its state (for example, the "On Fire!" debuff makes the player take damage-over-time)
@@ -63,13 +97,17 @@ public class IrradiatedRegen : ModPlayer
     {
         if (lifeRegenDebuff)
         {
-            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.RadiationPoisoned{Main.rand.Next(1, 4)}");
+            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.RadiationPoisoned{Main.rand.Next(1, 11)}");
             damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name));
         }
         return true;
     }
     public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
     {
-        base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
+        if (Main.GameUpdateCount % (dustChance <= 0 ? dustChance = 2 : dustChance) == 0 && lifeRegenDebuff)
+        {
+            float speed = 0.1f;
+            Dust.NewDustDirect(Player.position, Player.width, Player.height, ModContent.DustType<UraniumRadDust>(), Main.rand.NextFloat(-speed, speed), Main.rand.NextFloat(-speed, speed));
+        }
     }
 }
