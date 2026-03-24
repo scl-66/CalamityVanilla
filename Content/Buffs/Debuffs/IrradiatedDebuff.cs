@@ -1,13 +1,9 @@
 ﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Underground.Items.Ores.PostHardmode;
+using CalamityVanilla.Content.Underground.Items.Ores.PostHardmode.Plutonium;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -40,6 +36,7 @@ public class IrradiatedRegen : ModPlayer
     public bool lifeRegenDebuff;
     public int damage;
     public int dustChance;
+    public float closestDist;
 
     public override void ResetEffects()
     {
@@ -48,14 +45,14 @@ public class IrradiatedRegen : ModPlayer
 
     public override void PreUpdate()
     {
-        float closestDist = 10000f;
+        closestDist = 10000f;
         for (int x = -3; x < 4; x++) {
             for (int y = -3; y < 4; y++)
             {
                 Point tPos = new Point(Player.Center.ToTileCoordinates().X + x, Player.Center.ToTileCoordinates().Y + y);
                 Vector2 tCenter = tPos.ToWorldCoordinates();
                 Tile t = Framing.GetTileSafely(tPos);
-                if (Main.tile[tPos].TileType == ModContent.TileType<UraniumOreTile>() || Main.tile[tPos].TileType == ModContent.TileType<PlutoniumOreTile>())
+                if (Main.tile[tPos].TileType == ModContent.TileType<Content.Underground.Items.Ores.PostHardmode.Uranium.UraniumOreTile>() || Main.tile[tPos].TileType == ModContent.TileType<PlutoniumOreTile>())
                 {
                     float dist = Vector2.Distance(Player.Hitbox.ClosestPointInRect(tCenter), tCenter);
                     if (dist < 90f)
@@ -71,8 +68,8 @@ public class IrradiatedRegen : ModPlayer
         if (closestDist < 90f)
         {
             Main.LocalPlayer.AddBuff(ModContent.BuffType<IrradiatedDebuff>(), 5);
-            Main.LocalPlayer.GetModPlayer<IrradiatedRegen>().damage = (int)(1/closestDist * 150);
-            Main.LocalPlayer.GetModPlayer<IrradiatedRegen>().dustChance = (int)Math.Clamp(closestDist/4, 2, 1000);
+            damage = (int)(1/closestDist * 150);
+            dustChance = (int)Math.Clamp(closestDist/4, 2, 1000);
         }
     }
 
@@ -95,7 +92,7 @@ public class IrradiatedRegen : ModPlayer
     }
     public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
     {
-        if (lifeRegenDebuff)
+        if (lifeRegenDebuff && hitDirection == 0)
         {
             LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.RadiationPoisoned{Main.rand.Next(1, 11)}");
             damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name));
@@ -104,10 +101,28 @@ public class IrradiatedRegen : ModPlayer
     }
     public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
     {
-        if (Main.GameUpdateCount % (dustChance <= 0 ? dustChance = 2 : dustChance) == 0 && lifeRegenDebuff)
+        if (lifeRegenDebuff && Player.statLife > 0 && closestDist < 90f)
         {
-            float speed = 0.1f;
-            Dust.NewDustDirect(Player.position, Player.width, Player.height, ModContent.DustType<UraniumRadDust>(), Main.rand.NextFloat(-speed, speed), Main.rand.NextFloat(-speed, speed));
+            if (drawInfo.shadow == 0)
+            {
+                r = MathHelper.Lerp(0, 1, closestDist / 45f);
+                g = MathHelper.Lerp(1, 1, closestDist / 45f);
+                b = MathHelper.Lerp(0, 1, closestDist / 45f);
+            }
+
+
+            //Main.NewText((Main.GameUpdateCount % (int)closestDist / 2) + Main.rand.Next(0, 2));
+            if (Main.rand.Next(0, (int)closestDist/2) == 0)
+            {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.25f, Volume = 0.5f, PitchVariance = 0.7f, MaxInstances = 20 });
+            }
+
+            if (Main.GameUpdateCount % (dustChance <= 0 ? dustChance = 2 : dustChance) == 0)
+            {
+                float speed = 0.1f;
+                int d = Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<UraniumRadDust>(), Main.rand.NextFloat(-speed, speed), Main.rand.NextFloat(-speed, speed));
+                drawInfo.DustCache.Add(d);
+            }
         }
     }
 }

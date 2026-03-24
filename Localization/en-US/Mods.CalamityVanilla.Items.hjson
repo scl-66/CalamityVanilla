@@ -421,3 +421,23 @@ RadiationSupplements: {
 	DisplayName: Radiation Supplements
 	Tooltip: Grants immunity to Irradiated
 }
+
+PlutoniumBar: {
+	DisplayName: Plutonium Bar
+	Tooltip: "'Highly radioactive!'"
+}
+
+UraniumBar: {
+	DisplayName: Uranium Bar
+	Tooltip: "'Highly radioactive!'"
+}
+
+ExoditeBar: {
+	DisplayName: Exodite Bar
+	Tooltip: "'It absorbs almost all light'"
+}
+
+ExoditeOre: {
+	DisplayName: Exodite Ore
+	Tooltip: "'It absorbs most light'"
+}
