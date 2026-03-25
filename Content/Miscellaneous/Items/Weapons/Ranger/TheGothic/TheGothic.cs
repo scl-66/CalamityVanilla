@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
@@ -58,6 +59,11 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
         Projectile.localNPCHitCooldown = -1;
         Projectile.extraUpdates = 2;
     }
+    public override bool OnTileCollide(Vector2 oldVelocity)
+    {
+        SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+        return base.OnTileCollide(oldVelocity);
+    }
     public override void AI()
     {
         if (Projectile.ai[0] == 0) // Flying
@@ -74,7 +80,13 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
             if (Projectile.localAI[0] < 1)
                 Projectile.localAI[0] += 0.01f;
             Projectile.hide = true;
+            Projectile.tileCollide = false;
             Projectile.Center = Main.npc[(int)Projectile.ai[1]].Center + Projectile.velocity * 0.8f;
+            if (Main.rand.NextBool(13))
+            {
+                Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(6,0).RotatedBy(Projectile.rotation), DustID.Blood, (Projectile.rotation + Main.rand.NextFloat(-0.5f,0.5f)).ToRotationVector2() * Main.rand.NextFloat(-4,-1));
+                d.noGravity = Main.rand.NextBool();
+            }
             if (!Main.npc[(int)Projectile.ai[1]].active)
             {
                 Projectile.Kill();
@@ -126,8 +138,9 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
         for (int i = 0; i < 5; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
-            d.noGravity = true;
-            d.velocity += Projectile.oldVelocity * -0.2f;
+            d.noGravity = !Main.rand.NextBool(7);
+            if(Projectile.localAI[0] == 0)
+                d.velocity += Projectile.oldVelocity * -0.2f;
         }
         if (Projectile.localAI[0] == 1)
             return;
@@ -135,11 +148,11 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
         for (int i = 1; i < Projectile.oldPos.Length; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);
-            d.color = new Color(1, 0f, 0f, 0.7f) * MathF.Pow(Utils.Remap(i,0,Projectile.oldPos.Length,1,0), 3) * (1f - Projectile.localAI[0]);
+            d.color = GothicVertexStrip.StripColors((i + 1) / (float)Projectile.oldPos.Length) * (1f - Projectile.localAI[0]);
             d.noLight = true;
             d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * Projectile.oldPos[i].Distance(Projectile.oldPos[i - 1]);
             d.velocity *= 0.2f;
-            d.scale = Utils.Remap(i, 0, Projectile.oldPos.Length, 1f, 0.3f);
+            //d.scale = Utils.Remap(i, 0, Projectile.oldPos.Length, 1f, 0.3f);
             d.noGravity = true;
         }
     }
@@ -157,7 +170,24 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
             //}
         }
 
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, Projectile.ai[0] == 0 ? lightColor : Color.Lerp(lightColor, Color.Red, Main.masterColor), Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None);
+        //Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, Projectile.ai[0] == 0 ? lightColor : Color.Lerp(lightColor, Color.Red, Main.masterColor), Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None);
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None);
+        if (Projectile.ai[0] == 1)
+        {
+            float interval = 100;
+            float amount = (float)(Main.timeForVisualEffects % interval) / interval;
+            Color c = new Color(amount * (1f - amount), 0, 0, 0);
+            for (int i = 0; i < 4; i++)
+            {
+                Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition + new Vector2(0, amount * 8).RotatedBy(Projectile.rotation + (i * MathHelper.PiOver2)), null, c, Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None);
+            }
+            amount = (float)((Main.timeForVisualEffects + (interval / 2)) % interval) / interval;
+            c = new Color(amount * (1f - amount), 0, 0, 0);
+            for (int i = 0; i < 4; i++)
+            {
+                Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition + new Vector2(0, amount * 8).RotatedBy(Projectile.rotation + MathHelper.PiOver4 + (i * MathHelper.PiOver2)), null, c, Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None);
+            }
+        }
         return false;
     }
 }
@@ -168,17 +198,15 @@ public struct GothicVertexStrip
     {
         MiscShaderData miscShaderData = GameShaders.Misc["LightDisc"];
         miscShaderData.UseOpacity(1f - proj.localAI[0]);
-        miscShaderData.UseImage1(TextureAssets.MagicPixel);
-        miscShaderData.UseImage2(TextureAssets.MagicPixel);
         miscShaderData.Apply();
-
         _vertexStrip.PrepareStripWithProceduralPadding(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f);
         _vertexStrip.DrawTrail();
         Main.pixelShader.CurrentTechnique.Passes[0].Apply();
     }
-    private Color StripColors(float progressOnStrip)
+    public static Color StripColors(float progressOnStrip)
     {
-        return new Color(1, 0f, 0f, 0.7f) * MathF.Pow((1f - progressOnStrip),3);
+        float offsetProgress = MathF.Min((1f - progressOnStrip) * 1.25f, 1);
+        return new Color(1 - (1f - offsetProgress), 0f, 0f, 0.7f) * offsetProgress * 0.8f;
     }
     private float StripWidth(float progressOnStrip)
     {
