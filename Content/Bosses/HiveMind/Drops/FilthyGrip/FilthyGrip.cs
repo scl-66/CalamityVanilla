@@ -61,13 +61,13 @@ public class FilthyGripSlash : ModProjectile
     int frameSpeed = 2;
     public override void SetStaticDefaults()
     {
-        Main.projFrames[Type] = 8;
+        Main.projFrames[Type] = 6;
     }
     public override void SetDefaults()
     {
         Projectile.width = Projectile.height = 30;
         Projectile.friendly = true;
-        Projectile.timeLeft = 7*frameSpeed;
+        Projectile.timeLeft = 6*frameSpeed;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 7;
         Projectile.penetrate = 3;
@@ -86,7 +86,7 @@ public class FilthyGripSlash : ModProjectile
         if (++Projectile.frameCounter >= frameSpeed)
         {
             Projectile.frameCounter = 0;
-            Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
+            Projectile.frame++;
         }
 
         Projectile.ai[0]++;
