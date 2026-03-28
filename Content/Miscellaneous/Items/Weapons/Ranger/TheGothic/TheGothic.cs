@@ -17,6 +17,14 @@ namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 
 public class TheGothic : ModItem
 {
+    public override void Load()
+    {
+        MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
+        shader.UseImage2(TextureAssets.MagicPixel);
+        shader.UseImage1(TextureAssets.MagicPixel);
+        shader.UseImage0(TextureAssets.MagicPixel);
+        GameShaders.Misc.Add("Gothic", shader);
+    }
     public override void SetDefaults()
     {
         Item.DefaultToBow(26, 2.5f, true);
@@ -43,7 +51,30 @@ public class TheGothic : ModItem
         return new Vector2(-2, 0);
     }
 }
-
+public struct GothicVertexStrip
+{
+    private static VertexStrip _vertexStrip = new VertexStrip();
+    private float _width;
+    public void Draw(Projectile proj, float width)
+    {
+        _width = width;
+        MiscShaderData miscShaderData = GameShaders.Misc["Gothic"];
+        miscShaderData.UseOpacity(1f - proj.localAI[0]);
+        miscShaderData.Apply();
+        _vertexStrip.PrepareStripWithProceduralPadding(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f);
+        _vertexStrip.DrawTrail();
+        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+    }
+    public static Color StripColors(float progressOnStrip)
+    {
+        float offsetProgress = MathF.Min((1f - progressOnStrip) * 1.25f, 1);
+        return new Color(1 - (1f - offsetProgress), 0f, 0f, 0.7f) * offsetProgress * 0.8f;
+    }
+    private float StripWidth(float progressOnStrip)
+    {
+        return _width;
+    }
+}
 public class TheGothicToothSmall : ModProjectile
 {
     public override void SetStaticDefaults()
@@ -246,30 +277,6 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
             }
         }
         return false;
-    }
-}
-public struct GothicVertexStrip
-{
-    private static VertexStrip _vertexStrip = new VertexStrip();
-    private float _width;
-    public void Draw(Projectile proj, float width)
-    {
-        _width = width;
-        MiscShaderData miscShaderData = GameShaders.Misc["LightDisc"];
-        miscShaderData.UseOpacity(1f - proj.localAI[0]);
-        miscShaderData.Apply();
-        _vertexStrip.PrepareStripWithProceduralPadding(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f);
-        _vertexStrip.DrawTrail();
-        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
-    }
-    public static Color StripColors(float progressOnStrip)
-    {
-        float offsetProgress = MathF.Min((1f - progressOnStrip) * 1.25f, 1);
-        return new Color(1 - (1f - offsetProgress), 0f, 0f, 0.7f) * offsetProgress * 0.8f;
-    }
-    private float StripWidth(float progressOnStrip)
-    {
-        return _width;
     }
 }
 public class GothicToothRegen : ModPlayer
