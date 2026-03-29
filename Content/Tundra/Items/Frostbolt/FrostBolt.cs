@@ -1,8 +1,14 @@
 ﻿using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,15 +28,9 @@ public class FrostBolt : ModItem
         Item.useStyle = ItemUseStyleID.Shoot;
         Item.noMelee = true;
         Item.knockBack = 5f;
-        Item.UseSound = SoundID.Item20 with
-        {
-            Pitch = 1f,
-            PitchVariance = 0.1f,
-            Volume = 0.7f,
-            MaxInstances = 0,
-        };
+        Item.UseSound = SoundID.Item30 with { Volume = 0.25f, MaxInstances = 10, PitchRange = (-0.2f,0.2f) };
         Item.autoReuse = true;
-        Item.shootSpeed = 4f;
+        Item.shootSpeed = 12f;
         Item.shoot = ModContent.ProjectileType<FrostBoltProjectile>();
 
         Item.rare = ItemRarityID.LightRed;
@@ -39,8 +39,8 @@ public class FrostBolt : ModItem
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
-        Projectile.NewProjectile(source, position, velocity.RotatedByRandom(0.4), type, damage, knockback, player.whoAmI,
-            ai0: Main.rand.NextFloat(0.01f, 2f));
+        Projectile.NewProjectile(source, position, velocity.RotatedByRandom(0.4) * Main.rand.NextFloat(0.8f,1.2f), type, damage, knockback, player.whoAmI,
+            ai0: Main.rand.NextFloat(0.01f, 0.05f));
 
         return false;
     }
@@ -70,51 +70,47 @@ public class FrostBoltProjectile : ModProjectile
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
+        ProjectileID.Sets.TrailingMode[Type] = 3;
+        ProjectileID.Sets.TrailCacheLength[Type] = 20;
     }
-
     public override void SetDefaults()
     {
         Projectile.width = 16;
         Projectile.height = 16;
         Projectile.friendly = true;
-        Projectile.timeLeft = 120;
-        Projectile.extraUpdates = 1;
-        Projectile.alpha = 255;
+        Projectile.timeLeft = 60;
         Projectile.penetrate = 5;
         Projectile.DamageType = DamageClass.Magic;
         Projectile.coldDamage = true;
         Projectile.usesLocalNPCImmunity = true;
-        Projectile.localNPCHitCooldown = 10;
+        Projectile.localNPCHitCooldown = 15;
+        Projectile.alpha = 260;
     }
-
     public override void AI()
     {
-        if (Projectile.timeLeft > 110)
+        Projectile.rotation = Projectile.velocity.ToRotation();
+        Projectile.localAI[0] += Projectile.velocity.X * 0.02f;
+        Projectile.velocity.Y += 0.2f;
+        if (Main.rand.NextBool(3))
+        {
+            Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(14 * Projectile.scale, 14 * Projectile.scale), Main.rand.NextBool()? DustID.Snow : DustID.IceRod);
+            d.velocity = Projectile.velocity * 0.8f;
+            d.alpha = Projectile.alpha;
+            d.scale *= Main.rand.NextFloat(1f,1.25f);
+            d.noGravity = true;
+        }
+
+        if(Projectile.alpha == 260)
+        {
+            Projectile.scale = Main.rand.NextFloat(0.8f, 1f);
+        }
+        if(Projectile.alpha > 0)
+        {
+            Projectile.alpha -= 13;
+        }
+
+        if (Projectile.timeLeft > 50)
             return;
-        for (int i = 0; i < 2; i++)
-        {
-            Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 1.5f);
-            Dust dust = Dust.NewDustPerfect(
-                Projectile.Center - velocity,
-                ModContent.DustType<MagicIceDust>(),
-                velocity * 0.2f,
-                0,
-                default,
-                Main.rand.NextFloat(1f, 1.5f));
-            dust.noGravity = true;
-        }
-        if (Main.rand.NextBool(6))
-        {
-            Dust dust = Dust.NewDustPerfect(
-                Projectile.Center,
-                DustID.FrostHydra,
-                -Projectile.velocity.RotatedByRandom(0.4),
-                0,
-                default,
-                Main.rand.NextFloat(1.25f, 1.75f)
-            );
-            dust.noGravity = true;
-        }
 
         float maxRange = 400f;
 
@@ -143,23 +139,25 @@ public class FrostBoltProjectile : ModProjectile
 
         float length = Projectile.velocity.Length();
         float targetAngle = Projectile.AngleTo(HomingTarget.Center);
-        Projectile.velocity = Projectile.velocity.ToRotation().AngleTowards(targetAngle, MathHelper.ToRadians(HomingStrength)).ToRotationVector2() * length;
-        Projectile.rotation = Projectile.velocity.ToRotation();
+        Projectile.velocity = Utils.AngleTowards(Projectile.velocity.ToRotation(), targetAngle, HomingStrength).ToRotationVector2() * length;
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
         target.AddBuff(BuffID.Frostburn2, 180);
+        Projectile.ai[0] /= 2;
     }
 
     public override void OnHitPlayer(Player target, Player.HurtInfo info)
     {
+        Projectile.ai[0] /= 2;
         target.AddBuff(BuffID.Frostburn2, 180, false, false);
     }
 
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
         Projectile.penetrate--;
+        Projectile.ai[0] /= 2;
         if (Projectile.penetrate <= 0)
         {
             Projectile.Kill();
@@ -174,45 +172,73 @@ public class FrostBoltProjectile : ModProjectile
             {
                 Projectile.velocity.Y = -oldVelocity.Y;
             }
-            SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.25f, MaxInstances = 10}, Projectile.Center);
         }
         return false;
     }
 
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.Item89 with
+        SoundEngine.PlaySound(SoundID.Item27 with
         {
-            Pitch = 1f,
-            PitchVariance = 0.1f,
+            PitchRange = (0.2f,0.5f),
             Volume = 0.4f,
 
             MaxInstances = 0,
         }, Projectile.Center);
-        for (int k = 0; k < 4; k++)
+        for(int i = 0; i < 15; i++)
         {
-            Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 5f);
-            Dust dust = Dust.NewDustPerfect(
-                Projectile.Center,
-                ModContent.DustType<MagicIceDust>(),
-                velocity,
-                0,
-                Color.White,
-                Main.rand.NextFloat(1.25f, 1.75f)
-            );
+            Dust d = Dust.NewDustPerfect(Projectile.Center, Main.rand.NextBool() ? DustID.Snow : DustID.IceRod);
+            d.velocity = Main.rand.NextVector2Circular(6, 6);
+            d.alpha = Projectile.alpha;
+            d.scale *= Main.rand.NextFloat(1f, 1.25f);
+            d.noGravity = true;
         }
-        for (int k = 0; k < 8; k++)
+        int type = ModContent.DustType<SimpleColorableGlowyDust>();
+        for (int i = 1; i < Projectile.oldPos.Length; i++)
         {
-            Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f);
-            Dust dust = Dust.NewDustPerfect(
-                Projectile.Center,
-                DustID.FrostHydra,
-                velocity,
-                0,
-                Color.White,
-                Main.rand.NextFloat(1.25f, 1.75f)
-            );
-            dust.noGravity = true;
+            Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);
+            d.color = FrostboltVertexStrip.StripColors((i + 1) / (float)Projectile.oldPos.Length) * Projectile.Opacity * 0.5f;
+            d.noLight = true;
+            d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * Projectile.oldPos[i].Distance(Projectile.oldPos[i - 1]);
+            d.velocity *= 0.2f;
+            d.noGravity = true;
         }
+    }
+    public override bool PreDraw(ref Color lightColor)
+    {
+        default(FrostboltVertexStrip).Draw(Projectile);
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0.7f) * Projectile.Opacity * 2, Projectile.localAI[0], TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, SpriteEffects.None);
+        return false;
+    }
+    public override void Load()
+    {
+        MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
+        shader.UseImage2(ModContent.Request<Texture2D>(Texture + "Erosion"));
+        shader.UseImage1(ModContent.Request<Texture2D>(Texture + "Shape"));
+        shader.UseImage0(ModContent.Request<Texture2D>(Texture + "Gradient"));
+        GameShaders.Misc.Add("FrostBolt", shader);
+    }
+}
+public struct FrostboltVertexStrip
+{
+    private static VertexStrip _vertexStrip = new VertexStrip();
+    public void Draw(Projectile proj, float saturation = -3)
+    {
+        MiscShaderData miscShaderData = GameShaders.Misc["FrostBolt"];
+        miscShaderData.UseOpacity(proj.Opacity);
+        miscShaderData.UseSaturation(saturation);
+        miscShaderData.Apply();
+        _vertexStrip.PrepareStripWithProceduralPadding(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f);
+        _vertexStrip.DrawTrail();
+        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+    }
+    public static Color StripColors(float progressOnStrip)
+    {
+        return Color.Lerp(new Color(1f, 1f, 1f, 0f), new Color(0f,0.5f,1f,0f), progressOnStrip) * (1f - progressOnStrip * progressOnStrip);
+    }
+    private float StripWidth(float progressOnStrip)
+    {
+        return 20;
     }
 }
