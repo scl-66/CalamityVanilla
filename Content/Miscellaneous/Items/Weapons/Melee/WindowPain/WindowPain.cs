@@ -21,13 +21,7 @@ public class WindowPainAnimation : PlayerDrawLayer
     }
     protected override void Draw(ref PlayerDrawSet drawInfo)
     {
-        int frame = 0;
-
-        if (drawInfo.drawPlayer.HeldItem.ModItem is WindowPain p)
-        {
-            if (p.Shattered)
-                frame = 1;
-        }
+        int frame = drawInfo.drawPlayer.GetModPlayer<WindowPainPlayer>().Shattered? 1 : 0;
         Asset<Texture2D> texture = TextureAssets.Item[drawInfo.heldItem.type];
         Vector2 basePosition = drawInfo.drawPlayer.itemLocation - Main.screenPosition;
         basePosition = new Vector2((int)basePosition.X, (int)basePosition.Y) + (drawInfo.drawPlayer.RotatedRelativePoint(drawInfo.drawPlayer.Center) - drawInfo.drawPlayer.Center);
@@ -48,9 +42,12 @@ public class WindowPainAnimation : PlayerDrawLayer
         drawInfo.ItemLocation = Vector2.Zero;
     }
 }
-public class WindowPain : ModItem, IHasSyncedOnHitNPC
+public class WindowPainPlayer : ModPlayer
 {
     public bool Shattered = false;
+}
+public class WindowPain : ModItem, ISyncedOnHitEffect
+{
     public override void SetDefaults()
     {
         Item.DefaultToSword(20, 28, 6);
@@ -66,7 +63,7 @@ public class WindowPain : ModItem, IHasSyncedOnHitNPC
     public override bool? UseItem(Player player)
     {
         if (player.ItemAnimationJustStarted)
-            Shattered = false;
+            player.GetModPlayer<WindowPainPlayer>().Shattered = false;
         return base.UseItem(player);
     }
     public override bool? CanHitNPC(Player player, NPC target)
@@ -75,11 +72,18 @@ public class WindowPain : ModItem, IHasSyncedOnHitNPC
             return false;
         return base.CanHitNPC(player, target);
     }
-    public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+    public override void AddRecipes()
     {
-        if (!Shattered)
+        CreateRecipe().AddTile(TileID.Anvils).AddIngredient(ItemID.GoldBroadsword).AddIngredient(ItemID.Glass, 25).AddIngredient(ItemID.SunplateBlock, 10).Register();
+        CreateRecipe().AddTile(TileID.Anvils).AddIngredient(ItemID.PlatinumBroadsword).AddIngredient(ItemID.Glass, 25).AddIngredient(ItemID.SunplateBlock, 10).Register();
+    }
+
+    public void SyncedOnHitNPC(Player player, NPC target, bool crit, int hitDirection)
+    {
+        WindowPainPlayer p = player.GetModPlayer<WindowPainPlayer>();
+        if (!p.Shattered)
         {
-            Shattered = true;
+            p.Shattered = true;
             SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.3f }, player.position);
             for (int i = 0; i < 5; i++)
             {
@@ -91,15 +95,6 @@ public class WindowPain : ModItem, IHasSyncedOnHitNPC
                 d.noGravity = Main.rand.NextBool();
             }
         }
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe().AddTile(TileID.Anvils).AddIngredient(ItemID.GoldBroadsword).AddIngredient(ItemID.Glass, 25).AddIngredient(ItemID.SunplateBlock, 10).Register();
-        CreateRecipe().AddTile(TileID.Anvils).AddIngredient(ItemID.PlatinumBroadsword).AddIngredient(ItemID.Glass, 25).AddIngredient(ItemID.SunplateBlock, 10).Register();
-    }
-
-    public void SyncedOnHitNPC(Player player, NPC target, int damageDone, bool crit, int hitDirection)
-    {
     }
 }
 

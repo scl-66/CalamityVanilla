@@ -35,7 +35,7 @@ public partial class CalamityVanilla : Mod
                 GraniteTomeBolt.SpawnParticles(position);
                 break;
             case PacketType.SyncedOnHitNPC:
-                SyncedOnHitNPCItem.RecieveOnHitNPC(reader, whoAmI);
+                ISyncedOnHitEffect.HandlePacket(reader, whoAmI);
                 break;
             default:
                 break;

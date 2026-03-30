@@ -11,43 +11,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Melee.PrismPiercer;
-
-public class PrismAnimation : PlayerDrawLayer
-{
-    public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
-    public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
-    {
-        return drawInfo.drawPlayer.HeldItem.type == ModContent.ItemType<PrismPiercer>() && drawInfo.drawPlayer.ItemAnimationActive;
-    }
-    protected override void Draw(ref PlayerDrawSet drawInfo)
-    {
-        int frame = 0;
-
-        if (drawInfo.drawPlayer.HeldItem.ModItem is PrismPiercer p)
-        {
-            if (p.Shattered)
-                frame = 1;
-        }
-        Asset<Texture2D> texture = TextureAssets.Item[drawInfo.heldItem.type];
-        Vector2 basePosition = drawInfo.drawPlayer.itemLocation - Main.screenPosition;
-        basePosition = new Vector2((int)basePosition.X, (int)basePosition.Y) + (drawInfo.drawPlayer.RotatedRelativePoint(drawInfo.drawPlayer.Center) - drawInfo.drawPlayer.Center);
-        Item heldItem = drawInfo.drawPlayer.HeldItem;
-
-        DrawData swingDraw = new DrawData(
-        texture.Value, // texture
-        basePosition, // position
-        new Rectangle(0, texture.Height() / 2 * frame, texture.Width(), texture.Height() / 2), // texture coords
-        drawInfo.drawPlayer.HeldItem.GetAlpha(Color.White), // color (wow really!?)
-        drawInfo.drawPlayer.itemRotation,  // rotation
-        new Vector2(drawInfo.drawPlayer.direction == -1 ? texture.Value.Width : 0, // origin X
-        drawInfo.drawPlayer.gravDir == 1 ? texture.Value.Height / 2 : 0), // origin Y
-        drawInfo.drawPlayer.GetAdjustedItemScale(heldItem), // scale
-        drawInfo.itemEffect // sprite effects
-        );
-        drawInfo.DrawDataCache.Add(swingDraw);
-        drawInfo.ItemLocation = Vector2.Zero;
-    }
-}
 public class PrismPiercer : ModItem
 {
     public bool Shattered = false;
@@ -82,48 +45,12 @@ public class PrismPiercer : ModItem
         Projectile.NewProjectile(source, pointPoisition, pointPoisition.DirectionTo(Main.MouseWorld) * Item.shootSpeed, type, (int)(damage * 1.5f), 0, player.whoAmI, 0f, vec.Y);
         return false;
     }
-
-    public override void SetStaticDefaults()
-    {
-        DrawAnimationVertical animation = new DrawAnimationVertical(-1, 2, false);
-        animation.NotActuallyAnimating = true;
-        Main.RegisterItemAnimation(Type, animation);
-    }
-    public override bool? UseItem(Player player)
-    {
-        if (player.ItemAnimationJustStarted)
-            Shattered = false;
-        return base.UseItem(player);
-    }
-    public override bool? CanHitNPC(Player player, NPC target)
-    {
-        if (player.ItemAnimationJustStarted)
-            return false;
-        return base.CanHitNPC(player, target);
-    }
-    public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
-    {
-        if (!Shattered)
-        {
-            Shattered = true;
-            SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.3f }, player.position);
-            for (int i = 0; i < 3; i++)
-            {
-                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, new Vector2(player.direction * Main.rand.NextFloat(3, 9), Main.rand.NextFloat(-6, -2)), ModContent.ProjectileType<PrismPiercerShard>(), Item.damage / 2, Item.knockBack / 3, player.whoAmI, target.whoAmI);
-            }
-            for (int i = 0; i < 20; i++)
-            {
-                Dust d = Dust.NewDustPerfect(player.Center + new Vector2(player.direction * 17, 0) + Main.rand.NextVector2Circular(24, 12), DustID.Glass, new Vector2(player.direction * Main.rand.NextFloat(1, 3), Main.rand.NextFloat(-3, -1)));
-                d.noGravity = Main.rand.NextBool();
-            }
-        }
-    }
 }
 public class PrismPiercerShard : ModProjectile
 {
     public override Color? GetAlpha(Color lightColor)
     {
-        return new Color(1f, 1f, 1f, 0.65f);
+        return new Color(1f, 1f, 1f, 0.65f) * Projectile.Opacity;
     }
     public override void SetStaticDefaults()
     {
@@ -131,90 +58,44 @@ public class PrismPiercerShard : ModProjectile
     }
     public override void SetDefaults()
     {
-        Projectile.QuickDefaults();
+        Projectile.QuickDefaults(size: 14);
         Projectile.penetrate = 5;
         Projectile.DamageType = DamageClass.Melee;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
         Projectile.tileCollide = false;
-        Projectile.timeLeft = 300;
+        Projectile.timeLeft = 150;
     }
     public override void AI()
     {
         Projectile.frame = Projectile.whoAmI % 4;
         Projectile.rotation += Projectile.velocity.X * 0.1f;
 
-        Projectile.ai[1]++;
-        NPC n = Main.npc[(int)Projectile.ai[0]];
-        if (!n.active)
+        if (Main.rand.NextBool(5))
         {
-            NPC n2 = Projectile.FindTargetWithinRange(800);
-            if (n2 != null)
-                Projectile.ai[0] = n2.whoAmI;
-            else
-            {
-                Projectile.Kill();
-            }
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.X, Projectile.velocity.Y, 0, Color.Lerp(Main.DiscoColor, Color.White, 0.5f) with { A = 0 } * Projectile.Opacity);
+            d.noGravity = true;
+            d.velocity *= 0.1f;
+            d.noLight = true;
         }
-        if (Projectile.ai[1] > 50 && !Projectile.Hitbox.Intersects(n.Hitbox))
+        NPC n = Projectile.FindTargetWithinRange(300);
+        if(n != null)
         {
-            Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.Center.DirectionTo(n.Center) * 20, 0.03f);
+            Projectile.velocity += Projectile.Center.DirectionTo(n.Center) * 0.2f;
+            Projectile.velocity = Projectile.velocity.LengthClamp(10);
         }
         else
         {
-            Projectile.velocity.Y += 0.05f;
+            Projectile.velocity *= 0.98f;
         }
-
-        if (Main.rand.NextBool(5))
+        if(Projectile.timeLeft < 20)
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.X, Projectile.velocity.Y, 0, Color.Lerp(Main.DiscoColor, Color.White, 0.5f) with { A = 0 });
-            d.noGravity = true;
-            d.velocity *= 0.1f;
+            Projectile.alpha += 255 / 20;
         }
     }
     public override void OnKill(int timeLeft)
     {
         base.OnKill(timeLeft);
-    }
-}
-public class PrismPiercerStarShard : ModProjectile
-{
-    public override void SetStaticDefaults()
-    {
-        ProjectileID.Sets.TrailCacheLength[Type] = 10;
-        ProjectileID.Sets.TrailingMode[Type] = 2;
-    }
-    public override void SetDefaults()
-    {
-        Projectile.QuickDefaults();
-        Projectile.tileCollide = false;
-        Projectile.timeLeft = 30;
-        Projectile.penetrate = -1;
-    }
-    public override void AI()
-    {
-        Projectile.Opacity = Projectile.timeLeft / 30f;
-        Projectile.velocity *= 0.95f;
-        Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-
-        if (Main.rand.NextBool(5))
-        {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.X, Projectile.velocity.Y, 0, Main.DiscoColor with { A = 0 });
-            d.noGravity = true;
-        }
-    }
-    public override bool PreDraw(ref Color lightColor)
-    {
-        Asset<Texture2D> tex = TextureAssets.Projectile[Type];
-
-        for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
-        {
-            float multiply = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Type];
-            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, null, Main.DiscoColor with { A = 0 } * multiply * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, multiply, SpriteEffects.None);
-        }
-
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0f) * Projectile.Opacity * 3, Projectile.rotation, tex.Size() / 2, 0.8f, SpriteEffects.None);
-        return false;
     }
 }
 public class PrismPiercerStar : ModProjectile
@@ -243,7 +124,7 @@ public class PrismPiercerStar : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+        SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.5f}, Projectile.position);
         for (int i = 0; i < 25; i++)
         {
             Dust d = Dust.NewDustPerfect(Projectile.position, ModContent.DustType<SimpleColorableGlowyDust>(), Main.rand.NextVector2Circular(6, 6), 0, Color.Lerp(Main.DiscoColor, Color.White, Main.rand.NextFloat(0.5f)) with { A = 0 });
@@ -251,15 +132,15 @@ public class PrismPiercerStar : ModProjectile
             //d.fadeIn = Main.rand.NextFloat(2);
         }
 
-        //if (Main.myPlayer != Projectile.owner)
-        //    return;
+        if (Main.myPlayer != Projectile.owner)
+            return;
 
-        //float rotation = Main.rand.NextFloat(-0.1f, 0.1f);
+        float rotation = Main.rand.NextFloat(-0.1f, 0.1f);
 
-        //for(int i = 0; i < 5; i++)
-        //{
-        //    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, Main.rand.NextFloat(-12f,-9f)).RotatedBy((i * MathHelper.TwoPi / 5f) + rotation), ModContent.ProjectileType<PrismPiercerStarShard>(), Projectile.damage / 3, 0, Projectile.owner);
-        //}
+        for (int i = 0; i < 5; i++)
+        {
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, Main.rand.NextFloat(-2f, -1f)).RotatedBy((i * MathHelper.TwoPi / 5f) + rotation), ModContent.ProjectileType<PrismPiercerShard>(), Projectile.damage / 3, 0, Projectile.owner);
+        }
     }
     public override bool PreDraw(ref Color lightColor)
     {

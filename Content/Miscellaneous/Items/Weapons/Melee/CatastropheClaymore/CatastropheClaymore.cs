@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Common.Interfaces;
+using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
 using Microsoft.Xna.Framework;
@@ -240,35 +241,14 @@ public class CatastropheClaymoreBall : ModProjectile
         {
             case PLIGHT:
                 target.AddBuff(BuffID.OnFire3, 60 * 3);
-                for (int i = 0; i < 15; i++)
-                {
-                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(8, 8));
-                    d.noGravity = true;
-                    d.scale = 2f;
-                }
                 break;
             case NIGHT:
+                Projectile.penetrate = -1;
                 bool debuff = Main.rand.NextBool();
                 target.AddBuff(debuff ? BuffID.Ichor : BuffID.CursedInferno, 60 * 3);
-                for (int i = 0; i < 15; i++)
-                {
-                    Dust d = Dust.NewDustPerfect(Projectile.Center, debuff ? DustID.IchorTorch : DustID.CursedTorch, Main.rand.NextVector2Circular(4, 4));
-                    d.noGravity = !Main.rand.NextBool(3);
-                    d.scale = Main.rand.NextFloat(0.5f, 1.5f);
-                }
-                Projectile.penetrate = -1;
                 break;
             case WHITE:
                 target.AddBuff(BuffID.Frostburn2, 60 * 3);
-                for (int i = 0; i < 15; i++)
-                {
-                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch, Main.rand.NextVector2Circular(8, 8));
-                    d.noGravity = true;
-                    d.scale = 1f;
-                    Dust d2 = Dust.NewDustPerfect(Projectile.Center, DustID.Snow, Main.rand.NextVector2Circular(8, 8));
-                    d2.noGravity = true;
-                    d2.scale = 1f;
-                }
                 break;
         }
     }
