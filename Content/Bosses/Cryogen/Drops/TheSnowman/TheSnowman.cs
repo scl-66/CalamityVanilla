@@ -56,6 +56,9 @@ public class TheSnowmanProjectile : BaseFlailProjectile
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
         ProjectileID.Sets.DontCancelChannelOnKill[Type] = true;
 
+        if (Main.dedServ)
+            return;
+
         for (int i = 0; i < 5; i++)
         {
             int goreType = Mod.Find<ModGore>($"TheSnowmanChain{i}").Type;
