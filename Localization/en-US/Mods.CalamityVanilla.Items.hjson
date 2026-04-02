@@ -406,3 +406,35 @@ UrchinSpine: {
 	DisplayName: Urchin Spine
 	Tooltip: Can be used as a dart
 }
+
+JonaWig: {
+	DisplayName: Jona's Wig
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		'Jaundice included'
+		'''
+}
+
+JonaBody: {
+	DisplayName: Jona's Corset
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		'Only five fingers on each glove are hollow'
+		'''
+}
+
+JonaLegs: {
+	DisplayName: Jona's boots
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		'Includes extra toe space
+		'''
+}
+
+JonaWings: {
+	DisplayName: Jona's Stylistically Inconsistent Gooey "Strawberry Jelly" Wings
+	Tooltip: "'Great for impersonating Vanillamity devs!'"
+}
