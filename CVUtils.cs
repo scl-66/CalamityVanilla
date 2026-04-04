@@ -13,6 +13,34 @@ namespace CalamityVanilla;
 
 public static class CVUtils
 {
+    public static void SimpleFlyMovement(this NPC n, Vector2 desiredVelocity, float moveSpeedX, float moveSpeedY)
+    {
+        if (n.velocity.X < desiredVelocity.X)
+        {
+            n.velocity.X += moveSpeedX;
+            if (n.velocity.X < 0f && desiredVelocity.X > 0f)
+                n.velocity.X += moveSpeedX;
+        }
+        else if (n.velocity.X > desiredVelocity.X)
+        {
+            n.velocity.X -= moveSpeedX;
+            if (n.velocity.X > 0f && desiredVelocity.X < 0f)
+                n.velocity.X -= moveSpeedX;
+        }
+
+        if (n.velocity.Y < desiredVelocity.Y)
+        {
+            n.velocity.Y += moveSpeedY;
+            if (n.velocity.Y < 0f && desiredVelocity.Y > 0f)
+                n.velocity.Y += moveSpeedY;
+        }
+        else if (n.velocity.Y > desiredVelocity.Y)
+        {
+            n.velocity.Y -= moveSpeedY;
+            if (n.velocity.Y > 0f && desiredVelocity.Y < 0f)
+                n.velocity.Y -= moveSpeedY;
+        }
+    }
     public static void QuickDefaults(this Projectile proj, bool hostile = false, int size = 8, int aiStyle = -1)
     {
         proj.aiStyle = aiStyle;

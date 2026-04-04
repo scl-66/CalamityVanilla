@@ -314,8 +314,7 @@ PrismPiercer: {
 	DisplayName: Prism Piercer
 	Tooltip:
 		'''
-		Causes stars to fall from the sky
-		Breaks into homing shards on contact
+		Causes shattering stars to fall from the sky
 		'Taste the rainbow!'
 		'''
 }
@@ -437,4 +436,19 @@ JonaLegs: {
 JonaWings: {
 	DisplayName: Jona's Stylistically Inconsistent Gooey "Strawberry Jelly" Wings
 	Tooltip: "'Great for impersonating Vanillamity devs!'"
+}
+
+SixtyHead: {
+	DisplayName: Sixty's All-Seeing Eye
+	Tooltip: "'Great for impersonating Vanillamity devs!'"
+}
+
+FrostEaterBanner: {
+	DisplayName: Frost Eater Banner
+	Tooltip: ""
+}
+
+RimeraBanner: {
+	DisplayName: Rimera Banner
+	Tooltip: ""
 }

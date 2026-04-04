@@ -34,3 +34,13 @@ SeaUrchin: {
 	DisplayName: Sea Urchin
 	Bestiary: I dunno man, I just work here.
 }
+
+FrostEater: {
+	DisplayName: Frost Biter
+	Bestiary: I dunno man, I just work here.
+}
+
+Rimera: {
+	DisplayName: Rimera
+	Bestiary: I dunno man, I just work here.
+}

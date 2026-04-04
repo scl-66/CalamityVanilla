@@ -15,6 +15,9 @@ public static class FighterAI
      * figure out what crab does
      * add jump height
      */
+    /// <summary>
+    /// All AI slots are used.
+    /// </summary>
     public static void AI(NPC n, float moveSpeed, out bool JustJumped, bool despawnDiscouraged = true, bool hasWideHitbox = false, bool canOpenDoors = false, bool undead = false, bool crab = true, int wallForm = -1)
     {
         JustJumped = false;

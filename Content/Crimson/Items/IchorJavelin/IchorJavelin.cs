@@ -15,6 +15,10 @@ namespace CalamityVanilla.Content.Crimson.Items.IchorJavelin;
 
 public class IchorJavelin : ModItem
 {
+    public override Color? GetAlpha(Color lightColor)
+    {
+        return Color.White;
+    }
     public override void SetStaticDefaults()
     {
         Item.ResearchUnlockCount = 99;
@@ -39,6 +43,11 @@ public class IchorJavelin : ModItem
 
 public class IchorJavelinProjectile : ModProjectile
 {
+    public override Color? GetAlpha(Color lightColor)
+    {
+        return Color.White;
+    }
+
     public int pierceAmt = 0;
     public int startDamage;
     public override void SetDefaults()
