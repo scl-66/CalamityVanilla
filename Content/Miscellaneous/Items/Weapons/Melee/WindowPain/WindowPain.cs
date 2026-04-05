@@ -78,7 +78,7 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
         CreateRecipe().AddTile(TileID.Anvils).AddIngredient(ItemID.PlatinumBroadsword).AddIngredient(ItemID.Glass, 25).AddIngredient(ItemID.SunplateBlock, 10).Register();
     }
 
-    public void SyncedOnHitNPC(Player player, NPC target, bool crit, int hitDirection)
+    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
     {
         WindowPainPlayer p = player.GetModPlayer<WindowPainPlayer>();
         if (!p.Shattered)
@@ -87,7 +87,7 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
             SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.3f }, player.position);
             for (int i = 0; i < 5; i++)
             {
-                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, new Vector2(player.direction * Main.rand.NextFloat(3, 9), Main.rand.NextFloat(-6, -2)), ModContent.ProjectileType<WindowPainShard>(), Item.damage / 3, Item.knockBack / 3, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, new Vector2(player.direction * Main.rand.NextFloat(3, 9), Main.rand.NextFloat(-6, -2)), ModContent.ProjectileType<WindowPainShard>(), damage / 3, knockback / 3, player.whoAmI);
             }
             for (int i = 0; i < 20; i++)
             {

@@ -452,3 +452,8 @@ RimeraBanner: {
 	DisplayName: Rimera Banner
 	Tooltip: ""
 }
+
+VeinBuster: {
+	DisplayName: Vein Buster
+	Tooltip: ""
+}
