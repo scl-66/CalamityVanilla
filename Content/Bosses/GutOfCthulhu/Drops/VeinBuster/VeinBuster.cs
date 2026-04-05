@@ -1,7 +1,4 @@
 ﻿using CalamityVanilla.Common.Interfaces;
-using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Melee.WindowPain;
-using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,8 +9,6 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
-using static tModPorter.ProgressUpdate;
 
 namespace CalamityVanilla.Content.Bosses.GutOfCthulhu.Drops.VeinBuster;
 
@@ -62,7 +57,7 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
                     (
                         player.GetSource_ItemUse(Item),
                         player.Center + direction * 16,
-                        direction * Main.rand.NextFloat(16f, 20f),
+                        direction * Main.rand.NextFloat(24f, 32f),
                         ModContent.ProjectileType<VeinBusterShard>(),
                         damage / 5, knockback / 2,
                         player.whoAmI
@@ -71,12 +66,12 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
                 }
             }
 
-            int visualBurstAmount = 3;
+            int visualBurstAmount = 4;
 
             for (int i = 0; i < visualBurstAmount; i++)
             {
                 var basePosition = (hitDirection == 1 ? target.Right : target.Left) + Main.rand.NextVector2Circular(8, 8);
-                var baseVelocity = (hitDirection == 1 ? Vector2.UnitX : -Vector2.UnitX).RotatedByRandom(0.4) * Main.rand.NextFloat(16f, 24f);
+                var baseVelocity = (hitDirection == 1 ? new Vector2(1, 1) : new Vector2(-1, 1)).RotatedByRandom(1) * Main.rand.NextFloat(16f, 24f);
 
                 for (int j = 0; j < 10; j++)
                 {
@@ -139,12 +134,14 @@ public class VeinBusterShard : ModProjectile
 
         Projectile.rotation = Projectile.velocity.ToRotation();
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 6; i++)
         {
+            var progress = i / 5f;
+
             var dust = Dust.NewDustPerfect(
-                Projectile.Center - Projectile.rotation.ToRotationVector2() * 35 + Projectile.velocity,
+                Projectile.Center - Projectile.rotation.ToRotationVector2() * 42 + Projectile.velocity * progress,
                 DustID.Blood,
-                Scale: 1.5f * Projectile.Opacity
+                Scale: 1.25f * Projectile.Opacity
             );
             dust.noGravity = true;
         }
