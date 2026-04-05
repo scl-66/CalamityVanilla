@@ -47,13 +47,13 @@ public class CursedDaggerExplosion : ModProjectile
         Projectile.aiStyle = -1;
         Projectile.friendly = true;
         //Projectile.DamageType = DamageClass.Ranged;
-        Projectile.timeLeft = 14;
+        Projectile.timeLeft = 21;
         Projectile.penetrate = -1;
         Projectile.tileCollide = false;
     }
     public override void AI()
     {
-        if (Projectile.timeLeft % 2 == 0)
+        if (Projectile.timeLeft % 3 == 0)
         {
             Projectile.frame++;
         }
@@ -61,7 +61,7 @@ public class CursedDaggerExplosion : ModProjectile
     }
     public override Color? GetAlpha(Color lightColor)
     {
-        return new Color(1f, 1f, 1f, 0.5f);
+        return new Color(1f, 1f, 1f, 1f);
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -114,6 +114,7 @@ public class CursedDaggerProjectile : ModProjectile
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.CursedTorch, speed);
                 d.noGravity = true;
                 d.scale = Main.rand.NextFloat(0.8f, 1.2f);
+                d.fadeIn = Main.rand.NextFloat(1.4f);
             }
         }
         if (Projectile.ai[0] > 30)

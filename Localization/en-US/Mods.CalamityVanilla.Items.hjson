@@ -282,7 +282,7 @@ PermafrostHook: {
 
 CarnageFlail: {
 	DisplayName: Carnage
-	Tooltip: ""
+	Tooltip: Tears healing hearts from slain enemies
 }
 
 FighterJetRemote: {
