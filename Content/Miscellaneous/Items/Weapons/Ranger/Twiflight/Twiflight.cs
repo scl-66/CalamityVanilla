@@ -96,6 +96,7 @@ public class TwiflightFeather : ModProjectile
     {
         Projectile.QuickDefaults();
         Projectile.DamageType = DamageClass.Ranged;
+        Projectile.arrow = true;
         Projectile.penetrate = 3;
         Projectile.timeLeft = 320;
         Projectile.usesLocalNPCImmunity = true;
