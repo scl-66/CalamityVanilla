@@ -56,8 +56,8 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
                     var projectile = Projectile.NewProjectileDirect
                     (
                         player.GetSource_ItemUse(Item),
-                        player.Center + direction * 16,
-                        direction * Main.rand.NextFloat(24f, 32f),
+                        target.Center + direction * 16,
+                        direction * Main.rand.NextFloat(8f, 16f),
                         ModContent.ProjectileType<VeinBusterShard>(),
                         damage / 5, knockback / 2,
                         player.whoAmI
@@ -71,7 +71,11 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
             for (int i = 0; i < visualBurstAmount; i++)
             {
                 var basePosition = (hitDirection == 1 ? target.Right : target.Left) + Main.rand.NextVector2Circular(8, 8);
-                var baseVelocity = (hitDirection == 1 ? new Vector2(1, 1) : new Vector2(-1, 1)).RotatedByRandom(1) * Main.rand.NextFloat(16f, 24f);
+                var baseVelocity = (hitDirection == 1 ? Vector2.UnitX : -Vector2.UnitX).RotatedByRandom(1) * Main.rand.NextFloat(8f, 16f); ;/*player.itemRotation.ToRotationVector2()
+                    .RotatedBy(player.direction == 1 ? Math.PI : 0)
+                    .RotatedBy(Math.PI * 0.75 * (player.direction == 1 ? -1 : 1))
+                    /*.RotatedByRandom(1)
+                    * Main.rand.NextFloat(8f, 16f);*/
 
                 for (int j = 0; j < 10; j++)
                 {
@@ -80,8 +84,8 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
 
                     var dust = Dust.NewDustPerfect(
                         basePosition + Main.rand.NextVector2Circular(4, 4),
-                        DustID.Blood,
-                        baseVelocity * progress,
+                        ModContent.DustType<VeinBusterBloodDust>(),
+                        baseVelocity.RotatedByRandom(0.2) * progress,
                         Scale: scale
                     );
                     dust.noGravity = true;
@@ -96,7 +100,8 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
 
             modPlayer.SpawnedShards = true;
         }
-    }
+
+	}
 }
 
 public class VeinBusterShard : ModProjectile
@@ -105,7 +110,7 @@ public class VeinBusterShard : ModProjectile
 
     public override void SetStaticDefaults()
     {
-        ProjectileID.Sets.TrailCacheLength[Type] = 10;
+        ProjectileID.Sets.TrailCacheLength[Type] = 30;
         ProjectileID.Sets.TrailingMode[Type] = 2;
     }
 
@@ -120,27 +125,32 @@ public class VeinBusterShard : ModProjectile
         Projectile.friendly = true;
         Projectile.hostile = false;
         Projectile.DamageType = DamageClass.Melee;
+
+        Projectile.extraUpdates = 2;
+
+        ProjectileID.Sets.TrailCacheLength[Type] = 30;
     }
 
     public override void AI()
     {
         Timer++;
-        if (Timer > 30)
+        if (Timer > 30 * Projectile.extraUpdates)
         {
             Projectile.velocity.Y += 0.2f;
         }
 
-        Projectile.Opacity = Utils.GetLerpValue(0, 5, Timer, true);
+        Projectile.Opacity = Utils.GetLerpValue(0, 5 * Projectile.extraUpdates, Timer, true);
 
         Projectile.rotation = Projectile.velocity.ToRotation();
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 2; i++)
         {
-            var progress = i / 5f;
+            var progress = 1f - i / 2f;
 
             var dust = Dust.NewDustPerfect(
-                Projectile.Center - Projectile.rotation.ToRotationVector2() * 42 + Projectile.velocity * progress,
-                DustID.Blood,
+                Projectile.Center - Projectile.rotation.ToRotationVector2() * 42 - Projectile.velocity * Main.rand.NextFloat(),
+				ModContent.DustType<VeinBusterBloodDust>(),
+                Velocity: Projectile.velocity,
                 Scale: 1.25f * Projectile.Opacity
             );
             dust.noGravity = true;
@@ -158,7 +168,7 @@ public class VeinBusterShard : ModProjectile
                 shardDustType
             );
         }
-        int bloodDustType = DustID.Blood;
+        int bloodDustType = ModContent.DustType<VeinBusterBloodDust>();
         for (int i = 0; i < 5; i++)
         {
             Dust.NewDustDirect
@@ -178,14 +188,14 @@ public class VeinBusterShard : ModProjectile
 
         for (int i = Projectile.oldPos.Length - 1; i >= 1; i--)
         {
-            var progress = 1f - i / (10 - 1f);
-            var alpha = float.Lerp(0f, 0.5f, progress);
+            var progress = 1f - i / (Projectile.oldPos.Length - 1f);
+            var alpha = float.Lerp(0f, 0.33f, progress);
             Main.EntitySpriteDraw
             (
                 texture,
                 Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition, null,
-                lightColor * alpha * Projectile.Opacity,
-                Projectile.rotation,
+                lightColor.MultiplyRGB(Color.Red) * alpha * Projectile.Opacity,
+                Projectile.oldRot[i],
                 new Vector2(texture.Width, texture.Height / 2f),
                 1f,
                 SpriteEffects.None
@@ -195,7 +205,7 @@ public class VeinBusterShard : ModProjectile
         Main.EntitySpriteDraw
         (
             texture,
-            Projectile.Center - Main.screenPosition, null,
+            Projectile.position + Projectile.Size * 0.5f - Main.screenPosition, null,
             lightColor * Projectile.Opacity,
             Projectile.rotation,
             new Vector2(texture.Width, texture.Height / 2f),
@@ -208,3 +218,12 @@ public class VeinBusterShard : ModProjectile
 }
 
 public class VeinBusterShardDust : ModDust;
+
+public class VeinBusterBloodDust : ModDust
+{
+	public override bool Update(Dust dust)
+	{
+		UpdateType = DustID.Blood;
+		return base.Update(dust);
+	}
+}
