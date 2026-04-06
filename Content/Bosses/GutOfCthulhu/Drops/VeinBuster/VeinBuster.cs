@@ -127,8 +127,6 @@ public class VeinBusterShard : ModProjectile
         Projectile.DamageType = DamageClass.Melee;
 
         Projectile.extraUpdates = 2;
-
-        ProjectileID.Sets.TrailCacheLength[Type] = 30;
     }
 
     public override void AI()
@@ -143,7 +141,7 @@ public class VeinBusterShard : ModProjectile
 
         Projectile.rotation = Projectile.velocity.ToRotation();
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
             var progress = 1f - i / 2f;
 
@@ -189,7 +187,7 @@ public class VeinBusterShard : ModProjectile
         for (int i = Projectile.oldPos.Length - 1; i >= 1; i--)
         {
             var progress = 1f - i / (Projectile.oldPos.Length - 1f);
-            var alpha = float.Lerp(0f, 0.33f, progress);
+            var alpha = float.Lerp(0f, 0.25f, progress);
             Main.EntitySpriteDraw
             (
                 texture,
