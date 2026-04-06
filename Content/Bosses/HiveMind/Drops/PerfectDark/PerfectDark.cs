@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Interfaces;
+using CalamityVanilla.Content.Dusts;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -12,7 +13,7 @@ public class PerfectDark : ModItem
     public override void SetDefaults()
     {
         Item.Size = new Vector2(28, 34);
-        Item.damage = 67;
+        Item.damage = 59;
         Item.knockBack = 6f;
         Item.useTime = 21;
         Item.useAnimation = 21;
@@ -34,9 +35,9 @@ public class PerfectDark : ModItem
             (
                 source,
                 position + velocity.SafeNormalize(Vector2.UnitX) * 16f,
-                velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.66f, 1.5f),
+                velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.66f, 1.25f),
                 type,
-                damage,//(int)(damage * 0.5f),
+                (int)(damage * 0.5f),
                 (int)(knockback * 0.33f),
                 player.whoAmI,
                 ai0: Main.rand.Next(90, 150)
@@ -78,7 +79,7 @@ public class PerfectDark : ModItem
     }
 }
 
-public class PerfectDarkCloud : ModProjectile
+public class PerfectDarkCloud : ModProjectile, ISyncedOnHitEffect
 {
     public float TotalTime => Projectile.ai[0];
     public ref float Timer => ref Projectile.localAI[0];
@@ -100,7 +101,7 @@ public class PerfectDarkCloud : ModProjectile
         Projectile.friendly = true;
         Projectile.hostile = false;
 
-        Projectile.tileCollide = false;
+        //Projectile.tileCollide = false;
         Projectile.ignoreWater = true;
 
         Projectile.frameCounter = Main.rand.Next(5 + 1);
@@ -130,5 +131,22 @@ public class PerfectDarkCloud : ModProjectile
 
         Projectile.velocity *= 0.98f;
         Projectile.rotation += Projectile.velocity.X * 0.02f;
+    }
+
+    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    {
+        if (Timer < TotalTime - 30)
+        {
+            Timer += 15;
+            Timer = float.Min(Timer, TotalTime - 30);
+        }
+    }
+
+    public override bool OnTileCollide(Vector2 oldVelocity)
+    {
+        Projectile.velocity = oldVelocity;
+        Timer += 5;
+
+        return false;
     }
 }
