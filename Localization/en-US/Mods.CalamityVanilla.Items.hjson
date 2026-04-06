@@ -455,5 +455,8 @@ RimeraBanner: {
 
 VeinBuster: {
 	DisplayName: Vein Buster
-	Tooltip: ""
+	Tooltip:
+		'''
+		Releases deadly bone shards on contact
+		'''
 }
