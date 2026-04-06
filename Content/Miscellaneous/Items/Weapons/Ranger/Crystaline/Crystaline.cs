@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -16,7 +17,7 @@ public class Crystaline : ModItem
     {
         Item.DefaultToThrownWeapon(ModContent.ProjectileType<CrystalineProjectile>(), 23, 12, true);
         Item.noUseGraphic = true;
-        Item.damage = 12;
+        Item.damage = 16;
         Item.knockBack = 2;
         Item.rare = ItemRarityID.Blue;
         Item.consumable = false;
@@ -41,8 +42,8 @@ public class CrystalineProjectile : ModProjectile
     }
     public override void SetStaticDefaults()
     {
-        ProjectileID.Sets.TrailingMode[Type] = 2;
-        ProjectileID.Sets.TrailCacheLength[Type] = 10;
+        ProjectileID.Sets.TrailingMode[Type] = 3;
+        ProjectileID.Sets.TrailCacheLength[Type] = 20;
     }
     public override void OnKill(int timeLeft)
     {
@@ -52,6 +53,19 @@ public class CrystalineProjectile : ModProjectile
             Dust d = Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.ai[1] == 0 ? DustID.GemDiamond : DustID.Glass, Main.rand.NextVector2Circular(3, 3));
             d.noGravity = !Main.rand.NextBool(3);
             d.velocity -= Projectile.velocity * 0.2f;
+        }
+        if (Projectile.ai[1] < 1f)
+        {
+            int length = ProjectileID.Sets.TrailCacheLength[Type];
+            int t = ModContent.DustType<SimpleColorableGlowyDust>();
+            for (int i = 1; i < length; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, t);
+                d.color = new Color(0.2f, 0.6f, 0.8f, 0f) * (1f - Projectile.ai[1]) * Projectile.Opacity * (1f - i / (float)length);
+                d.noGravity = d.noLight = true;
+                d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * 3;
+                d.velocity *= 0.4f;
+            }
         }
     }
     public override void AI()
@@ -65,7 +79,7 @@ public class CrystalineProjectile : ModProjectile
             {
                 for (int i = -1; i < 2; i++)
                 {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(i * MathHelper.TwoPi / 3 + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(1.3f, 1.6f), ModContent.ProjectileType<CrystalineShard>(), Projectile.damage / 3, Projectile.knockBack / 3, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(i * MathHelper.TwoPi / 3 + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(1.3f, 1.6f), ModContent.ProjectileType<CrystalineShard>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack / 3, Projectile.owner);
                 }
             }
             SoundEngine.PlaySound(SoundID.Item110 with { Pitch = 0.5f, PitchVariance = 0.6f }, Projectile.position);
@@ -89,6 +103,12 @@ public class CrystalineProjectile : ModProjectile
                 Dust d2 = Dust.NewDustPerfect(Projectile.Center, DustID.GemDiamond, new Vector2(Main.rand.NextFloat(-7, 7), 0).RotatedBy(sparkle.Rotation + Main.rand.NextFloat(-0.1f, 0.1f)));
                 d2.scale = Main.rand.NextFloat(0.8f, 1.2f);
                 d2.noGravity = true;
+
+                Dust d3 = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.UltraBrightTorch);
+                d3.color = Color.Cyan;
+                d3.velocity *= 2;
+                d3.noGravity = true;
+                d3.fadeIn = Main.rand.NextFloat(1.3f);
             }
         }
         if (Projectile.ai[0] > 30)
@@ -101,6 +121,12 @@ public class CrystalineProjectile : ModProjectile
         else
         {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            if (Main.rand.NextBool(4))
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.GemDiamond);
+                d.velocity = Projectile.velocity.RotatedByRandom(0.2f);
+                d.noGravity = true;
+            }
         }
     }
     public override bool PreDraw(ref Color lightColor)
@@ -110,10 +136,15 @@ public class CrystalineProjectile : ModProjectile
             int length = ProjectileID.Sets.TrailCacheLength[Type];
             for (int i = 1; i < length; i++)
             {
-                Main.EntitySpriteDraw(TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, null, new Color(0.2f, 0.6f, 0.8f, 0f) * (1f - Projectile.ai[1]) * Projectile.Opacity * (1f - i / (float)length), Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]).ToRotation() + MathHelper.PiOver2, TextureAssets.Extra[ExtrasID.ThePerfectGlow].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
+                Main.EntitySpriteDraw(TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, null, new Color(0.05f, 0.15f, 0.2f, 0f) * (1f - Projectile.ai[1]) * Projectile.Opacity * (1f - i / (float)length), Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]).ToRotation() + MathHelper.PiOver2, TextureAssets.Extra[ExtrasID.ThePerfectGlow].Size() / 2, new Vector2(1f - Projectile.ai[1], 1) * Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
             }
         }
-        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.White, lightColor, MathHelper.Clamp(Projectile.ai[1] * 0.5f, 0, 1f)) * Projectile.Opacity, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, lightColor * Projectile.Opacity, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
+        if (Projectile.ai[1] < 1f)
+        {
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(1f,1f,1f,0f) * Projectile.Opacity * (1f - Projectile.ai[1]) * 2, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(0.5f, 0.5f, 0.5f, 0.3f) * Projectile.Opacity * (1f - Projectile.ai[1]), Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale * 1.5f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
+        }
         return false;
     }
 }
@@ -150,5 +181,12 @@ public class CrystalineShard : ModProjectile
         //    Main.EntitySpriteDraw(TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value, Projectile.Center - Main.screenPosition, null, new Color(0.8f, 1f, 1f, 0f) * Projectile.Opacity * 0.1f, (i * MathHelper.PiOver2), TextureAssets.Extra[ExtrasID.ThePerfectGlow].Size() / 2, new Vector2(0.4f,3f) * Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
         //}
         return false;
+    }
+    public override void OnKill(int timeLeft)
+    {
+        if(timeLeft > 0)
+        {
+
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CalamityVanilla.Common.Interfaces;
-using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
 using Microsoft.Xna.Framework;
@@ -10,7 +9,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.Graphics.Renderers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -75,6 +73,20 @@ public class CatastropheClaymore : ModItem
         //    d.velocity *= 0.25f;
         //    d.velocity += vector2 * 5f;
         //}
+        int t = ModContent.DustType<SimpleColorableGlowyDust>();
+        for (int i = 0; i < 2; i++)
+        {
+            CVUtils.GetPointOnSwungItemPath(70f, 72f, 0.15f + Main.rand.NextFloat(0.8f), Item.scale, out var location2, out var outwardDirection2, player);
+            Vector2 vector2 = outwardDirection2.RotatedBy((float)Math.PI / 2f * (float)player.direction * player.gravDir);
+
+            Dust d = Dust.NewDustPerfect(location2, t, new Vector2(player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f), 140, i == 0? Main.DiscoColor : new Color(255 - Main.DiscoColor.R, 255 - Main.DiscoColor.G, 255 - Main.DiscoColor.B), 1.5f);
+            d.noGravity = true;
+            d.color = Color.Lerp(d.color, Color.White, Main.rand.NextFloat(0.6f));
+            d.color.A = 0;
+            d.scale = Main.rand.NextFloat(0.8f, 1.3f);
+            d.velocity = vector2 * 2.5f;
+            d.velocity.X += Utils.PingPongFrom01To010(player.itemAnimation / (float)player.itemAnimationMax) * 8 * player.direction;
+        }
     }
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
@@ -123,8 +135,8 @@ public class CatastropheClaymoreGlow : PlayerDrawLayer
             return;
 
         drawSword(ref drawInfo, Color.LightGray, 0);
-        drawSword(ref drawInfo, new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 0) * 0.8f, 1);
-        drawSword(ref drawInfo, new Color(255 - Main.DiscoR, 255 - Main.DiscoG, 255 - Main.DiscoB, 0) * 0.8f, 2);
+        drawSword(ref drawInfo, new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, 128) * 0.8f, 1);
+        drawSword(ref drawInfo, new Color(255 - Main.DiscoR, 255 - Main.DiscoG, 255 - Main.DiscoB, 128) * 0.8f, 2);
     }
 }
 
@@ -182,11 +194,11 @@ public class CatastropheClaymoreBall : ModProjectile
         if (Projectile.ai[1] < 5)
             return;
 
-        Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowRod);
+        Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SimpleColorableGlowyDust>());
         d.velocity *= 0.3f;
         d.noGravity = true;
         d.velocity += Projectile.velocity * 0.4f;
-        d.color = Color.Lerp(GetDustColor(), new Color(1f, 1f, 1f, 0f), Main.rand.NextFloat(0f, 0.8f));
+        d.color = Color.Lerp(GetDustColor(), Color.White, Main.rand.NextFloat(0f, 0.6f)) with { A = 0 };
         d.scale = Projectile.scale;
     }
     public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -214,11 +226,12 @@ public class CatastropheClaymoreBall : ModProjectile
     {
         if (Projectile.ai[0] == LIGHT)
         {
+            int type = ModContent.DustType<SimpleColorableGlowyDust>();
             SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
             for (int i = 0; i < 15; i++)
             {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.RainbowRod, Main.rand.NextVector2Circular(4, 2).RotatedBy(Projectile.rotation));
-                d.color = Color.Lerp(GetDustColor(), new Color(1f, 1f, 1f, 0f), Main.rand.NextFloat(0f, 0.8f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, type, Main.rand.NextVector2Circular(4, 2).RotatedBy(Projectile.rotation));
+                d.color = Color.Lerp(GetDustColor(), Color.White, Main.rand.NextFloat(0f, 0.6f)) with { A = 0 };
                 d.noGravity = true;
             }
 
@@ -264,39 +277,43 @@ public class CatastropheClaymoreBall : ModProjectile
             }
         }
 
-        for (int i = 0; i < 3; i++)
-        {
-            PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-            sparkle.ColorTint = GetDustColor();
-            sparkle.LocalPosition = Projectile.Center;
-            sparkle.Scale = Projectile.ai[0] == MIGHT ? new Vector2(Main.rand.NextFloat(4f, 5f), Main.rand.NextFloat(1.5f, 2f)) : new Vector2(Main.rand.NextFloat(2f, 3.5f), Main.rand.NextFloat(0.6f, 1f));
-            sparkle.RotationVelocity = Main.rand.NextFloat(0.2f, -0.2f);
-            sparkle.RotationAcceleration = -sparkle.RotationVelocity / 120f;
-            sparkle.FadeInNormalizedTime = 0.05f;
-            sparkle.FadeOutNormalizedTime = 0.95f;
-            sparkle.FadeInEnd = sparkle.FadeOutStart = Main.rand.NextFloat(5, 10);
-            sparkle.FadeOutEnd = sparkle.TimeToLive = Main.rand.NextFloat(30, 60);
-            sparkle.AdditiveAmount = 0.5f;
-            Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-        }
+        //for (int i = 0; i < 3; i++)
+        //{
+        //    PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
+        //    sparkle.ColorTint = GetDustColor();
+        //    sparkle.LocalPosition = Projectile.Center;
+        //    sparkle.Scale = Projectile.ai[0] == MIGHT ? new Vector2(Main.rand.NextFloat(4f, 5f), Main.rand.NextFloat(1.5f, 2f)) : new Vector2(Main.rand.NextFloat(2f, 3.5f), Main.rand.NextFloat(0.6f, 1f));
+        //    sparkle.RotationVelocity = Main.rand.NextFloat(0.2f, -0.2f);
+        //    sparkle.RotationAcceleration = -sparkle.RotationVelocity / 120f;
+        //    sparkle.FadeInNormalizedTime = 0.05f;
+        //    sparkle.FadeOutNormalizedTime = 0.95f;
+        //    sparkle.FadeInEnd = sparkle.FadeOutStart = Main.rand.NextFloat(5, 10);
+        //    sparkle.FadeOutEnd = sparkle.TimeToLive = Main.rand.NextFloat(30, 60);
+        //    sparkle.AdditiveAmount = 0.5f;
+        //    Main.ParticleSystem_World_OverPlayers.Add(sparkle);
+        //}
+        int type = ModContent.DustType<SimpleColorableGlowyDust>();
         if (Projectile.ai[0] == MIGHT)
         {
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 25; i++)
             {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.RainbowRod, Main.rand.NextVector2Circular(8, 8));
-                d.color = Color.Lerp(GetDustColor(), new Color(1f, 1f, 1f, 0f), Main.rand.NextFloat(0f, 0.8f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, type, Main.rand.NextVector2Circular(8, 8));
+                d.color = Color.Lerp(GetDustColor(), Color.White, Main.rand.NextFloat(0f, 0.6f)) with { A = 0 };
                 d.noGravity = true;
                 d.scale += Main.rand.NextFloat();
+                d.fadeIn = Main.rand.NextFloat(2.5f);
+                d.velocity += Projectile.velocity * Main.rand.NextFloat(0.3f);
             }
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
         }
         else
         {
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 15; i++)
             {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.RainbowRod, Main.rand.NextVector2Circular(4, 4));
-                d.color = Color.Lerp(GetDustColor(), new Color(1f, 1f, 1f, 0f), Main.rand.NextFloat(0f, 0.8f));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, type, Main.rand.NextVector2Circular(6, 6));
+                d.color = Color.Lerp(GetDustColor(), Color.White, Main.rand.NextFloat(0f, 0.6f)) with { A = 0};
                 d.noGravity = true;
+                d.fadeIn = Main.rand.NextFloat(1.5f);
             }
             SoundEngine.PlaySound(SoundID.Item73 /*with { MaxInstances = 10, PitchVariance = 0.3f}*/, Projectile.position);
         }
@@ -306,7 +323,7 @@ public class CatastropheClaymoreBall : ModProjectile
     {
         Asset<Texture2D> tex = TextureAssets.Projectile[Type];
 
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, tex.Frame(8, Main.projFrames[Type], (int)Projectile.ai[0], Projectile.frame), new Color(1f, 1f, 1f, 0.5f) * Projectile.Opacity, Projectile.rotation, new Vector2(9, 27), Projectile.scale * (Projectile.ai[0] == MIGHT ? 1.3f : 1f), SpriteEffects.None);
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, tex.Frame(8, Main.projFrames[Type], (int)Projectile.ai[0], Projectile.frame), new Color(1f, 1f, 1f, 0.8f) * Projectile.Opacity, Projectile.rotation, new Vector2(9, 27), Projectile.scale * (Projectile.ai[0] == MIGHT ? 1.3f : 1f), SpriteEffects.None);
         return false;
     }
     private Color GetDustColor()
@@ -359,18 +376,21 @@ public class CatastropheClaymoreBallMini : ModProjectile
     }
     public override Color? GetAlpha(Color lightColor)
     {
-        return new Color(1f, 1f, 1f, 0.5f) * Projectile.Opacity;
+        return new Color(1f, 1f, 1f, 0.8f) * Projectile.Opacity;
     }
     public override void AI()
     {
         Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
         Projectile.scale += MathF.Sin(Projectile.timeLeft * 0.1f) * 0.01f;
-        Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowRod);
-        d.velocity *= 0.3f;
-        d.noGravity = true;
-        d.velocity += Projectile.velocity * 0.4f;
-        d.color = Color.Lerp(new Color(1f, 0.2f, 0f, 0.2f), new Color(1f, 1f, 1f, 0f), Main.rand.NextFloat(0f, 0.8f));
-        d.scale = Projectile.scale;
+        if (Main.rand.NextBool())
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SimpleColorableGlowyDust>());
+            d.velocity *= 0.3f;
+            d.noGravity = true;
+            d.velocity += Projectile.velocity * 0.4f;
+            d.color = Color.Lerp(new Color(1f, 0.2f, 0f, 0f), new Color(1f, 1f, 1f, 0f), Main.rand.NextFloat(0f, 0.6f));
+            d.scale = Projectile.scale;
+        }
         if (Projectile.timeLeft < 10)
         {
             Projectile.scale -= 0.1f;

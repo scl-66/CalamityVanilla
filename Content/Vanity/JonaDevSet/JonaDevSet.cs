@@ -31,10 +31,10 @@ public class JonaWig : ModItem
         Item.value = Item.sellPrice(0, 5);
     }
 }
-public class JonaWigEyes : PlayerDrawLayer
+public class JonaWigEyesAndHairTip : PlayerDrawLayer
 {
     private static Asset<Texture2D> _tex;
-
+    public override bool IsHeadLayer => true;
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<JonaWig>()].headSlot;
     public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Head);
     public override void Load()
@@ -104,7 +104,7 @@ public class JonaWigEyes : PlayerDrawLayer
         //}
     }
 }
-public class JonaWigHair : PlayerDrawLayer
+public class JonaWigOverShoulderHair : PlayerDrawLayer
 {
     private static Asset<Texture2D> _tex;
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<JonaWig>()].headSlot && drawInfo.drawPlayer.bodyFrame.Y is > 335 or 0;

@@ -51,6 +51,7 @@ public class CarnageFlailProjectile : BaseFlailProjectile
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
+        Main.projFrames[Type] = 2;
     }
 
     public override void SetDefaults()
@@ -69,6 +70,7 @@ public class CarnageFlailProjectile : BaseFlailProjectile
     public override float MaxForcedRetractionSpeed => 16;
     public override int SpinningNPCHitCooldown => 12;
 
+    public override float MaxDistanceLaunched => 300;
     public override bool ShouldFreelyRotate => false;
     private ref float _targetWhoami => ref Projectile.ai[2];
     public override void AI()
@@ -84,9 +86,27 @@ public class CarnageFlailProjectile : BaseFlailProjectile
         {
             base.AI();
             Projectile.spriteDirection = Projectile.Center.X < player.MountedCenter.X ? -1 : 1;
+            if(_targetWhoami == -2)
+            {
+                Projectile.frame = 1;
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.LifeDrain);
+                d.noGravity = true;
+                return;
+            }
+            Projectile.frame = 0;
         }
         else
         {
+            Projectile.frameCounter++;
+            if(Projectile.frameCounter > 5)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Dust.NewDustDirect(Projectile.position + new Vector2(5), Projectile.width - 10, Projectile.height - 10, DustID.Blood);
+                }
+                Projectile.frame = Projectile.frame == 0 ? 1 : 0;
+                Projectile.frameCounter = 0;
+            }
             player.SetDummyItemTime(2);
             player.itemRotation = Projectile.DirectionFrom(player.MountedCenter).ToRotation();
             if (Projectile.Center.X < player.MountedCenter.X)
@@ -104,11 +124,11 @@ public class CarnageFlailProjectile : BaseFlailProjectile
             CurrentAIState = AIState.UnusedState;
             NPC target = Main.npc[(int)_targetWhoami];
             Projectile.Center = target.Center - Projectile.velocity;
-
-            if (!target.active || player.controlUseItem)
+            if (!target.active || player.controlUseItem || player.Center.Distance(Projectile.Center) > MaxDistanceLaunched)
             {
-                if(!player.controlUseItem && target.lifeMax > 5 && !target.immortal)
+                if(!target.active && target.lifeMax > 5 && !target.immortal && !target.SpawnedFromStatue)
                 {
+                    SoundEngine.PlaySound(SoundID.NPCDeath12, Projectile.position);
                     _targetWhoami = -2;
                 }
                 Projectile.velocity = Vector2.Zero;

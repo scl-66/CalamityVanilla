@@ -454,10 +454,10 @@ public abstract class BaseFlailProjectile : ModProjectile
         DrawChains(ref lightColor);
 
         Texture2D texture = TextureAssets.Projectile[Type].Value;
-        Vector2 drawOrigin = texture.Size() * 0.5f;
+        Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+        Vector2 drawOrigin = frame.Size() * 0.5f;
         SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
         Vector2 drawPosition = Projectile.Center + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition;
-
         if (CurrentAIState == AIState.LaunchingForward)
         {
             Color afterimageColor = Projectile.GetAlpha(lightColor);
@@ -470,12 +470,12 @@ public abstract class BaseFlailProjectile : ModProjectile
             {
                 float afterimageAlpha = 1f - i;
                 Vector2 positionOffset = Projectile.velocity * -afterimageCount * i;
-                Main.spriteBatch.Draw(texture, drawPosition + positionOffset, null, afterimageColor * afterimageAlpha, Projectile.rotation, drawOrigin, Projectile.scale * 1.15f * MathHelper.Lerp(0.5f, 1f, afterimageAlpha), spriteEffects, 0);
+                Main.spriteBatch.Draw(texture, drawPosition + positionOffset, frame, afterimageColor * afterimageAlpha, Projectile.rotation, drawOrigin, Projectile.scale * 1.15f * MathHelper.Lerp(0.5f, 1f, afterimageAlpha), spriteEffects, 0);
             }
         }
 
         Color mainColor = Projectile.GetAlpha(lightColor);
-        Main.spriteBatch.Draw(texture, drawPosition, null, mainColor, Projectile.rotation, drawOrigin, Projectile.scale, spriteEffects, 0);
+        Main.spriteBatch.Draw(texture, drawPosition, frame, mainColor, Projectile.rotation, drawOrigin, Projectile.scale, spriteEffects, 0);
 
         return false;
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,18 +22,21 @@ public class JonaWings : ModItem
     }
     public override bool WingUpdate(Player player, bool inUse)
     {
-        if(inUse || Main.rand.NextBool(15))
+        if (!player.sleeping.isSleeping)
         {
-            Dust d = Dust.NewDustPerfect(player.Center + new Vector2((Main.rand.NextBool()? Main.rand.Next(-35,-14) : Main.rand.Next(14, 20)) * player.direction,0), DustID.FoodPiece);
-            d.color = new Color(166, 25, 67);
-            d.velocity = player.velocity * 0.4f;
-            d.position = player.RotatedRelativePoint(d.position);
-        }
+            if (inUse || Main.rand.NextBool(15))
+            {
+                Dust d = Dust.NewDustPerfect(player.Center + new Vector2((Main.rand.NextBool() ? Main.rand.Next(-35, -14) : Main.rand.Next(14, 20)) * player.direction, Main.rand.Next(-12, 4)).RotatedBy(player.fullRotation, player.fullRotationOrigin), DustID.FoodPiece);
+                d.color = new Color(166, 25, 67);
+                d.velocity = player.velocity * 0.4f;
+                d.position = player.RotatedRelativePoint(d.position);
+            }
 
-        if(player.velocity.Y == 0)
-        {
-            player.wingFrame = 2;
-            return true;
+            if (player.velocity.Y == 0)
+            {
+                player.wingFrame = 2;
+                return true;
+            }
         }
         return base.WingUpdate(player, inUse);
     }

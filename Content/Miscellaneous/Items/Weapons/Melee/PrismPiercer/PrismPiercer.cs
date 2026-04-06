@@ -21,10 +21,27 @@ public class PrismPiercer : ModItem
     public override void SetDefaults()
     {
         Item.DefaultToSword(68, 20, 6);
+        Item.useTime = 45;
         Item.rare = ItemRarityID.Yellow;
         Item.shoot = ModContent.ProjectileType<PrismPiercerStar>();
         Item.shootSpeed = 25;
         Item.scale = 1.2f;
+    }
+
+    public override void MeleeEffects(Player player, Rectangle hitbox)
+    {
+        if (Main.rand.NextBool(10))
+        {
+            Gore.NewGore(new EntitySource_ItemUse(player, Item), Main.rand.NextVector2FromRectangle(hitbox), default(Vector2), Main.rand.Next(16, 18));
+        }
+        CVUtils.GetPointOnSwungItemPath(70f, 72f, 0.15f + Main.rand.NextFloat(0.8f), Item.scale, out var location2, out var outwardDirection2, player);
+        Vector2 vector2 = outwardDirection2.RotatedBy((float)Math.PI / 2f * (float)player.direction * player.gravDir);
+
+        Dust d = Dust.NewDustPerfect(location2, DustID.RainbowRod);
+        d.noGravity = true;
+        d.color = Color.Lerp(Main.DiscoColor, Color.White, Main.rand.NextFloat(0.7f));
+        d.scale = Main.rand.NextFloat(0.5f, 1f);
+        d.velocity = vector2 * 2.5f;
     }
     public override void AddRecipes()
     {
@@ -107,13 +124,16 @@ public class PrismPiercerStar : ModProjectile
         Projectile.penetrate = -1;
         Projectile.extraUpdates = 2;
     }
-
     public override void AI()
     {
         if (Main.rand.NextBool(5))
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f, 0, Main.DiscoColor with { A = 0 });
             d.noGravity = true;
+        }
+        if (Main.rand.NextBool(10))
+        {
+            Gore.NewGore(Projectile.GetSource_FromThis(), Main.rand.NextVector2FromRectangle(Projectile.Hitbox), default(Vector2), Main.rand.Next(16, 18));
         }
         if (Projectile.Center.Y > Projectile.ai[1])
         {
