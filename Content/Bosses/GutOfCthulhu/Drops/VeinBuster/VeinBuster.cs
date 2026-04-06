@@ -132,9 +132,9 @@ public class VeinBusterShard : ModProjectile
     public override void AI()
     {
         Timer++;
-        if (Timer > 30 * Projectile.extraUpdates)
+        if (Timer > 60 * Projectile.extraUpdates)
         {
-            Projectile.velocity.Y += 0.2f;
+            Projectile.Kill();
         }
 
         Projectile.Opacity = Utils.GetLerpValue(0, 5 * Projectile.extraUpdates, Timer, true);
