@@ -72,7 +72,7 @@ public class GraniteTomeBolt : ModProjectile
 
     public override void Load()
     {
-#pragma warning disable CS0618 // we're not in 1.4.5 yet
+#pragma warning disable CS0618 // we're not in 1.4.5 yet (but almost there!)
         GameShaders.Misc["GraniteTome"] = new MiscShaderData(Main.VertexPixelShaderRef, "MagicMissile").UseProjectionMatrix(true);
 #pragma warning restore CS0618
         GameShaders.Misc["GraniteTome"].UseImage0("Images/Extra_197");

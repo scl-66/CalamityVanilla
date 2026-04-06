@@ -37,6 +37,7 @@ public class CrystalineProjectile : ModProjectile
     {
         Projectile.QuickDefaults(false, 16);
         Projectile.penetrate = 3;
+        Projectile.DamageType = DamageClass.Ranged;
     }
     public override void SetStaticDefaults()
     {
@@ -124,6 +125,7 @@ public class CrystalineShard : ModProjectile
     {
         Projectile.QuickDefaults(false, 16);
         Projectile.timeLeft = 20;
+        Projectile.DamageType = DamageClass.Ranged;
     }
     public override void SetStaticDefaults()
     {

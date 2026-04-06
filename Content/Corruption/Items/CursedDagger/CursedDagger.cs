@@ -46,7 +46,7 @@ public class CursedDaggerExplosion : ModProjectile
         Projectile.height = 100;
         Projectile.aiStyle = -1;
         Projectile.friendly = true;
-        //Projectile.DamageType = DamageClass.Ranged;
+        Projectile.DamageType = DamageClass.Ranged;
         Projectile.timeLeft = 21;
         Projectile.penetrate = -1;
         Projectile.tileCollide = false;
@@ -76,6 +76,7 @@ public class CursedDaggerProjectile : ModProjectile
     {
         Projectile.QuickDefaults(false, 16);
         //Projectile.penetrate = 3;
+        Projectile.DamageType = DamageClass.Ranged;
     }
     public override void SetStaticDefaults()
     {

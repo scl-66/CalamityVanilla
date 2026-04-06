@@ -178,6 +178,7 @@ public class BlossomFluxSpores : ModProjectile
         Projectile.alpha = 128;
         Projectile.tileCollide = false;
         Projectile.penetrate = -1;
+        Projectile.DamageType = DamageClass.Ranged;
     }
     public override void AI()
     {

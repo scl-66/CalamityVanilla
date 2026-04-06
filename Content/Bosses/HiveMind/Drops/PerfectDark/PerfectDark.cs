@@ -93,6 +93,7 @@ public class PerfectDarkCloud : ModProjectile
         Projectile.width = 40;
         Projectile.height = 40;
 
+        Projectile.DamageType = DamageClass.Melee;
         Projectile.penetrate = -1;
         Projectile.usesIDStaticNPCImmunity = true;
         Projectile.idStaticNPCHitCooldown = 20;

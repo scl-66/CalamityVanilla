@@ -49,6 +49,7 @@ public class BileBone : ModProjectile
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(false, 20);
+        Projectile.DamageType = DamageClass.Magic;
     }
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
@@ -107,6 +108,7 @@ public class IchorBlob : ModProjectile
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(false, 22);
+        Projectile.DamageType = DamageClass.Magic;
     }
     public override void AI()
     {

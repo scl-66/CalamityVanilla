@@ -238,6 +238,7 @@ public class MushroomBomberSpores : ModProjectile
         Projectile.timeLeft = 300;
         Projectile.alpha = 128;
         Projectile.tileCollide = false;
+        Projectile.DamageType = DamageClass.Ranged;
         Projectile.penetrate = -1;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 40;

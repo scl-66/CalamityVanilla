@@ -41,6 +41,7 @@ public class ThrowingBrickProjectile : ModProjectile
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(false, 24);
+        Projectile.DamageType = DamageClass.Ranged;
     }
     public override void OnKill(int timeLeft)
     {

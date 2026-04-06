@@ -70,6 +70,7 @@ public class FilthyGripSlash : ModProjectile
         Projectile.timeLeft = 6*frameSpeed;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 7;
+        Projectile.DamageType = DamageClass.Default;
         Projectile.penetrate = 3;
         Projectile.stopsDealingDamageAfterPenetrateHits = true;
         Projectile.ignoreWater = true;

@@ -94,6 +94,7 @@ public class SkinBoilHatRain : ModProjectile
         Projectile.width = 2;
         Projectile.height = 40;
         Projectile.friendly = true;
+        Projectile.DamageType = DamageClass.Default;
         Projectile.penetrate = 5;
         Projectile.ignoreWater = true;
         Projectile.timeLeft = 180;

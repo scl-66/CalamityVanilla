@@ -134,6 +134,7 @@ public class MyceliumSpore : ModProjectile
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(false, 18);
+        Projectile.DamageType = DamageClass.Magic;
         Projectile.penetrate = 5;
         Projectile.timeLeft = 60 * 10;
         Projectile.usesLocalNPCImmunity = true;

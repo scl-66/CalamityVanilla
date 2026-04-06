@@ -143,6 +143,7 @@ public class CatastropheClaymoreBall : ModProjectile
     {
         Projectile.QuickDefaults(false, 16);
         Projectile.timeLeft = 90;
+        Projectile.DamageType = DamageClass.Melee;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
     }

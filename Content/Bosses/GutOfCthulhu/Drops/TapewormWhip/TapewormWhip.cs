@@ -57,6 +57,7 @@ internal sealed class TapewormWhipProjectile : ModProjectile
         Projectile.width = 18;
         Projectile.height = 18;
         Projectile.friendly = true;
+        Projectile.DamageType = DamageClass.SummonMeleeSpeed;
         Projectile.penetrate = -1;
         Projectile.tileCollide = false;
         Projectile.ownerHitCheck = true;
