@@ -455,8 +455,14 @@ RimeraBanner: {
 
 VeinBuster: {
 	DisplayName: Vein Buster
+	Tooltip: Releases deadly bone shards on contact
+}
+
+FrostGuardStaff: {
+	DisplayName: Frost Guard Staff
 	Tooltip:
 		'''
-		Releases deadly bone shards on contact
+		Summons rotating shields to defend you
+		The first three summon slots will create two shields each
 		'''
 }

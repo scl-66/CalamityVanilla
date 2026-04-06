@@ -52,3 +52,8 @@ UrchinSpineDebuff: {
 	DisplayName: Urchin Spine Debuff
 	Description: Mods.CalamityVanilla.Buffs.UrchinSpineDebuff.Description
 }
+
+FrostShieldBuff: {
+	DisplayName: Frost Shield Buff
+	Description: Mods.CalamityVanilla.Buffs.FrostShieldBuff.Description
+}

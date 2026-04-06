@@ -106,6 +106,11 @@ public class FrostShieldCounter : ModProjectile
         Projectile.hide = true;
     }
 
+    public override void AI()
+    {
+        
+    }
+
     public override bool? CanDamage() => false;
     public override bool? CanCutTiles() => false;
 }
