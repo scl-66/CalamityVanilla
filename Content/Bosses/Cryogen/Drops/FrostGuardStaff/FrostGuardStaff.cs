@@ -223,6 +223,8 @@ public class FrostShieldCounter : ModProjectile
 
 public class FrostShield : ModProjectile
 {
+    public ref float CooldownTimer => ref Projectile.ai[0];
+
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.MinionTargettingFeature[Type] = true;
@@ -251,6 +253,10 @@ public class FrostShield : ModProjectile
 
     public override void AI()
     {
+        CooldownTimer--;
+        if (CooldownTimer < 0)
+            CooldownTimer = 0;
+
         var player = Main.player[Projectile.owner];
         var modPlayer = player.GetModPlayer<FrostShieldModPlayer>();
 
@@ -274,21 +280,29 @@ public class FrostShield : ModProjectile
         Projectile.originalDamage = modPlayer.HighestFrostShieldCounterOriginalDamage;
 
         var hitboxes = GetHitboxes();
-        foreach (var projectile in Main.ActiveProjectiles)
+        if (CooldownTimer <= 0)
         {
-            var isProjectileDeadly = projectile.hostile || (projectile.friendly && projectile.owner != -1 && Main.player[projectile.owner].InOpposingTeam(Main.player[Projectile.owner]));
-            if (!(projectile.whoAmI != Projectile.whoAmI && isProjectileDeadly)) continue;
+            foreach (var projectile in Main.ActiveProjectiles)
+            {
+                var isProjectileDeadly = projectile.hostile || (projectile.friendly && projectile.owner != -1 && Main.player[projectile.owner].InOpposingTeam(Main.player[Projectile.owner]));
+                if (!(projectile.whoAmI != Projectile.whoAmI && isProjectileDeadly)) continue;
 
-            if (CanProjectileBeReflected(projectile)) continue;
+                if (CanProjectileBeReflected(projectile)) continue;
 
-            var colliding = projectile.Colliding(projectile.Hitbox, hitboxes[0]);
-            colliding |= projectile.Colliding(projectile.Hitbox, hitboxes[1]);
-            colliding |= projectile.Colliding(projectile.Hitbox, hitboxes[2]);
-            if (!colliding) continue;
+                var colliding = projectile.Colliding(projectile.Hitbox, hitboxes[0]);
+                colliding |= projectile.Colliding(projectile.Hitbox, hitboxes[1]);
+                colliding |= projectile.Colliding(projectile.Hitbox, hitboxes[2]);
+                if (!colliding) continue;
 
-            ReflectProjectile(projectile);
+                ReflectProjectile(projectile);
+
+                CooldownTimer = 60 * 5;
+                break;
+            }
         }
     }
+
+    public override bool MinionContactDamage() => CooldownTimer <= 0;
 
     public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
     {
@@ -301,7 +315,16 @@ public class FrostShield : ModProjectile
         return colliding;
     }
 
-    public override bool MinionContactDamage() => true;
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        CooldownTimer = 60 * 5;
+
+        if (target.knockBackResist == 0f) return;
+
+        var directionToReflectTo = (Projectile.rotation - MathF.PI * 0.5f).ToRotationVector2() * 20f * target.knockBackResist;
+        target.velocity = directionToReflectTo;
+        target.netUpdate = true;
+    }
 
     private Rectangle[] GetHitboxes()
     {
@@ -362,7 +385,13 @@ public class FrostShield : ModProjectile
         projectileToReflect.damage = Projectile.damage;
 
         Vector2 directionToReflectTo = (Projectile.rotation - MathF.PI * 0.5f).ToRotationVector2() * projectileToReflect.oldVelocity.Length();
-        directionToReflectTo = directionToReflectTo.RotatedByRandom(0.1);
         projectileToReflect.velocity = directionToReflectTo;
+    }
+
+    public override Color? GetAlpha(Color lightColor)
+    {
+        if (CooldownTimer > 0)
+            return new Color(250, 250, 250, 150) * 0.2f;
+        return new Color(250, 250, 250, 150);
     }
 }
