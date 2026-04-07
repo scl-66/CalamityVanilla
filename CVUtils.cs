@@ -301,4 +301,23 @@ public static class CVUtils
             0
         );
     }
+
+    // Copied from vanilla as it's a private method (used for Finch Staff and Abigail & Storm Tiger counters)
+    public static void GetGroupIndex(this Projectile thisProjectile, out int index, out int totalIndexesInGroup)
+    {
+        index = 0;
+        totalIndexesInGroup = 0;
+        for (int i = 0; i < 1000; i++)
+        {
+            Projectile projectile = Main.projectile[i];
+            if (projectile.active && projectile.owner == thisProjectile.owner && projectile.type == thisProjectile.type)
+            {
+                if (thisProjectile.whoAmI > i)
+                {
+                    index++;
+                }
+                totalIndexesInGroup++;
+            }
+        }
+    }
 }
