@@ -271,10 +271,32 @@ public class FrostShield : ModProjectile
             Projectile.timeLeft = 2;
         }
 
-        var shieldRotationSpeed = Utils.Remap(totalIndexesInGroup, 2, 6, 0.1f, 0.05f);
-        var shieldDistance = Utils.Remap(totalIndexesInGroup, 2, 8, 50, 100f, false);
+        var shieldAmountsLeft = totalIndexesInGroup;
+        var shieldCircleNumber = 0;
+        var fractionInShieldCircle = 0f;
+        var shieldAmountInCurrentCircle = 6;
+        var accumulatedPreviousShieldAmount = 0;
 
-        Projectile.Center = player.Center + Vector2.UnitY * player.gfxOffY + ((index / (float)totalIndexesInGroup) * MathF.Tau - MathF.PI * 0.5f + player.GetModPlayer<PlayerStats>().TimeInWorld * shieldRotationSpeed).ToRotationVector2() * shieldDistance;
+        while (shieldAmountsLeft > 0)
+        {
+            fractionInShieldCircle = (float)(index - accumulatedPreviousShieldAmount) / int.Min(shieldAmountsLeft, shieldAmountInCurrentCircle);
+            if (fractionInShieldCircle >= 0 && fractionInShieldCircle < 1)
+            {
+                break;
+            }
+
+            accumulatedPreviousShieldAmount += shieldAmountInCurrentCircle;
+            shieldAmountsLeft -= shieldAmountInCurrentCircle;
+            shieldCircleNumber++;
+            shieldAmountInCurrentCircle += 2;
+        }
+
+        shieldCircleNumber++;
+
+        var shieldRotationSpeed = 0.025f + (shieldCircleNumber - 1) * 0.005f;
+        var shieldDistance = shieldCircleNumber * 50 + 25;
+
+        Projectile.Center = player.Center + Vector2.UnitY * player.gfxOffY + (fractionInShieldCircle * MathF.Tau - MathF.PI * 0.5f + player.GetModPlayer<PlayerStats>().TimeInWorld * shieldRotationSpeed).ToRotationVector2() * shieldDistance;
         Projectile.rotation = (player.Center - Projectile.Center).ToRotation() - MathF.PI * 0.5f;
 
         Projectile.originalDamage = modPlayer.HighestFrostShieldCounterOriginalDamage;
@@ -317,11 +339,11 @@ public class FrostShield : ModProjectile
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        CooldownTimer = 60 * 5;
+        //CooldownTimer = 60 * 5;
 
         if (target.knockBackResist == 0f) return;
 
-        var directionToReflectTo = (Projectile.rotation - MathF.PI * 0.5f).ToRotationVector2() * 20f * target.knockBackResist;
+        var directionToReflectTo = (Projectile.rotation - MathF.PI * 0.5f).ToRotationVector2() * 10f * target.knockBackResist;
         target.velocity = directionToReflectTo;
         target.netUpdate = true;
     }
@@ -329,9 +351,9 @@ public class FrostShield : ModProjectile
     private Rectangle[] GetHitboxes()
     {
         int centerHitboxSize = 38;
-        int edgeHitboxSize = 26;
+        int edgeHitboxSize = 32;
 
-        var edgeOffset = Projectile.rotation.ToRotationVector2() * 18;
+        var edgeOffset = Projectile.rotation.ToRotationVector2() * 24;
 
         Rectangle[] hitboxes =
         [
