@@ -1,12 +1,15 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Common.Players;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -224,6 +227,7 @@ public class FrostShieldCounter : ModProjectile
 public class FrostShield : ModProjectile
 {
     public ref float CooldownTimer => ref Projectile.ai[0];
+    public ref float FinishedCooldownTimer => ref Projectile.localAI[0];
 
     public override void SetStaticDefaults()
     {
@@ -235,7 +239,7 @@ public class FrostShield : ModProjectile
 
     public override void SetDefaults()
     {
-        Projectile.Size = new Vector2(70, 38);
+        Projectile.Size = new Vector2(38, 38);
 
         Projectile.timeLeft *= 5;
         Projectile.minion = true;
@@ -253,9 +257,20 @@ public class FrostShield : ModProjectile
 
     public override void AI()
     {
+        var previousCooldownTimer = CooldownTimer;
         CooldownTimer--;
         if (CooldownTimer < 0)
             CooldownTimer = 0;
+
+        FinishedCooldownTimer--;
+        if (FinishedCooldownTimer < 0)
+            FinishedCooldownTimer = 0;
+
+        if (CooldownTimer == 0 && previousCooldownTimer != 0)
+        {
+            FinishedCooldownTimer = 30;
+            SoundEngine.PlaySound(SoundID.Item30, Projectile.position);
+        }
 
         var player = Main.player[Projectile.owner];
         var modPlayer = player.GetModPlayer<FrostShieldModPlayer>();
@@ -271,27 +286,7 @@ public class FrostShield : ModProjectile
             Projectile.timeLeft = 2;
         }
 
-        var shieldAmountsLeft = totalIndexesInGroup;
-        var shieldCircleNumber = 0;
-        var fractionInShieldCircle = 0f;
-        var shieldAmountInCurrentCircle = 6;
-        var accumulatedPreviousShieldAmount = 0;
-
-        while (shieldAmountsLeft > 0)
-        {
-            fractionInShieldCircle = (float)(index - accumulatedPreviousShieldAmount) / int.Min(shieldAmountsLeft, shieldAmountInCurrentCircle);
-            if (fractionInShieldCircle >= 0 && fractionInShieldCircle < 1)
-            {
-                break;
-            }
-
-            accumulatedPreviousShieldAmount += shieldAmountInCurrentCircle;
-            shieldAmountsLeft -= shieldAmountInCurrentCircle;
-            shieldCircleNumber++;
-            shieldAmountInCurrentCircle += 2;
-        }
-
-        shieldCircleNumber++;
+        var (shieldCircleNumber, fractionInShieldCircle) = GetCurrentCircleNumber();
 
         var shieldRotationSpeed = 0.025f + (shieldCircleNumber - 1) * 0.005f;
         var shieldDistance = shieldCircleNumber * 50 + 25;
@@ -317,8 +312,8 @@ public class FrostShield : ModProjectile
                 if (!colliding) continue;
 
                 ReflectProjectile(projectile);
+                Break();
 
-                CooldownTimer = 60 * 5;
                 break;
             }
         }
@@ -339,13 +334,40 @@ public class FrostShield : ModProjectile
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        //CooldownTimer = 60 * 5;
-
         if (target.knockBackResist == 0f) return;
 
-        var directionToReflectTo = (Projectile.rotation - MathF.PI * 0.5f).ToRotationVector2() * 10f * target.knockBackResist;
+        var directionToReflectTo = (Projectile.rotation - MathF.PI * 0.5f).ToRotationVector2() * 5f * target.knockBackResist;
         target.velocity = directionToReflectTo;
         target.netUpdate = true;
+    }
+
+    private (int, float) GetCurrentCircleNumber()
+    {
+        Projectile.GetGroupIndex(out var index, out var totalIndexesInGroup);
+
+        var shieldAmountsLeft = totalIndexesInGroup;
+        var shieldCircleNumber = 0;
+        var fractionInShieldCircle = 0f;
+        var shieldAmountInCurrentCircle = 6;
+        var accumulatedPreviousShieldAmount = 0;
+
+        while (shieldAmountsLeft > 0)
+        {
+            fractionInShieldCircle = (float)(index - accumulatedPreviousShieldAmount) / int.Min(shieldAmountsLeft, shieldAmountInCurrentCircle);
+            if (fractionInShieldCircle >= 0 && fractionInShieldCircle < 1)
+            {
+                break;
+            }
+
+            accumulatedPreviousShieldAmount += shieldAmountInCurrentCircle;
+            shieldAmountsLeft -= shieldAmountInCurrentCircle;
+            shieldCircleNumber++;
+            shieldAmountInCurrentCircle += 2;
+        }
+
+        shieldCircleNumber++;
+
+        return (shieldCircleNumber, fractionInShieldCircle);
     }
 
     private Rectangle[] GetHitboxes()
@@ -410,10 +432,71 @@ public class FrostShield : ModProjectile
         projectileToReflect.velocity = directionToReflectTo;
     }
 
+    private void Break()
+    {
+        CooldownTimer = 60 * 5;
+        SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+
+        var hitboxes = GetHitboxes();
+
+        for (int i = 0; i < hitboxes.Length; i++)
+        {
+            var hitbox = hitboxes[i];
+            for (int j = 0; j < 12; j++)
+            {
+                var dust = Dust.NewDustDirect
+                (
+                    new Vector2(hitbox.X, hitbox.Y),
+                    hitbox.Width, hitbox.Height,
+                    DustID.Ice,
+                    Scale: 1.25f
+                );
+            }
+        }
+    }
+
     public override Color? GetAlpha(Color lightColor)
     {
-        if (CooldownTimer > 0)
-            return new Color(250, 250, 250, 150) * 0.2f;
-        return new Color(250, 250, 250, 150);
+        var baseColor = new Color(250, 250, 250, 150);
+
+        if (CooldownTimer <= 0)
+            return baseColor;
+
+        return baseColor * Utils.Remap(CooldownTimer, 0, 60, 0.5f, 0.2f);
+    }
+
+    public override bool PreDraw(ref Color lightColor)
+    {
+        var texture = TextureAssets.Projectile[Type].Value;
+
+        SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+        Main.spriteBatch.Draw
+        (
+            texture,
+            Projectile.Center - Main.screenPosition,
+            new Rectangle(0, 0, texture.Width, texture.Height / 2),
+            GetAlpha(lightColor).Value,
+            Projectile.rotation,
+            new Vector2(texture.Width / 2, texture.Height / 4),
+            Projectile.scale,
+            spriteEffects,
+            0
+        );
+
+        Main.spriteBatch.Draw
+        (
+            texture,
+            Projectile.Center - Main.screenPosition,
+            new Rectangle(0, texture.Height / 2, texture.Width, texture.Height / 2),
+            Color.White * Utils.GetLerpValue(0, 30, FinishedCooldownTimer),
+            Projectile.rotation,
+            new Vector2(texture.Width / 2, texture.Height / 4),
+            Projectile.scale,
+            spriteEffects,
+            0
+        );
+
+        return false;
     }
 }
