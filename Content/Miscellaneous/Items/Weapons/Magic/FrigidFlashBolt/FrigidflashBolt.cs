@@ -4,13 +4,12 @@ using CalamityVanilla.Content.Tundra.Items.Frostbolt;
 using CalamityVanilla.Content.Underworld.Items.FlareBolt;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
-using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -161,6 +160,12 @@ public abstract class FrigidflashBoltProjectile : ModProjectile
 
 public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 {
+    private static Asset<Texture2D> _explosion;
+    public override void SetStaticDefaults()
+    {
+        base.SetStaticDefaults();
+        _explosion = ModContent.Request<Texture2D>(Texture + "Effect");
+    }
     public override void SetDefaults()
     {
         base.SetDefaults();
@@ -192,15 +197,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.Item30 with { Volume = 0.75f, MaxInstances = 10, PitchRange = (-0.2f, 0.2f) }, Projectile.position);
-        //SoundEngine.PlaySound(SoundID.Item89 with
-        //{
-        //    Pitch = 0.5f,
-        //    PitchVariance = 0.2f,
-        //    Volume = 0.6f,
-
-        //    MaxInstances = 0,
-        //}, Projectile.Center);
+        SoundEngine.PlaySound(SoundID.NPCDeath15 with {MaxInstances = 5 }, Projectile.position);
         for (int i = 0; i < 25; i++)
         {
             Dust d = Dust.NewDustPerfect(Projectile.Center, Main.rand.NextBool() ? DustID.Snow : DustID.IceRod);
@@ -221,30 +218,52 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
         }
         for(int i = 0; i < 5; i++)
         {
-            var p = VanillaParticles.RequestPrettySparkleParticle();
-            p.TimeToLive = Main.rand.Next(20, 45);
+            var p = VanillaParticles.RequestFadingParticle();
+            p.ColorTint = Color.White;
+            float time = Main.rand.NextFloat(25,45);
+            p.SetTypeInfo(time);
+            p.SetBasicInfo(TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake], TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake].Frame(1, 3, 0, Main.rand.Next(3)), Main.rand.NextVector2Circular(6,6),Projectile.Center);
             p.FadeInNormalizedTime = 0.2f;
-            p.FadeOutNormalizedTime = 0.8f;
-            p.LocalPosition = Projectile.Center;
-            p.DrawHorizontalAxis = false;
-            p.Scale = new Vector2(2, 1.3f);
-            p.ColorTint = Color.Lerp(new Color(0f, 1f, 1f, 0.5f), new Color(0.2f, 0.2f, 1f,0.5f), Main.rand.NextFloat());
-            p.Velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4, 7);
-            p.AccelerationPerFrame = -p.Velocity / p.TimeToLive;
-            p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
+            p.FadeOutNormalizedTime = 0.5f;
+            p.Scale = Vector2.One * 1.3f;
+            p.ScaleVelocity = Vector2.One / -time;
+            p.AccelerationPerFrame = p.Velocity / -time;
+            p.RotationVelocity = p.Velocity.X * 0.1f;
+            p.RotationAcceleration = -p.RotationVelocity / time;
+            //p.Rotation = Main.rand.NextFloatDirection();
             Main.ParticleSystem_World_BehindPlayers.Add(p);
+
+            //var p = VanillaParticles.RequestPrettySparkleParticle();
+            //p.TimeToLive = Main.rand.Next(20, 45);
+            //p.FadeInNormalizedTime = 0.2f;
+            //p.FadeOutNormalizedTime = 0.8f;
+            //p.LocalPosition = Projectile.Center;
+            //p.DrawHorizontalAxis = false;
+            //p.Scale = new Vector2(2, 1.3f);
+            //p.ColorTint = Color.Lerp(new Color(0f, 1f, 1f, 0.5f), new Color(0.2f, 0.2f, 1f,0.5f), Main.rand.NextFloat());
+            //p.Velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4, 7);
+            //p.AccelerationPerFrame = -p.Velocity / p.TimeToLive;
+            //p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
+            //Main.ParticleSystem_World_BehindPlayers.Add(p);
         }
-        var p2 = VanillaParticles.RequestFadingParticle();
-        p2.SetBasicInfo(TextureAssets.Projectile[Type], null, Vector2.Zero, Projectile.Center);
-        p2.SetTypeInfo(Main.rand.Next(20, 35));
-        p2.ColorTint = new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0f) * Projectile.Opacity * 0.75f;
-        p2.FadeInNormalizedTime = 0.1f;
-        p2.FadeOutNormalizedTime = 0.5f;
-        p2.Scale = Vector2.One * Projectile.scale;
-        p2.ScaleVelocity = Vector2.One * 0.05f;
-        p2.Rotation = Projectile.localAI[0];
-        p2.RotationVelocity = Projectile.velocity.X * 0.02f;
-        Main.ParticleSystem_World_BehindPlayers.Add(p2);
+
+        var p2 = AnimatedParticle.RequestAnimatedParticle();
+        p2.SetTypeInfo(5, Main.rand.Next(10, 15), _explosion, Color.White);
+        p2.LocalPosition = Projectile.Center;
+        p2.ScaleVelocity = Vector2.One * Main.rand.NextFloat(-0.01f, 0.01f);
+        p2.Scale = Vector2.One * Main.rand.NextFloat(1f, 1.3f);
+        Main.ParticleSystem_World_OverPlayers.Add(p2);
+        //var p2 = VanillaParticles.RequestFadingParticle();
+        //p2.SetBasicInfo(TextureAssets.Projectile[Type], null, Vector2.Zero, Projectile.Center);
+        //p2.SetTypeInfo(Main.rand.Next(20, 35));
+        //p2.ColorTint = new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0f) * Projectile.Opacity * 0.75f;
+        //p2.FadeInNormalizedTime = 0.1f;
+        //p2.FadeOutNormalizedTime = 0.5f;
+        //p2.Scale = Vector2.One * Projectile.scale;
+        //p2.ScaleVelocity = Vector2.One * 0.05f;
+        //p2.Rotation = Projectile.localAI[0];
+        //p2.RotationVelocity = Projectile.velocity.X * 0.02f;
+        //Main.ParticleSystem_World_BehindPlayers.Add(p2);
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
@@ -347,7 +366,6 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         SoundEngine.PlaySound(SoundID.Item62 with
         {
             PitchVariance = 0.2f,
-            Volume = 0.75f,
             MaxInstances = 10,
         }, Projectile.Center);
         //SoundEngine.PlaySound(SoundID.Item38 with

@@ -1,8 +1,6 @@
 ﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -24,11 +22,12 @@ public class FrostBolt : ModItem
         Item.DamageType = DamageClass.Magic;
         Item.mana = 15;
         Item.useTime = 7;
-        Item.useAnimation = 7;
+        Item.useAnimation = 10;
         Item.useStyle = ItemUseStyleID.Shoot;
         Item.noMelee = true;
         Item.knockBack = 5f;
-        Item.UseSound = SoundID.Item30 with { Volume = 0.25f, MaxInstances = 10, PitchRange = (-0.2f,0.2f) };
+        //Item.UseSound = SoundID.Item30 with { Volume = 0.25f, MaxInstances = 10, PitchRange = (-0.2f,0.2f) };
+        Item.UseSound = SoundID.Item28 with { Volume = 0.5f, MaxInstances = 5 };
         Item.autoReuse = true;
         Item.shootSpeed = 12f;
         Item.shoot = ModContent.ProjectileType<FrostBoltProjectile>();
