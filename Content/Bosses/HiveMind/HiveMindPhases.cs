@@ -1,224 +1,187 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CalamityVanilla.Content.Bosses.HiveMind.Minions;
+using CalamityVanilla.Content.Bosses.HiveMind.Projectiles;
+using CalamityVanilla.Content.Particles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
-using Terraria.Utilities.Terraria.Utilities;
 
 namespace CalamityVanilla.Content.Bosses.HiveMind;
 
 public partial class HiveMind
 {
-    int currentPhase = 0;
+    private ref float _currentAttack => ref NPC.ai[0];
+    public override void AI()
+    {
+        //Main.NewText("AI0: " + NPC.ai[0] + " AI1: " + NPC.ai[1] + " AI2: " + NPC.ai[2] + " AI3: " + NPC.ai[3],Main.DiscoColor);
+        if (_currentAttack % (Main.expertMode ? 3 : 5) == 0)
+            Teleport();
+        else
+        {
+            int whichAttack = (int)_currentAttack % 3;
+            switch (whichAttack)
+            {
+                case 0:
+                    VineSpikes();
+                    break;
+                case 1:
+                    SporeBombs();
+                    break;
+                case 2:
+                    VineSpikes();
+                    break;
+            }
+        }
+    }
     private void Teleport()
     {
-        NPC.ai[0]++;
-
-        if (NPC.ai[0] > 0)
+        NPC.ai[1]++;
+        ref float teleportX = ref NPC.ai[2];
+        ref float teleportY = ref NPC.ai[3];
+        int teleportTime = 120;
+        NPC.TargetClosest();
+        if (NPC.ai[1] == 1)
         {
-            NPC.alpha += 5;
-        }
-        if (NPC.ai[0] == (255 / 5))
-        {
-            NPC.TargetClosest();
             Vector2 chosenTile = Vector2.Zero;
-            Point targetPos = ((target.Center + (target.velocity * 64)) / 16).ToPoint();
-            if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, targetPos.X, targetPos.Y))
+            Vector2 targetPos = CVUtils.FindFloorBelow(target.Center, 32);
+            targetPos /= 16;
+            if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y))
             {
                 chosenTile *= 16;
-                NPC.position = new Vector2(chosenTile.X - NPC.width / 2, chosenTile.Y - NPC.height);
+                teleportX = chosenTile.X;
+                teleportY = chosenTile.Y;
             }
             else
             {
-                NPC.Bottom = target.Bottom;
+                teleportX = target.Bottom.X;
+                teleportY = target.Bottom.Y;
             }
-        }
-        if (NPC.ai[0] > (255 / 5) && NPC.alpha > 0)
-        {
-            NPC.alpha -= 10;
-        }
-        if (NPC.ai[0] == (512 / 5))
-        {
-            phase = (byte)Main.rand.Next(1, 3);
-            //phase = 3;
-            NPC.ai[0] = 0;
             NPC.netUpdate = true;
-            currentPhase = 1;
+        }
+        else if (NPC.ai[1] < teleportTime)
+        {
+            if (NPC.ai[1] % 15 == 0)
+            {
+                var p = VanillaParticles.RequestFadingParticle();
+                p.SetBasicInfo(TextureAssets.Extra[ExtrasID.KeybrandRing], null, Vector2.Zero, new Vector2(teleportX, teleportY - 32));
+                p.SetTypeInfo(30);
+                p.ColorTint = Color.Purple with { A = 64 };
+                p.Scale = Vector2.Zero;
+                p.ScaleVelocity = new Vector2(Main.rand.NextFloat(0.8f, 1f), Main.rand.NextFloat(0.8f, 1f)) * 0.075f;
+                p.Rotation = Main.rand.NextFloatDirection();
+                p.FadeInNormalizedTime = 0.5f;
+                p.FadeOutNormalizedTime = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+            if (NPC.ai[1] > teleportTime - 5)
+            {
+                NPC.alpha += 255 / 5;
+            }
+        }
+        else if (NPC.ai[1] == teleportTime)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient && _currentAttack != 0 && _currentAttack % (Main.expertMode ? 6 : 10) == 0)
+            {
+                int weeper = ModContent.NPCType<HiveMindWeeper>();
+                int swooper = ModContent.NPCType<HiveMindSwooper>();
+                for (int i = 0; i < 3; i++)
+                {
+                    if (NPC.CountNPCS(weeper) + NPC.CountNPCS(swooper) > 8)
+                        break;
+
+                    NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI, -60 + (i * -30));
+                    n.velocity = Main.rand.NextVector2Circular(2, 2);
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                }
+            }
+            Vector2 teleportPos = new Vector2(teleportX - NPC.width / 2, teleportY - NPC.height);
+            Vector2 teleportVel = NPC.position.DirectionTo(teleportPos);
+            if (teleportVel.HasNaNs())
+            {
+                teleportVel = Vector2.Zero;
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption);
+                d.alpha = 128;
+
+                Dust d2 = Dust.NewDustDirect(teleportPos, NPC.width, NPC.height, DustID.Corruption);
+                d2.alpha = 128;
+            }
+            for (int i = 0; i < 50; i++)
+            {
+                Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.RainbowMk2);
+                d.color = Color.Purple;
+                d.noGravity = true;
+                d.fadeIn = Main.rand.NextFloat(2);
+                d.velocity += teleportVel * Main.rand.NextFloat(12);
+                Dust d2 = Dust.NewDustDirect(teleportPos, NPC.width, NPC.height, DustID.RainbowMk2);
+                d2.color = Color.Purple;
+                d2.fadeIn = Main.rand.NextFloat(2);
+                d2.noGravity = true;
+                d2.velocity += teleportVel * Main.rand.NextFloat(12);
+            }
+            NPC.position = teleportPos;
+            SoundEngine.PlaySound(SoundID.Item8, NPC.position);
+        }
+        else if (NPC.ai[1] > teleportTime && NPC.alpha <= 0)
+        {
+            NPC.alpha = 0;
+            NPC.ai[1] = 0;
+            NPC.ai[2] = 0;
+            NPC.ai[3] = 0;
+            _currentAttack++;
+        }
+        else
+        {
+            NPC.alpha -= 255 / 5;
         }
     }
-    private void ShootSporeBombs()
+    private void VineSpikes()
     {
-        NPC.ai[0]++;
-        if (NPC.ai[0] > 40 && NPC.ai[1] < 3)
+        NPC.ai[1]++;
+        if (NPC.ai[1] == 100 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            NPC.ai[0] = 20;
-            NPC.ai[1]++;
-            if (Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.1f) * Main.rand.NextFloat(6, 12), ModContent.ProjectileType<SporeBomb>(), 25, 1, -1, Main.rand.NextFloat(-1f, 1f));
-        }
-
-        if (NPC.ai[1] == 3 && NPC.ai[0] > 80)
-        {
-            NPC.ai[0] = 0;
-            NPC.ai[1] = 0;
-            switch (currentPhase)
+            float spacing = Main.expertMode? Main.rand.Next(220, 240) : Main.rand.Next(250, 280);
+            int type = ModContent.ProjectileType<HiveVineSpawner>();
+            for (int i = -5; i <= 5; i++)
             {
-                case 1:
-                    currentPhase = 2;
-                    phase = (byte)Main.rand.Next(1, 3);
-                    break;
-                case 2:
-                    currentPhase = 3;
-                    phase = 3;
-                    break;
-                case 3:
-                    currentPhase = 0;
-                    phase = 0;
-                    break;
+                if (i == 0)
+                    continue;
+                Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + i * spacing, NPC.Center.Y - 256), 128);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, 0, Main.rand.Next(10, 30));
             }
+        }
+        else if (NPC.ai[1] > 200)
+        {
+            NPC.alpha = 0;
+            NPC.ai[1] = 0;
+            NPC.ai[2] = 0;
+            NPC.ai[3] = 0;
+            _currentAttack++;
         }
     }
-    private void VineAttack()
+    private void SporeBombs()
     {
-        NPC.ai[0]++;
-        if (NPC.ai[0] > 40 && NPC.ai[1] < 3)
+        NPC.ai[1]++;
+        if ((NPC.ai[1] is 100 or 120 or 140) && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            NPC.ai[0] = 20;
-
-            NPC.ai[2] = Main.rand.NextFloatDirection() * 64 * Main.rand.Next(6, 12);
-            NPC.netUpdate = true;
-
-            if (NPC.ai[1] == 0)
-            {
-                SoundEngine.PlaySound(SoundID.Item8, CVUtils.FindRestingSpot(target.Center) + new Vector2(0, -16));
-                if (Main.netMode != NetmodeID.MultiplayerClient)
-                {
-                    Projectile.NewProjectile(NPC.GetSource_FromThis(), CVUtils.FindRestingSpot(target.Center) + new Vector2(0, -16), Vector2.Zero, ModContent.ProjectileType<HiveVine>(), 25, 1, -1, 0, Main.rand.Next(16, 26));
-                }
-            }
-            else
-            {
-                SoundEngine.PlaySound(SoundID.Item8, CVUtils.FindRestingSpot(target.Center) + new Vector2(NPC.ai[2], -16));
-                if (Main.netMode != NetmodeID.MultiplayerClient)
-                {
-                    Projectile.NewProjectile(NPC.GetSource_FromThis(), CVUtils.FindRestingSpot(target.Center) + new Vector2(NPC.ai[2], -16), Vector2.Zero, ModContent.ProjectileType<HiveVine>(), 25, 1, -1, 0, Main.rand.Next(16, 26));
-                }
-            }
-
-            NPC.ai[1]++;
+            int type = ModContent.ProjectileType<SporeBomb>();
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(3, 5), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
-
-        if (NPC.ai[1] == 3 && NPC.ai[0] > 80)
+        else if (NPC.ai[1] > 200)
         {
-            NPC.ai[0] = 0;
+            NPC.alpha = 0;
             NPC.ai[1] = 0;
-            switch (currentPhase)
-            {
-                case 1:
-                    currentPhase = 2;
-                    phase = (byte)Main.rand.Next(1, 3);
-                    break;
-                case 2:
-                    currentPhase = 3;
-                    phase = 3;
-                    break;
-                case 3:
-                    currentPhase = 0;
-                    phase = 0;
-                    break;
-            }
+            NPC.ai[2] = 0;
+            NPC.ai[3] = 0;
+            _currentAttack++;
         }
     }
-
-    bool minionSummoned = false;
-    List<NPC> HiveMindMinions = new List<NPC> { };
-
-    private void SpawnMinions()
+    private void Boulders()
     {
-        NPC.ai[0]++;
 
-        if (Main.netMode == NetmodeID.MultiplayerClient)
-        {
-            // Because we want to spawn minions, and minions are NPCs, we have to do this on the server (or singleplayer, "!= NetmodeID.MultiplayerClient" covers both)
-            // This means we also have to sync it after we spawned and set up the minion
-            return;
-        }
-
-        if (NPC.ai[0] > 20 && !minionSummoned)
-        {
-            SoundEngine.PlaySound(SoundID.NPCHit1, NPC.Center);
-
-            for (int i = 0; i < 5; i++)
-            {
-                Dust d = Dust.NewDustPerfect(NPC.Center, DustID.Corruption);
-                d.velocity = Main.rand.NextVector2Unit((float)-MathHelper.PiOver4, (float)-MathHelper.PiOver2) * Main.rand.NextFloat(2f, 4f);
-            }
-
-            int spawnAmount = Main.rand.Next(2, 5);
-            for (int i = 0; i < spawnAmount; i++)
-            {
-                float rotAmount = 1f;
-                Vector2 spawnOffset = new Vector2(0, -1f).RotatedBy((rotAmount / spawnAmount * i) - rotAmount / 2) * Main.rand.NextFloat(3f, 7f);
-
-                if (Main.rand.Next(1, 4) != 1)
-                {
-                    NPC minnon = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X + (int)spawnOffset.X, (int)NPC.Center.Y + (int)spawnOffset.Y, ModContent.NPCType<HiveMindSwooper>());
-                    // Optional parameters allow for specifying a range of rotations. In this example, the start rotation is  MathHelper.Pi / 4 and it can be up to MathHelper.Pi / 2 more than that.
-                    minnon.velocity = spawnOffset;
-                    minnon.Opacity = 0f;
-                    HiveMindMinions.Add(minnon);
-                }
-                else
-                {
-                    NPC minnon = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X + (int)spawnOffset.X, (int)NPC.Center.Y + (int)spawnOffset.Y, ModContent.NPCType<HiveMindWeeper>());
-                    // Optional parameters allow for specifying a range of rotations. In this example, the start rotation is  MathHelper.Pi / 4 and it can be up to MathHelper.Pi / 2 more than that.
-                    minnon.velocity = spawnOffset;
-                    minnon.Opacity = 0f;
-                    HiveMindMinions.Add(minnon);
-                }
-            }
-            minionSummoned = true;
-            NPC.dontTakeDamage = true;
-        }
-
-        for (int i = 0; i < HiveMindMinions.Count(); i++)
-        {
-            if (!HiveMindMinions[i].active) HiveMindMinions.Remove(HiveMindMinions[i]);
-        }
-
-        if (HiveMindMinions.Count() <= 0 && NPC.ai[0] > 30)
-        {
-            NPC.ai[1]++;
-            NPC.dontTakeDamage = false;
-        }
-
-        if (HiveMindMinions.Count() <= 0 && NPC.ai[1] > 60)
-        {
-            NPC.ai[0] = 0;
-            NPC.ai[1] = 0;
-            switch (currentPhase)
-            {
-                case 1:
-                    currentPhase = 2;
-                    phase = (byte)Main.rand.Next(1, 3);
-                    break;
-                case 2:
-                    currentPhase = 3;
-                    phase = 3;
-                    break;
-                case 3:
-                    currentPhase = 0;
-                    phase = 0;
-                    break;
-            }
-            minionSummoned = false;
-            HiveMindMinions = new List<NPC> { };
-        }
     }
 }

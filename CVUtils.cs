@@ -226,28 +226,34 @@ public static class CVUtils
             return (NPC.downedBoss1 || NPC.downedBoss2 || NPC.downedBoss3 || NPC.downedSlimeKing || Main.hardMode);
         return (NPC.downedBoss1 || NPC.downedBoss2 || NPC.downedBoss3 || Main.hardMode);
     }
-
-    public static Vector2 FindRestingSpot(Vector2 pointPoisition)
+    /// <summary>
+    /// Finds the closest floor below a point in the world. If it can't find anything it'll return the lowest spot it could check.
+    /// </summary>
+    public static Vector2 FindFloorBelowIgnoringSolidTops(Vector2 pointPoisition, int maxCheckTileDistance)
     {
-        bool flag = false;
         int num = (int)pointPoisition.X / 16;
-        int i = (int)pointPoisition.Y / 16;
-        float worldX = num * 16 + 8;
-
-
-        if (!flag)
+        int num2 = (int)pointPoisition.Y / 16;
+        for (int i = 0; i < maxCheckTileDistance; i++)
         {
-            for (; i < Main.maxTilesY - 10 && Main.tile[num, i] != null && !WorldGen.SolidTile2(num, i) && Main.tile[num - 1, i] != null && !WorldGen.SolidTile2(num - 1, i) && Main.tile[num + 1, i] != null && !WorldGen.SolidTile2(num + 1, i); i++)
+            if ((Main.tileSolid[Main.tile[num, num2 + i].TileType] && !Main.tileSolidTop[Main.tile[num, num2 + i].TileType] && Main.tile[num, num2 + i].HasTile && !Main.tile[num, num2 + i].IsActuated) || !WorldGen.InWorld(num, num2 + i, 5))
             {
+                return new Vector2(num * 16 + 8, (num2 + i) * 16);
             }
-
-            i++;
         }
-
-        i--;
-        float worldY = i * 16;
-
-        return new Vector2(worldX, worldY);
+        return new Vector2(num * 16 + 8, (num2 + maxCheckTileDistance) * 16);
+    }
+    public static Vector2 FindFloorBelow(Vector2 pointPoisition, int maxCheckTileDistance)
+    {
+        int num = (int)pointPoisition.X / 16;
+        int num2 = (int)pointPoisition.Y / 16;
+        for (int i = 0; i < maxCheckTileDistance; i++)
+        {
+            if ((Main.tileSolid[Main.tile[num, num2 + i].TileType] && Main.tile[num, num2 + i].HasTile && !Main.tile[num, num2 + i].IsActuated) || !WorldGen.InWorld(num, num2 + i, 5))
+            {
+                return new Vector2(num * 16 + 8, (num2 + i) * 16);
+            }
+        }
+        return new Vector2(num * 16 + 8, (num2 + maxCheckTileDistance) * 16);
     }
 
     //Creates and returns a 16 byte array of replicable random values based on an MD5 hash
