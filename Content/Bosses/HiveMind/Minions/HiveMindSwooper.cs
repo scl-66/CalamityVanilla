@@ -148,11 +148,7 @@ public class HiveMindSwooper : ModNPC
                     if (NPC.ai[2] == _swoopAttackTime)
                     {
                         Vector2 adjustedTargetPosition = target.Center + (target.velocity * swoopTime);
-                        NPC.velocity = new Vector2(
-                            (adjustedTargetPosition.X - NPC.Bottom.X) / swoopTime,
-                            ((adjustedTargetPosition.Y - NPC.Bottom.Y) / swoopTime) - (swoopUpwardsAcceleration / 2f * swoopTime)
-                        );
-                        NPC.velocity = NPC.velocity.LengthClamp(16);
+                        NPC.velocity = CVUtils.FindVelocityForGravityAffectedThing(NPC.Bottom, adjustedTargetPosition, swoopUpwardsAcceleration, swoopTime).LengthClamp(16);
                         for(int i = 0; i < 15; i++)
                         {
                             Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption, Scale: 0.75f);
@@ -160,7 +156,7 @@ public class HiveMindSwooper : ModNPC
                             d.fadeIn = Main.rand.NextFloat(2);
                             d.alpha = 128;
                         }
-                        SoundEngine.PlaySound(SoundID.Item20, NPC.position);
+                        SoundEngine.PlaySound(SoundID.Item131 with { MaxInstances = 10, Pitch = 0.1f, PitchVariance = 0.2f}, NPC.position);
                         NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
                     }
                     else if (NPC.ai[2] > _swoopAttackTime)

@@ -90,6 +90,7 @@ public class HiveMindWeeper : ModNPC
     }
     public override void AI()
     {
+        int hoverDistance = 128;
         NPC.Opacity += 0.1f;
         NPC.rotation = MathHelper.Clamp(NPC.velocity.X / 5f, -1f, 1f);
         if (Main.rand.NextBool(6))
@@ -108,7 +109,7 @@ public class HiveMindWeeper : ModNPC
             NPC.ai[0]++;
             if (NPC.ai[0] < FlyTime)
             {
-                Vector2 targetPos = target.Top + new Vector2(0, -16 * 15);
+                Vector2 targetPos = target.Top - new Vector2(0, hoverDistance);
                 if(NPC.Center.Distance(targetPos) > 64)
                     NPC.SimpleFlyMovement(NPC.Center.DirectionTo(targetPos) * 6, 0.1f);
             }
@@ -119,13 +120,13 @@ public class HiveMindWeeper : ModNPC
                     NPC.velocity *= 0.9f;
                 }
                 NPC.velocity.X *= 0.95f;
-                if(target.position.Y < NPC.position.Y + 128)
+                if (target.position.Y < NPC.position.Y + hoverDistance && NPC.velocity.Y > -1)
                 {
                     NPC.velocity.Y -= 0.03f;
                 }
-                else
+                else if (NPC.velocity.Y < 1)
                 {
-                    NPC.velocity.Y += 0.01f;
+                    NPC.velocity.Y += 0.03f;
                 }
                 int vineType = ModContent.ProjectileType<HiveVine>();
                 foreach(Projectile p in Main.ActiveProjectiles)

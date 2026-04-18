@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,6 +11,13 @@ namespace CalamityVanilla;
 
 public static class CVUtils
 {
+    public static Vector2 FindVelocityForGravityAffectedThing(Vector2 StartPosition, Vector2 TargetPosition, float gravity, int TimeUntilHit)
+    {
+        return new Vector2(
+            (TargetPosition.X - StartPosition.X) / TimeUntilHit,
+            ((TargetPosition.Y - StartPosition.Y) / TimeUntilHit) - (gravity / 2f * TimeUntilHit)
+            );
+    }
     public static void SimpleFlyMovement(this NPC n, Vector2 desiredVelocity, float moveSpeedX, float moveSpeedY)
     {
         if (n.velocity.X < desiredVelocity.X)

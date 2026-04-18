@@ -13,10 +13,14 @@ namespace CalamityVanilla.Content.Bosses.HiveMind.Projectiles;
 
 public class HiveVineSpawner : ModProjectile
 {
+    private static SoundStyle _sound;
+    public override void SetStaticDefaults()
+    {
+        _sound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineEmerge", [1,2]) { PitchVariance = 0.1f, MaxInstances = 10 };
+    }
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(true, 28);
-        Projectile.timeLeft = 120;
         Projectile.tileCollide = false;
         Projectile.Opacity = 0;
     }
@@ -41,43 +45,13 @@ public class HiveVineSpawner : ModProjectile
             d.color = new Color(0.25f, 0.5f, 0f, 0.8f) * Projectile.Opacity;
             d.noGravity = true;
         }
-
-        //if (Main.rand.NextBool(8))
-        //{
-        //    Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0), DustID.Corruption);
-        //    d.velocity += Vector2.UnitY * Main.rand.NextFloat(-5, -2);
-        //    d.noGravity = Main.rand.NextBool();
-        //    d.alpha = 128;
-        //}
-        //if (Main.rand.NextBool(3))
-        //{
-        //    Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0), DustID.CorruptGibs);
-        //    d.velocity += Vector2.UnitY * Main.rand.NextFloat(-12, -2);
-        //    d.fadeIn = Main.rand.NextFloat(1.5f);
-        //    d.noGravity = true;
-        //    d.velocity.X = (d.position.X - Projectile.Center.X) * -0.05f;
-        //}
-        //Point center = Projectile.Center.ToTileCoordinates();
-        //for (int x = center.X - 1; x < center.X + 1; x++)
-        //{
-        //    for (int y = center.Y - 2; y < center.Y + 2; y++)
-        //    {
-        //        if (Main.tile[x, y].HasTile && (Main.tileSolid[Main.tile[x, y].TileType] || Main.tileSolidTop[Main.tile[x, y].TileType]))
-        //        {
-        //            if (Main.rand.NextBool(3))
-        //            {
-        //                Dust d = Main.dust[WorldGen.KillTile_MakeTileDust(x, y, Main.tile[x, y])];
-        //                d.velocity.Y -= Main.rand.NextFloat(2, 5);
-        //                d.noGravity = Main.rand.NextBool();
-        //                d.velocity.X = (d.position.X - Projectile.Center.X) * -0.05f;
-        //            }
-        //        }
-        //    }
-        //}
+        Projectile.ai[0]++;
+        if (Projectile.ai[0] > 120)
+            Projectile.Kill();
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.Item100, Projectile.position);
+        SoundEngine.PlaySound(_sound, Projectile.position);
         Projectile.Opacity += 0.075f;
         for (int i = 0; i < 20; i++)
         {
@@ -103,9 +77,9 @@ public class HiveVineSpawner : ModProjectile
             d.noGravity = true;
         }
         Point center = Projectile.Center.ToTileCoordinates();
-        for (int x = center.X - 1; x < center.X + 1; x++)
+        for (int x = center.X - 1; x <= center.X + 1; x++)
         {
-            for (int y = center.Y - 2; y < center.Y + 2; y++)
+            for (int y = center.Y - 2; y <= center.Y + 2; y++)
             {
                 if (Main.tile[x, y].HasTile && (Main.tileSolid[Main.tile[x, y].TileType] || Main.tileSolidTop[Main.tile[x, y].TileType]))
                 {
@@ -133,11 +107,13 @@ public class HiveVineSpawner : ModProjectile
 }
 public class HiveVine : ModProjectile
 {
+    private static SoundStyle _death;
     private static Asset<Texture2D> _platform;
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
         _platform = ModContent.Request<Texture2D>(Texture + "Platform");
+        _death = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineDestroy", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
     }
     public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
     {
@@ -185,6 +161,7 @@ public class HiveVine : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
+        SoundEngine.PlaySound(_death, Projectile.position);
         for (int i = 0; i < Projectile.height / 8; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);

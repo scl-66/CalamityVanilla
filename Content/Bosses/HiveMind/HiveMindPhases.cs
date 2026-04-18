@@ -2,6 +2,7 @@
 using CalamityVanilla.Content.Bosses.HiveMind.Projectiles;
 using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -20,16 +21,41 @@ public partial class HiveMind
             Teleport();
         else
         {
-            int whichAttack = (int)_currentAttack % 3;
+            int whichAttack = (int)_currentAttack % 9;
+            //whichAttack = 1;
             switch (whichAttack)
             {
                 case 0:
                     VineSpikes();
                     break;
                 case 1:
-                    SporeBombs();
+                    Boulders();
                     break;
                 case 2:
+                    SporeBombs();
+                    break;
+                case 3:
+                    Boulders();
+                    break;
+                case 4:
+                    SporeBombs();
+                    break;
+                case 5:
+                    VineSpikes();
+                    break;
+                case 6:
+                    SporeBombs();
+                    break;
+                case 7:
+                    SporeBombs();
+                    break;
+                case 8:
+                    VineSpikes();
+                    break;
+                case 9:
+                    Boulders();
+                    break;
+                case 10:
                     VineSpikes();
                     break;
             }
@@ -86,14 +112,25 @@ public partial class HiveMind
             {
                 int weeper = ModContent.NPCType<HiveMindWeeper>();
                 int swooper = ModContent.NPCType<HiveMindSwooper>();
-                for (int i = 0; i < 3; i++)
+                int weeperCount = NPC.CountNPCS(weeper);
+                int swooperCount = NPC.CountNPCS(swooper);
+                if (weeperCount + swooperCount < 8)
                 {
-                    if (NPC.CountNPCS(weeper) + NPC.CountNPCS(swooper) > 8)
-                        break;
-
-                    NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI, -60 + (i * -30));
-                    n.velocity = Main.rand.NextVector2Circular(2, 2);
-                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (weeperCount < 3 && Main.expertMode && Main.rand.NextBool(3))
+                        {
+                            NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI, -60 + (i * -30));
+                            n.velocity = Main.rand.NextVector2Circular(2, 2);
+                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                        }
+                        else if (swooperCount < 5)
+                        {
+                            NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI, -60 + (i * -30));
+                            n.velocity = Main.rand.NextVector2Circular(2, 2);
+                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                        }
+                    }
                 }
             }
             Vector2 teleportPos = new Vector2(teleportX - NPC.width / 2, teleportY - NPC.height);
@@ -150,11 +187,11 @@ public partial class HiveMind
             {
                 if (i == 0)
                     continue;
-                Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + i * spacing, NPC.Center.Y - 256), 128);
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, 0, Main.rand.Next(10, 30));
+                Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + i * spacing, NPC.Center.Y - 256), 64);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(10, 30));
             }
         }
-        else if (NPC.ai[1] > 200)
+        else if (NPC.ai[1] > 230)
         {
             NPC.alpha = 0;
             NPC.ai[1] = 0;
@@ -169,9 +206,9 @@ public partial class HiveMind
         if ((NPC.ai[1] is 100 or 120 or 140) && Main.netMode != NetmodeID.MultiplayerClient)
         {
             int type = ModContent.ProjectileType<SporeBomb>();
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(3, 5), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(6, 9), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
-        else if (NPC.ai[1] > 200)
+        else if (NPC.ai[1] > 160)
         {
             NPC.alpha = 0;
             NPC.ai[1] = 0;
@@ -182,6 +219,43 @@ public partial class HiveMind
     }
     private void Boulders()
     {
-
+        NPC.ai[1]++;
+        if (NPC.ai[1] is 100 or 120 or 140 && Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + Main.rand.Next(-200,200), NPC.Center.Y - 256), 64);
+            Point placePoint = place.ToTileCoordinates();
+            int rockType = 0;
+            if (Main.tile[placePoint].HasTile)
+            {
+                switch (Main.tile[placePoint].TileType)
+                {
+                    case TileID.Ebonstone:
+                        rockType = 1;
+                            break;
+                    case TileID.Mud:
+                    case TileID.CorruptJungleGrass:
+                        rockType = 2;
+                        break;
+                    case TileID.SnowBlock:
+                    case TileID.CorruptIce:
+                        rockType = 3;
+                        break;
+                    case TileID.Ebonsand:
+                    case TileID.CorruptSandstone:
+                    case TileID.CorruptHardenedSand:
+                        rockType = 4;
+                        break;
+                }
+            }
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5,5),Main.rand.NextFloat(-6,-3)), ModContent.ProjectileType<CorruptBoulder>(), 30, 1, -1, NPC.target, ai2: rockType);
+        }
+        else if (NPC.ai[1] > 140)
+        {
+            NPC.alpha = 0;
+            NPC.ai[1] = 0;
+            NPC.ai[2] = 0;
+            NPC.ai[3] = 0;
+            _currentAttack++;
+        }
     }
 }

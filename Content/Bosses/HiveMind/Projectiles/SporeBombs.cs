@@ -12,8 +12,12 @@ namespace CalamityVanilla.Content.Bosses.HiveMind.Projectiles;
 
 public class SporeBomb : ModProjectile
 {
+    private static SoundStyle _death;
+    private static SoundStyle _spawn;
     public override void SetStaticDefaults()
     {
+        _death = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_SporeBombPop", [1,2]) { PitchVariance = 0.1f };
+        _spawn = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_SporeBombLaunch") { PitchVariance = 0.1f };
         Main.projFrames[Type] = 4;
         ProjectileID.Sets.TrailCacheLength[Type] = 3;
         ProjectileID.Sets.TrailingMode[Type] = 0;
@@ -21,7 +25,7 @@ public class SporeBomb : ModProjectile
     public override void SetDefaults()
     {
         Projectile.QuickDefaults(true, 30);
-        Projectile.timeLeft = 240;
+        Projectile.timeLeft = 120;
         Projectile.Opacity = 0;
     }
     public override void AI()
@@ -36,7 +40,7 @@ public class SporeBomb : ModProjectile
 
         if (Projectile.ai[0] == 0)
         {
-            SoundEngine.PlaySound(SoundID.Item17, Projectile.position);
+            SoundEngine.PlaySound(_spawn, Projectile.position);
         }
         Projectile.ai[0]++;
         Projectile.frameCounter++;
@@ -76,7 +80,7 @@ public class SporeBomb : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.position);
+        SoundEngine.PlaySound(_death, Projectile.position);
         if (Main.netMode != NetmodeID.MultiplayerClient)
         {
             for (int i = 0; i < 9; i++)
