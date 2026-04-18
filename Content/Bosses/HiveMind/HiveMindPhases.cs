@@ -181,7 +181,7 @@ public partial class HiveMind
         NPC.ai[1]++;
         if (NPC.ai[1] == 100 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            float spacing = Main.expertMode? Main.rand.Next(220, 240) : Main.rand.Next(250, 280);
+            float spacing = Main.expertMode ? Main.rand.Next(220, 240) : Main.rand.Next(250, 280);
             int type = ModContent.ProjectileType<HiveVineSpawner>();
             for (int i = -5; i <= 5; i++)
             {
@@ -206,7 +206,9 @@ public partial class HiveMind
         if ((NPC.ai[1] is 100 or 120 or 140) && Main.netMode != NetmodeID.MultiplayerClient)
         {
             int type = ModContent.ProjectileType<SporeBomb>();
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(6, 9), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, target.Center + Main.rand.NextVector2Circular(128,128), 0.2f, 120), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+            //Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(6, 9), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
         else if (NPC.ai[1] > 160)
         {
@@ -222,7 +224,7 @@ public partial class HiveMind
         NPC.ai[1]++;
         if (NPC.ai[1] is 100 or 120 or 140 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + Main.rand.Next(-200,200), NPC.Center.Y - 256), 64);
+            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + Main.rand.Next(-200, 200), NPC.Center.Y - 256), 64);
             Point placePoint = place.ToTileCoordinates();
             int rockType = 0;
             if (Main.tile[placePoint].HasTile)
@@ -231,7 +233,7 @@ public partial class HiveMind
                 {
                     case TileID.Ebonstone:
                         rockType = 1;
-                            break;
+                        break;
                     case TileID.Mud:
                     case TileID.CorruptJungleGrass:
                         rockType = 2;
@@ -247,7 +249,7 @@ public partial class HiveMind
                         break;
                 }
             }
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5,5),Main.rand.NextFloat(-6,-3)), ModContent.ProjectileType<CorruptBoulder>(), 30, 1, -1, NPC.target, ai2: rockType);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 30, 1, -1, NPC.target, ai2: rockType);
         }
         else if (NPC.ai[1] > 140)
         {

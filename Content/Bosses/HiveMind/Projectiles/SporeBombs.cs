@@ -30,6 +30,7 @@ public class SporeBomb : ModProjectile
     }
     public override void AI()
     {
+        Projectile.velocity.Y += 0.2f;
         Projectile.Opacity += 0.1f;
         if (Main.rand.NextBool(5))
         {

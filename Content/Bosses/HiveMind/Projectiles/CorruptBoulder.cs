@@ -73,7 +73,7 @@ public class CorruptBoulder : ModProjectile
             Projectile.velocity.Y *= 0.98f;
             Projectile.velocity.X *= 0.99f;
 
-            if (Projectile.ai[1] > PrepareTime - 31 && (Projectile.ai[1] - 1) % 15 == 0)
+            if (Projectile.ai[1] > PrepareTime - 61 && (Projectile.ai[1] - 1) % 15 == 0)
             {
                 var p = VanillaParticles.RequestFadingParticle();
                 p.SetBasicInfo(TextureAssets.Extra[ExtrasID.KeybrandRing], null, Vector2.Zero, Projectile.Center);
@@ -94,7 +94,7 @@ public class CorruptBoulder : ModProjectile
         {
             SoundEngine.PlaySound(SoundID.Item69, Projectile.position);
             int time = 40;
-            Projectile.velocity = CVUtils.FindVelocityForGravityAffectedThing(Projectile.Bottom,target.Top + (target.velocity * time),0.1f, time).LengthClamp(24,4);
+            Projectile.velocity = CVUtils.FindVelocityForGravityAffectedThing(Projectile.Bottom,target.Top,0.1f, time).LengthClamp(24,4);
             for(int i = 0; i < 25; i++)
             {
                 Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
@@ -132,7 +132,7 @@ public class CorruptBoulder : ModProjectile
         {
             for(int i = 0; i < 4; i++)
             {
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0,8 + (float)Math.Sin(Main.timeForVisualEffects * 0.15f) * 4).RotatedBy(i * MathHelper.PiOver2 + Projectile.rotation), frame, Color.Purple with { A = 0 } * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0,8 + (float)Math.Sin(Main.timeForVisualEffects * 0.1f) * 4).RotatedBy(i * MathHelper.PiOver2), frame, Color.Purple with { A = 0 } * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             }
         }
         return false;
