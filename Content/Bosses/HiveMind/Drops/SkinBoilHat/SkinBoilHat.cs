@@ -56,12 +56,13 @@ public class SkinBoilHatRaincloud : ModProjectile
         Projectile.width = 54;
         Projectile.height = 28;
         Projectile.friendly = true;
+        Projectile.tileCollide = false;
     }
 
     public override void AI()
     {
         Player player = Main.player[Projectile.owner];
-        Vector2 position = player.Top - new Vector2(Projectile.width / 2, 60);
+        Vector2 position = player.Top - new Vector2(Projectile.width / 2, 60 - player.gfxOffY);
         position.Floor();
 
         if (!player.GetModPlayer<SkinBoilHatPlayer>().skinBoilHat)
@@ -83,7 +84,7 @@ public class SkinBoilHatRaincloud : ModProjectile
         {
             Projectile.ai[0] = 0;
             if (Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), rainPosition, Vector2.Zero, ModContent.ProjectileType<SkinBoilHatRain>(), 8, 0, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), rainPosition, Vector2.Zero, ModContent.ProjectileType<SkinBoilHatRain>(), 35, 0, Projectile.owner);
         }
     }
 }
@@ -99,10 +100,22 @@ public class SkinBoilHatRain : ModProjectile
         Projectile.ignoreWater = true;
         Projectile.timeLeft = 180;
     }
+    public override Color? GetAlpha(Color lightColor)
+    {
+        return Color.White;
+    }
     public override void AI()
     {
+        //Lighting.AddLight(Projectile.position, new Vector3(0.22f, 1f, 0f));
         Projectile.velocity.Y = 10f;
         Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
+        if (Main.rand.NextBool(8))
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2, newColor: new Color(0.6f, 1f, 0f));
+            d.noGravity = true;
+            d.velocity.X = 0;
+            d.velocity.Y = Projectile.velocity.Y;
+        }
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
@@ -110,7 +123,8 @@ public class SkinBoilHatRain : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {   
-        Dust.NewDustPerfect(Projectile.Bottom, DustID.Rain, new(0, -1), 0, Color.Lime);
+        //Dust.NewDustPerfect(Projectile.Bottom, DustID.Rain, new(0, -1), 0, Color.Lime);
+        Dust.NewDustPerfect(Projectile.Bottom, DustID.CursedTorch, new(0, -1), 0, default, 0.5f);
     }
     public override bool? CanCutTiles()
     {

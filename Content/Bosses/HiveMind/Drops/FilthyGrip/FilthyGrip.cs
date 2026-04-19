@@ -39,7 +39,7 @@ public class FilthyGripCrit : ModPlayer
             {
                 float randWidth = Main.rand.NextFloat(-target.width, target.width) / 8;
                 float randHeight = Main.rand.NextFloat(-target.height, target.height) / 8;
-                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Hitbox.ClosestPointInRect(Player.Center), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
+                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Hitbox.ClosestPointInRect(Player.Center), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 10, 0f, Main.myPlayer);
             }
         }
     }
@@ -51,7 +51,7 @@ public class FilthyGripCrit : ModPlayer
             {
                 float randWidth = Main.rand.NextFloat(-target.width, target.width) / 8;
                 float randHeight = Main.rand.NextFloat(-target.height, target.height) / 8;
-                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Hitbox.ClosestPointInRect(proj.Center), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 30, 0f, Main.myPlayer);
+                Projectile.NewProjectile(Player.GetSource_FromThis(), target.Hitbox.ClosestPointInRect(proj.Center), Vector2.Zero, ModContent.ProjectileType<FilthyGripSlash>(), 10, 0f, Main.myPlayer);
             }
         }
     }
