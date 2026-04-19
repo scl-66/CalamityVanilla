@@ -260,6 +260,7 @@ public partial class HiveMind
             {
                 switch (Main.tile[placePoint].TileType)
                 {
+                    case TileID.Stone:
                     case TileID.Ebonstone:
                         rockType = 1;
                         break;

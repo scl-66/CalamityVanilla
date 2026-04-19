@@ -16,7 +16,8 @@ public class SinisterRoot : ModTile
         Main.tileFrameImportant[Type] = true;
         Main.tileObsidianKill[Type] = true;
         Main.tileSpelunker[Type] = true;
-        Main.tileCut[Type] = true;
+        Main.tileCut[Type] = false;
+        TileID.Sets.BreakableWhenPlacing[Type] = true;
         Main.tileNoFail[Type] = true;
         TileID.Sets.ReplaceTileBreakUp[Type] = true;
         TileID.Sets.IgnoredInHouseScore[Type] = true;
