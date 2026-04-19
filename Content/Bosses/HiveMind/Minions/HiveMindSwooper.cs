@@ -83,6 +83,7 @@ public class HiveMindSwooper : ModNPC
         NPC.aiStyle = -1;
         NPC.noGravity = true;
         NPC.noTileCollide = true;
+        NPC.knockBackResist = 0.4f;
 
         NPC.lifeMax = 200;
         NPC.defense = 20;
@@ -131,13 +132,19 @@ public class HiveMindSwooper : ModNPC
                 }
                 NPC.direction = target.Center.X > NPC.Center.X ? 1 : -1;
                 NPC.directionY = target.Center.Y > NPC.Center.Y ? 1 : -1;
-                if (NPC.Center.Distance(target.Center) < 16 * 40)
+                float distance = NPC.Center.Distance(target.Center) / 16;
+                if (distance < 40)
                 {
                     NPC.SimpleFlyMovement(new Vector2(NPC.direction * 2, NPC.directionY * (NPC.directionY == 1 ? 1.5f : 1f)), 0.05f);
                 }
                 else
                 {
-                    NPC.SimpleFlyMovement(new Vector2(NPC.direction * 6, NPC.directionY * 6), 0.2f);
+                    if (distance > 60 && NPC.ai[0] == swoopInterval - 5)
+                    {
+                        NPC.ai[0]--;
+                    }
+                    float speed = Utils.Remap(distance, 40, 120, 6, 24);
+                    NPC.SimpleFlyMovement(new Vector2(NPC.direction * speed, NPC.directionY * speed), 0.2f);
                 }
             }
             else
@@ -148,7 +155,7 @@ public class HiveMindSwooper : ModNPC
                     if (NPC.ai[2] == _swoopAttackTime)
                     {
                         Vector2 adjustedTargetPosition = target.Center + (target.velocity * swoopTime);
-                        NPC.velocity = CVUtils.FindVelocityForGravityAffectedThing(NPC.Bottom, adjustedTargetPosition, swoopUpwardsAcceleration, swoopTime).LengthClamp(16);
+                        NPC.velocity = CVUtils.FindVelocityForGravityAffectedThing(NPC.Bottom, adjustedTargetPosition, swoopUpwardsAcceleration, swoopTime).LengthClamp(24);
                         for(int i = 0; i < 15; i++)
                         {
                             Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption, Scale: 0.75f);

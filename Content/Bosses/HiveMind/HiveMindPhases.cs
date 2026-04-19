@@ -17,6 +17,23 @@ public partial class HiveMind
     public override void AI()
     {
         //Main.NewText("AI0: " + NPC.ai[0] + " AI1: " + NPC.ai[1] + " AI2: " + NPC.ai[2] + " AI3: " + NPC.ai[3],Main.DiscoColor);
+        if (!NPC.HasValidTarget || !target.ZoneCorrupt)
+        {
+            NPC.TargetClosest(player => !player.ZoneCorrupt);
+            if (!NPC.HasValidTarget || !target.ZoneCorrupt)
+            {
+                _currentAttack = -1;
+            }
+        }
+        if(_currentAttack < 0)
+        {
+            NPC.alpha += 5;
+            if(NPC.alpha > 255)
+            {
+                NPC.active = false;
+            }
+            return;
+        }
         if (_currentAttack % (Main.expertMode ? 3 : 5) == 0)
             Teleport();
         else
@@ -67,11 +84,11 @@ public partial class HiveMind
         ref float teleportX = ref NPC.ai[2];
         ref float teleportY = ref NPC.ai[3];
         int teleportTime = 120;
-        NPC.TargetClosest();
+        NPC.TargetClosest(target => !target.ZoneCorrupt);
         if (NPC.ai[1] == 1)
         {
             Vector2 chosenTile = Vector2.Zero;
-            Vector2 targetPos = CVUtils.FindFloorBelow(target.Center, 32);
+            Vector2 targetPos = target.Center;
             targetPos /= 16;
             if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y))
             {
@@ -81,8 +98,19 @@ public partial class HiveMind
             }
             else
             {
-                teleportX = target.Bottom.X;
-                teleportY = target.Bottom.Y;
+                targetPos = CVUtils.FindFloorBelow(target.Center, 32);
+                targetPos /= 16;
+                if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y))
+                {
+                    chosenTile *= 16;
+                    teleportX = chosenTile.X;
+                    teleportY = chosenTile.Y;
+                }
+                else
+                {
+                    teleportX = target.Bottom.X;
+                    teleportY = target.Bottom.Y;
+                }
             }
             NPC.netUpdate = true;
         }
@@ -183,12 +211,12 @@ public partial class HiveMind
         {
             float spacing = Main.expertMode ? Main.rand.Next(220, 240) : Main.rand.Next(250, 280);
             int type = ModContent.ProjectileType<HiveVineSpawner>();
-            for (int i = -5; i <= 5; i++)
+            for (int i = -15; i <= 15; i++)
             {
                 if (i == 0)
                     continue;
                 Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + i * spacing, NPC.Center.Y - 256), 64);
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(10, 30));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(20, 30));
             }
         }
         else if (NPC.ai[1] > 230)
@@ -207,7 +235,8 @@ public partial class HiveMind
         {
             int type = ModContent.ProjectileType<SporeBomb>();
 
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, target.Center + Main.rand.NextVector2Circular(128,128), 0.2f, 120), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+            Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * 120, 0);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128,128), 0.2f, 120), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
             //Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(6, 9), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
         else if (NPC.ai[1] > 160)
@@ -222,9 +251,9 @@ public partial class HiveMind
     private void Boulders()
     {
         NPC.ai[1]++;
-        if (NPC.ai[1] is 100 or 120 or 140 && Main.netMode != NetmodeID.MultiplayerClient)
+        if (NPC.ai[1] is 100 or 140 or 180 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(NPC.Center.X + Main.rand.Next(-200, 200), NPC.Center.Y - 256), 64);
+            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256,400) * (Main.rand.NextBool()? 1 : -1)), target.Center.Y - 32), 32);
             Point placePoint = place.ToTileCoordinates();
             int rockType = 0;
             if (Main.tile[placePoint].HasTile)
@@ -240,18 +269,22 @@ public partial class HiveMind
                         break;
                     case TileID.SnowBlock:
                     case TileID.CorruptIce:
+                    case TileID.IceBlock:
                         rockType = 3;
                         break;
                     case TileID.Ebonsand:
                     case TileID.CorruptSandstone:
                     case TileID.CorruptHardenedSand:
+                    case TileID.Sand:
+                    case TileID.HardenedSand:
+                    case TileID.Sandstone:
                         rockType = 4;
                         break;
                 }
             }
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 30, 1, -1, NPC.target, ai2: rockType);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
         }
-        else if (NPC.ai[1] > 140)
+        else if (NPC.ai[1] > 180)
         {
             NPC.alpha = 0;
             NPC.ai[1] = 0;

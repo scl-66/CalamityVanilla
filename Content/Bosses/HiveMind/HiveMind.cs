@@ -119,7 +119,7 @@ public partial class HiveMind : ModNPC
     {
         NPC.CloneDefaults(NPCID.EyeofCthulhu);
 
-        NPC.lifeMax = 16000;
+        NPC.lifeMax = 30000;
         NPC.defense = 30;
 
         NPC.aiStyle = -1;

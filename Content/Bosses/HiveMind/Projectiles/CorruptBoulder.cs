@@ -94,7 +94,8 @@ public class CorruptBoulder : ModProjectile
         {
             SoundEngine.PlaySound(SoundID.Item69, Projectile.position);
             int time = 40;
-            Projectile.velocity = CVUtils.FindVelocityForGravityAffectedThing(Projectile.Bottom,target.Top,0.1f, time).LengthClamp(24,4);
+            Vector2 adjustedTargetPosition = target.Top + new Vector2(target.velocity.X * time, 0);
+            Projectile.velocity = CVUtils.FindVelocityForGravityAffectedThing(Projectile.Bottom, adjustedTargetPosition, 0.2f, time).LengthClamp(32);
             for(int i = 0; i < 25; i++)
             {
                 Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
@@ -106,11 +107,11 @@ public class CorruptBoulder : ModProjectile
         }
         else
         {
-            if (!Projectile.tileCollide && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+            if (Projectile.velocity.Y > 0 && !Projectile.tileCollide && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
             {
                 Projectile.tileCollide = true;
             }
-            Projectile.velocity.Y += 0.1f;
+            Projectile.velocity.Y += 0.2f;
         }
         Projectile.rotation += Projectile.localAI[0];
     }
@@ -139,6 +140,13 @@ public class CorruptBoulder : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
+        if (Main.expertMode && Main.rand.NextBool(4))
+        {
+            int[] Types = [NPCID.LittleEater, NPCID.EaterofSouls, NPCID.BigEater, NPCID.Slimer,NPCID.CorruptSlime];
+            NPC n = NPC.NewNPCDirect(Projectile.GetSource_FromThis(), Projectile.Center, Types[Main.rand.Next(Types.Length)]);
+            n.velocity = -Projectile.oldVelocity.RotatedByRandom(1) * Main.rand.NextFloat(0.25f,0.5f);
+            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+        }
         SoundEngine.PlaySound(_death, Projectile.position);
         for (int i = 0; i < 25; i++)
         {

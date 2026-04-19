@@ -86,7 +86,7 @@ public class SporeBomb : ModProjectile
         {
             for (int i = 0; i < 9; i++)
             {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1), ModContent.ProjectileType<Spores>(), 23, 2, ai0: Main.rand.NextFloat(MathF.PI * 10));
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1), ModContent.ProjectileType<Spores>(), 15, 2, ai0: Main.rand.NextFloat(MathF.PI * 10));
             }
         }
         for (int i = 0; i < 25; i++)

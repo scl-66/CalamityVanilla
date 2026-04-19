@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using Terraria;
 using Terraria.ID;
@@ -11,6 +12,25 @@ namespace CalamityVanilla;
 
 public static class CVUtils
 {
+    public static void TargetClosest(this NPC npc, Func<Player, bool> invalidTargets, bool faceTarget = true)
+    {
+        float distance = 0f;
+        float realDist = 0f;
+        bool t = false;
+        int tankTarget = -1;
+        for (int i = 0; i < 255; i++)
+        {
+            if (Main.player[i].active && !Main.player[i].dead && !Main.player[i].ghost && !invalidTargets.Invoke(Main.player[i]))
+            {
+                var tryTracking = npc.GetType().GetMethod("TryTrackingTarget", BindingFlags.NonPublic | BindingFlags.Instance);
+                tryTracking.Invoke(npc, [distance, realDist, t, tankTarget, i]);
+            }
+            //NPC.TryTrackingTarget(ref distance, ref realDist, ref t, ref tankTarget, i);
+        }
+        var setTarget = npc.GetType().GetMethod("SetTargetTrackingValues", BindingFlags.NonPublic | BindingFlags.Instance);
+        setTarget.Invoke(npc, [faceTarget, realDist, tankTarget]);
+        //npc.SetTargetTrackingValues(faceTarget, realDist, tankTarget);
+    }
     public static Vector2 FindVelocityForGravityAffectedThing(Vector2 StartPosition, Vector2 TargetPosition, float gravity, int TimeUntilHit)
     {
         return new Vector2(
