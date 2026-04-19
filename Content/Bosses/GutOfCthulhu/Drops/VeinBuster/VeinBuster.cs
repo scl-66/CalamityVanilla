@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.Bosses.GutOfCthulhu.Drops.VeinBuster;
 
@@ -59,7 +60,7 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
                         target.Center + direction * 16,
                         direction * Main.rand.NextFloat(8f, 16f),
                         ModContent.ProjectileType<VeinBusterShard>(),
-                        damage / 5, knockback / 2,
+                        damage / 3, knockback / 2,
                         player.whoAmI
                     );
                     projectile.localNPCImmunity[target.whoAmI] = projectile.localNPCHitCooldown;
@@ -119,7 +120,7 @@ public class VeinBusterShard : ModProjectile
         Projectile.width = 8;
         Projectile.height = 8;
 
-        Projectile.penetrate = -1;
+        Projectile.penetrate = 8;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
         Projectile.friendly = true;
@@ -154,7 +155,10 @@ public class VeinBusterShard : ModProjectile
             dust.noGravity = true;
         }
     }
-
+    public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+    {
+        modifiers.SourceDamage *= Projectile.penetrate / (float)Projectile.maxPenetrate;
+    }
     public override void OnKill(int timeLeft)
     {
         int shardDustType = ModContent.DustType<VeinBusterShardDust>();
