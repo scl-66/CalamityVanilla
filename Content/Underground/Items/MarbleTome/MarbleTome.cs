@@ -52,12 +52,12 @@ public class MarbleTome : ModItem
             //check if mouse is inside blocks
             Point mouse = Main.MouseWorld.ToTileCoordinates();
             Tile tile = Main.tile[mouse.X, mouse.Y];
-            if (tile.HasTile)
+            if (tile.HasUnactuatedTile)
             {
                 bool foundAir = false;
                 for (int i = mouse.Y; i > mouse.Y - 40; i--)
                 {
-                    if (!Main.tile[mouse.X, i].HasTile)
+                    if (!Main.tile[mouse.X, i].HasUnactuatedTile)
                     {
                         pos.Y = i * 16 + ContentSamples.ProjectilesByType[type].height / 2 + 32;
                         foundAir = true;
@@ -69,7 +69,6 @@ public class MarbleTome : ModItem
                     return false;
                 }
             }
-
             Projectile.NewProjectileDirect(source, new Vector2(distNorm.X, pos.Y), new Vector2(0, -25), type, (int)(damage / 1.5), knockback, player.whoAmI, -3);
         }
         return false;
@@ -103,12 +102,17 @@ public class MarbleTomePillar : ModProjectile
 
         if (Projectile.ai[0] == 1)
         {
+            int tX = Projectile.Bottom.ToTileCoordinates().X;
+            int tY = Projectile.Bottom.ToTileCoordinates().Y - 5;
+            Tile tile = Framing.GetTileSafely(tX, tY);
             for (int i = 0; i < 25; i++)
             {
-                Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(0, 15), Projectile.width, Projectile.height/3, DustID.Marble);
-                d.velocity = Main.rand.NextVector2Unit(MathHelper.PiOver4, MathHelper.PiOver2 + MathHelper.PiOver4).RotatedBy(MathHelper.Pi - MathHelper.PiOver2/3) * Main.rand.NextFloat(1f, 4f);
+                //Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(0, 15), Projectile.width, Projectile.height / 3, DustID.Marble);
+                //d.velocity = Main.rand.NextVector2Unit(MathHelper.PiOver4, MathHelper.PiOver2 + MathHelper.PiOver4).RotatedBy(MathHelper.Pi - MathHelper.PiOver2 / 3) * Main.rand.NextFloat(1f, 4f);
+                //d.scale = Main.rand.NextFloat(0.5f, 1.5f);
+                Dust d = Main.dust[WorldGen.KillTile_MakeTileDust(tX, tY, tile)];
+                d.velocity = Main.rand.NextVector2Unit(MathHelper.PiOver4, MathHelper.PiOver2 + MathHelper.PiOver4).RotatedBy(MathHelper.Pi - MathHelper.PiOver2 / 3) * Main.rand.NextFloat(1f, 4f);
                 d.scale = Main.rand.NextFloat(0.5f, 1.5f);
-                //d.noGravity = !Main.rand.NextBool(3);
             }
         }
 
