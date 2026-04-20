@@ -91,7 +91,7 @@ public class HiveMindWeeper : ModNPC
     public override void AI()
     {
         int hoverDistance = 128;
-        NPC.Opacity += 0.1f;
+        NPC.Opacity += 0.05f;
         NPC.rotation = MathHelper.Clamp(NPC.velocity.X / 5f, -1f, 1f);
         if (Main.rand.NextBool(6))
         {
@@ -167,10 +167,26 @@ public class HiveMindWeeper : ModNPC
             float percent = Utils.Remap(NPC.ai[0], FlyTime - (i * 10) - 30, FlyTime - (i * 10), 0, 1);
             spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c * percent, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
         }
+        if (NPC.Opacity < 1)
+        {
+            tex = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0 } * (1f - NPC.Opacity), 0, tex.Size() / 2, 2f - NPC.Opacity, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White with { A = 0 } * (1f - NPC.Opacity) * 0.5f, 0, tex.Size() / 2, 0.8f, SpriteEffects.None, 0);
+
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0 } * (1f - NPC.Opacity), MathHelper.PiOver2, tex.Size() / 2, 1.5f - NPC.Opacity, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White with { A = 0 } * (1f - NPC.Opacity) * 0.5f, MathHelper.PiOver2, tex.Size() / 2, 0.6f, SpriteEffects.None, 0);
+        }
         return false;
     }
     public override void OnKill()
     {
+        if (Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(1, 1), ModContent.ProjectileType<Spores>(), 15, 2, ai0: Main.rand.NextFloat(MathF.PI * 10));
+            }
+        }
         // Boss minions typically have a chance to drop an additional heart item in addition to the default chance
         Player closestPlayer = Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)];
 
@@ -178,6 +194,9 @@ public class HiveMindWeeper : ModNPC
         {
             Item.NewItem(NPC.GetSource_Loot(), NPC.getRect(), ItemID.Heart);
         }
+        int hive = NPC.FindFirstNPC(ModContent.NPCType<HiveMind>());
+        if (Main.npc[hive].ai[0] > 20)
+            Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<HiveShieldBreaker>(), 0, 0, -1, hive);
     }
 }
 public class HiveMindWeeperTears : ModProjectile

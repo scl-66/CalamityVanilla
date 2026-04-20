@@ -39,10 +39,7 @@ public class HiveMindSummon : ModItem
 
     public override bool CanUseItem(Player player)
     {
-        // If you decide to use the below UseItem code, you have to include !NPC.AnyNPCs(id), as this is also the check the server does when receiving MessageID.SpawnBoss.
-        // If you want more constraints for the summon item, combine them as boolean expressions:
-        //    return !Main.dayTime && !NPC.AnyNPCs(ModContent.NPCType<MinionBossBody>()); would mean "not daytime and no MinionBossBody currently alive"
-        return !NPC.AnyNPCs(ModContent.NPCType<HiveMind>());
+        return !NPC.AnyNPCs(ModContent.NPCType<HiveMind>()) && player.ZoneCorrupt;
     }
 
     public override bool? UseItem(Player player)

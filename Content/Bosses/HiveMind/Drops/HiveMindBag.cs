@@ -1,5 +1,4 @@
-﻿using CalamityVanilla.Content.Bosses.HiveMind.Drops.SkinBoilHat;
-using CalamityVanilla.Content.Vanity.BossMasks;
+﻿using CalamityVanilla.Content.Vanity.BossMasks;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -47,8 +46,13 @@ public class HiveMindBag : ModItem
         itemLoot.Add(ItemDropRule.NotScalingWithLuck(ModContent.ItemType<HiveMindMask>(), 7));
         itemLoot.Add(ItemDropRule.NotScalingWithLuck(ModContent.ItemType<FilthyGrip.FilthyGrip>(), 3));
         itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<SkinBoilHat.SkinBoilHat>()));
-        //marble tome is here just as a placeholder idk if i need to clarify that
-        itemLoot.Add(ItemDropRule.OneFromOptions(1, ModContent.ItemType<MyceliumStaff.MyceliumStaff>(), ModContent.ItemType<PerfectDark.PerfectDark>()));
+        itemLoot.Add(ItemDropRule.OneFromOptions(1,
+            ModContent.ItemType<PerfectDark.PerfectDark>(),
+            ModContent.ItemType<MushroomBomber.MushroomBomber>(),
+            ModContent.ItemType<MyceliumStaff.MyceliumStaff>(),
+            ModContent.ItemType<SinisterIncubator.SinisterIncubator>()));
+        itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<AdrianHelmet.AdrianHelmet>(), 50));
+        itemLoot.Add(ItemDropRule.Common(ItemID.SoulofNight, 1,10,15));
         itemLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(ModContent.NPCType<HiveMind>()));
     }
 }
