@@ -121,7 +121,7 @@ MarbleTome: {
 }
 
 Crystaline: {
-	DisplayName: Crystaline
+	DisplayName: Crystalline
 	Tooltip: Throws a splitting knife
 }
 
@@ -469,10 +469,10 @@ FrostGuardStaff: {
 
 FeatherDicer: {
 	DisplayName: Feather Dicer
-	Tooltip: "Casts sharp feathers"
+	Tooltip: Casts sharp feathers
 }
 
 WyvernsWrath: {
 	DisplayName: Wyvern's Wrath
-	Tooltip: "Casts sharp feathers that create energy feathers on hit"
+	Tooltip: Casts sharp feathers that create energy feathers on hit
 }

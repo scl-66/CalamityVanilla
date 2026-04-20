@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
+using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Tundra.Items.Frostbolt;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.Graphics;
+using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -26,10 +28,10 @@ public class WyvernsWrath : ModItem
     public override void SetDefaults()
     {
         Item.DefaultToStaff(ModContent.ProjectileType<WyvernsWrathFeather>(), 24, 45, 20);
-        Item.UseSound = null;
+        Item.UseSound = SoundID.Item66 with { Volume = 0.7f};
 
         // Set damage and knockBack
-        Item.SetWeaponValues(35, 8);
+        Item.SetWeaponValues(35, 2);
 
         // Set rarity and value
         Item.SetShopValues(ItemRarityColor.Pink5, 20000);
@@ -67,7 +69,7 @@ public class WyvernsWrathFeather : ModProjectile
         Projectile.width = 14;
         Projectile.height = 14;
         Projectile.timeLeft = 340;
-        Projectile.penetrate = 3;
+        Projectile.penetrate = 2;
     }
 
     public override void AI()
@@ -174,7 +176,7 @@ public class WyvernsWrathEnergyFeather : ModProjectile
         Projectile.DamageType = DamageClass.Magic;
         Projectile.width = 14;
         Projectile.height = 14;
-        Projectile.timeLeft = 80;
+        Projectile.timeLeft = 50;
         Projectile.penetrate = 4;
         Projectile.tileCollide = false;
         Projectile.alpha = 140;
@@ -185,6 +187,20 @@ public class WyvernsWrathEnergyFeather : ModProjectile
         Projectile.ai[1] += 1f;
         Projectile.rotation = Projectile.velocity.ToRotation(); // projectile sprite faces up
 
+        if (Projectile.ai[1] == 1)
+        {
+            PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
+            sparkle.LocalPosition = Projectile.Center;
+            sparkle.Scale = new Vector2(Main.rand.NextFloat(1.2f, 1.75f), Main.rand.NextFloat(0.9f, 1.1f));
+            sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.1f, 0.1f);
+            sparkle.DrawVerticalAxis = true;
+            sparkle.ColorTint = Color.SeaGreen;
+            sparkle.FadeInEnd = 5;
+            sparkle.FadeOutStart = 5;
+            sparkle.FadeOutEnd = 40;
+            Main.ParticleSystem_World_OverPlayers.Add(sparkle);
+        }
+
         int type = ModContent.DustType<SimpleColorableGlowyDust>();
         for (int i = 0; i < 1; i++)
         {
@@ -194,96 +210,30 @@ public class WyvernsWrathEnergyFeather : ModProjectile
             d.noGravity = true;
         }
 
-        //homing
-        float maxDetectRadius = 900f; // The maximum radius at which a projectile can detect a target
+        //homing simpson
+        NPC target = Projectile.FindTargetWithinRange(400);
 
-        // A short delay to homing behavior after being fired
-        if (DelayTimer < 10)
+        if (target != null)
         {
-            DelayTimer += 1;
-            return;
-        }
-
-        // First, we find a homing target if we don't have one
-        if (HomingTarget == null)
+            Vector2 dir = Projectile.Center.DirectionTo(target.Center);
+            Projectile.velocity += (dir);
+            Projectile.velocity = Projectile.velocity.LengthClamp(15, 5);
+        } else
         {
-            HomingTarget = FindClosestNPC(maxDetectRadius);
+            Projectile.velocity *= 0.95f;
         }
-
-        // If we have a homing target, make sure it is still valid. If the NPC dies or moves away, we'll want to find a new target
-        if (HomingTarget != null && !IsValidTarget(HomingTarget))
-        {
-            HomingTarget = null;
-        }
-
-        // If we don't have a target, don't adjust trajectory
-        if (HomingTarget == null)
-        {
-            Projectile.velocity *= 0.98f;
-            return;
-        }
-
-        // If found, we rotate the projectile velocity in the direction of the target.
-        // We only rotate by 3 degrees an update to give it a smooth trajectory. Increase the rotation speed here to make tighter turns
-        float length = Math.Clamp(Vector2.Distance(Projectile.position, HomingTarget.position), 0, 10);
-        float targetAngle = Projectile.AngleTo(HomingTarget.Center);
-        Projectile.velocity *= 1.2f;
-        Projectile.velocity.LengthClamp(25);
-        Projectile.velocity = Projectile.velocity.ToRotation().AngleTowards(targetAngle, MathHelper.ToRadians(8)).ToRotationVector2() * length;
-    }
-
-    // Finding the closest NPC to attack within maxDetectDistance range
-    // If not found then returns null
-    public NPC FindClosestNPC(float maxDetectDistance)
-    {
-        NPC closestNPC = null;
-
-        // Using squared values in distance checks will let us skip square root calculations, drastically improving this method's speed.
-        float sqrMaxDetectDistance = maxDetectDistance * maxDetectDistance;
-
-        // Loop through all NPCs
-        foreach (var target in Main.ActiveNPCs)
-        {
-            // Check if NPC able to be targeted.
-            if (IsValidTarget(target))
-            {
-                // The DistanceSquared function returns a squared distance between 2 points, skipping relatively expensive square root calculations
-                float sqrDistanceToTarget = Vector2.DistanceSquared(target.Center, Projectile.Center);
-
-                // Check if it is within the radius
-                if (sqrDistanceToTarget < sqrMaxDetectDistance)
-                {
-                    sqrMaxDetectDistance = sqrDistanceToTarget;
-                    closestNPC = target;
-                }
-            }
-        }
-
-        return closestNPC;
-    }
-
-    public bool IsValidTarget(NPC target)
-    {
-        // This method checks that the NPC is:
-        // 1. active (alive)
-        // 2. chaseable (e.g. not a cultist archer)
-        // 3. max life bigger than 5 (e.g. not a critter)
-        // 4. can take damage (e.g. moonlord core after all it's parts are downed)
-        // 5. hostile (!friendly)
-        // 6. not immortal (e.g. not a target dummy)
-        // 7. doesn't have solid tiles blocking a line of sight between the projectile and NPC
-        return target.CanBeChasedBy() && Collision.CanHit(Projectile.Center, 1, 1, target.position, target.width, target.height);
     }
 
     public override void OnKill(int timeLeft)
     {
         int type = ModContent.DustType<SimpleColorableGlowyDust>();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 5; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
+            d.fadeIn = Main.rand.NextFloat(0.5f, 1.25f);
             d.color = WyvernFeatherVertexStrip.StripColors(0);
-            d.velocity = Main.rand.NextVector2Circular(1, 1);
-            d.noGravity = !Main.rand.NextBool(5);
+            d.velocity = Main.rand.NextVector2Circular(2, 2);
+            d.noGravity = true;
         }
         
         for (int i = 1; i < Projectile.oldPos.Length; i++)
@@ -296,8 +246,18 @@ public class WyvernsWrathEnergyFeather : ModProjectile
             d.scale *= 0.75f;
             d.noGravity = true;
         }
-    }
 
+        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
+        sparkle.LocalPosition = Projectile.Center;
+        sparkle.Scale = new Vector2(Main.rand.NextFloat(0.7f, 1.2f), Main.rand.NextFloat(0.6f, 1.2f));
+        sparkle.Rotation = Projectile.rotation;
+        sparkle.DrawVerticalAxis = true;
+        sparkle.ColorTint = Color.SeaGreen;
+        sparkle.FadeInEnd = 5;
+        sparkle.FadeOutStart = 5;
+        sparkle.FadeOutEnd = 40;
+        Main.ParticleSystem_World_OverPlayers.Add(sparkle);
+    }
     public override bool PreDraw(ref Color lightColor)
     {
         default(WyvernFeatherVertexStrip).Draw(Projectile);
