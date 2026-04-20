@@ -65,10 +65,10 @@ public class CorruptBoulder : ModProjectile
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
             d.color = Color.Purple;
             d.noGravity = true;
-            d.fadeIn = Main.rand.NextFloat(2);
             d.velocity += Projectile.velocity;
+            d.velocity += Vector2.One.RotatedBy(Projectile.rotation);
 
-            Projectile.localAI[0] += 0.004f * MathF.Sign(target.Center.X - Projectile.Center.X);
+            Projectile.localAI[0] += 0.003f * MathF.Sign(target.Center.X - Projectile.Center.X);
             Projectile.localAI[0] = MathHelper.Clamp(Projectile.localAI[0], -0.15f, 0.15f);
             Projectile.velocity.Y *= 0.98f;
             Projectile.velocity.X *= 0.99f;
@@ -131,9 +131,22 @@ public class CorruptBoulder : ModProjectile
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
         if (Projectile.ai[1] < 120)
         {
-            for(int i = 0; i < 4; i++)
+            //for(int i = 0; i < 4; i++)
+            //{
+            //    Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0,8 + (float)Math.Sin(Main.timeForVisualEffects * 0.1f) * 4).RotatedBy(i * MathHelper.PiOver2), frame, Color.Purple with { A = 0 } * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            //}
+            float interval = 60;
+            float amount = (float)(Main.timeForVisualEffects % interval) / interval;
+            Color c = Color.Purple with { A = 0 } * amount * Projectile.Opacity * (1f - amount) * (1f + (Projectile.ai[1] / 60));
+            for (int i = 0; i < 4; i++)
             {
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0,8 + (float)Math.Sin(Main.timeForVisualEffects * 0.1f) * 4).RotatedBy(i * MathHelper.PiOver2), frame, Color.Purple with { A = 0 } * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 16 * amount).RotatedBy((i * MathHelper.PiOver2) + MathHelper.PiOver4), frame, c, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            }
+            amount = (float)((Main.timeForVisualEffects + (interval / 2)) % interval) / interval;
+            c = Color.Purple with { A = 0 } * amount * Projectile.Opacity * (1f - amount) * (1f + (Projectile.ai[1] / 60));
+            for (int i = 0; i < 4; i++)
+            {
+                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 16 * amount).RotatedBy(i * MathHelper.PiOver2), frame, c, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             }
         }
         return false;

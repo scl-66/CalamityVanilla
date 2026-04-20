@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Content.Bosses.HiveMind.Projectiles;
+using CalamityVanilla.Content.Dusts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -101,7 +102,7 @@ public class HiveMindSwooper : ModNPC
     private const int _swoopAttackTime = 120;
     public override void AI()
     {
-        NPC.Opacity += 0.1f;
+        NPC.Opacity += 0.05f;
         NPC.rotation = Utils.AngleTowards(NPC.rotation, NPC.ai[2] > _swoopAttackTime ? NPC.velocity.ToRotation() + MathHelper.PiOver2: MathHelper.Clamp(NPC.velocity.X / 10f,-0.3f,0.3f), 0.1f);
 
         NPC.ai[0]++;
@@ -223,6 +224,16 @@ public class HiveMindSwooper : ModNPC
             float percent = Utils.Remap(NPC.ai[2], _swoopAttackTime - (i * 10) - 30, _swoopAttackTime - (i * 10), 0, 1);
             spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c * percent, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
         }
+
+        if(NPC.Opacity < 1)
+        {
+            tex = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0} * (1f - NPC.Opacity), 0, tex.Size() / 2, 2f - NPC.Opacity, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White with { A = 0 } * (1f - NPC.Opacity) * 0.5f, 0, tex.Size() / 2, 0.8f, SpriteEffects.None, 0);
+
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0 } * (1f - NPC.Opacity), MathHelper.PiOver2, tex.Size() / 2, 1.5f - NPC.Opacity, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White with { A = 0 } * (1f - NPC.Opacity) * 0.5f, MathHelper.PiOver2, tex.Size() / 2, 0.6f, SpriteEffects.None, 0);
+        }
         return false;
     }
     public override void OnKill()
@@ -234,6 +245,9 @@ public class HiveMindSwooper : ModNPC
         {
             Item.NewItem(NPC.GetSource_Loot(), NPC.getRect(), ItemID.Heart);
         }
+        int hive = NPC.FindFirstNPC(ModContent.NPCType<HiveMind>());
+        if (Main.npc[hive].ai[0] > 20)
+            Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<HiveShieldBreaker>(), 0, 0, -1, hive);
     }
 
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

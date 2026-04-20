@@ -10,21 +10,97 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.HiveMind;
-
 public partial class HiveMind
 {
+    public const int ShieldMax = 35;
+    private ref float _shieldAmountForPhase2 => ref NPC.ai[3];
+
+    private const float _secondPhaseHealthPercent = 0.35f;
     private ref float _currentAttack => ref NPC.ai[0];
     public override void AI()
     {
+        //if(Main.timeForVisualEffects % 60 == 0)
+        //{
+        //    for (int i = 0; i < 50; i++)
+        //    {
+        //        Dust d = Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(150, 150), DustID.RainbowMk2);
+        //        d.velocity = d.position.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -2);
+        //        d.color = Color.Purple;
+        //        d.noGravity = true;
+        //        d.fadeIn = Main.rand.NextFloat(2);
+        //    }
+        //    for(int i = 0; i < 10; i++)
+        //    {
+        //        var p = VanillaParticles.RequestPrettySparkleParticle();
+        //        p.ColorTint = Color.Purple;
+        //        p.TimeToLive = Main.rand.Next(20,50);
+        //        p.Scale = new Vector2(6, 3);
+        //        p.DrawHorizontalAxis = false;
+        //        p.LocalPosition = NPC.Center + Main.rand.NextVector2Circular(150, 150);
+        //        p.Velocity = p.LocalPosition.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -6);
+        //        p.AccelerationPerFrame = -p.Velocity / p.TimeToLive;
+        //        p.FadeInEnd = 0.1f;
+        //        p.FadeOutStart = 0.1f;
+        //        p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
+        //        Main.ParticleSystem_World_OverPlayers.Add(p);
+        //    }
+        //}
+        if(_currentAttack > 20)
+        {
+            Lighting.AddLight(NPC.Center, new Vector3(1.7f,0,2) * NPC.localAI[2]);
+            if (_shieldAmountForPhase2 > 0)
+            {
+                if (NPC.localAI[2] < 1)
+                {
+                    NPC.localAI[2] += 0.02f;
+                }
+                NPC.dontTakeDamage = true;
+            }
+            else if(NPC.dontTakeDamage)
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    Dust d = Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(150, 150), DustID.RainbowMk2);
+                    d.velocity = d.position.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -2);
+                    d.color = Color.Purple;
+                    d.noGravity = true;
+                    d.fadeIn = Main.rand.NextFloat(2);
+                }
+                for (int i = 0; i < 10; i++)
+                {
+                    var p = VanillaParticles.RequestPrettySparkleParticle();
+                    p.ColorTint = Color.Purple;
+                    p.TimeToLive = Main.rand.Next(20, 50);
+                    p.Scale = new Vector2(6, 3);
+                    p.DrawHorizontalAxis = false;
+                    p.LocalPosition = NPC.Center + Main.rand.NextVector2Circular(150, 150);
+                    p.Velocity = p.LocalPosition.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -6);
+                    p.AccelerationPerFrame = -p.Velocity / p.TimeToLive;
+                    p.FadeInEnd = 0.1f;
+                    p.FadeOutStart = 0.1f;
+                    p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
+                    Main.ParticleSystem_World_OverPlayers.Add(p);
+                }
+
+                NPC.defense = 0;
+                NPC.dontTakeDamage = false;
+            }
+        }
         //Main.NewText("AI0: " + NPC.ai[0] + " AI1: " + NPC.ai[1] + " AI2: " + NPC.ai[2] + " AI3: " + NPC.ai[3],Main.DiscoColor);
         if (!NPC.HasValidTarget || !target.ZoneCorrupt)
         {
+            NPC.localAI[0]++;
             NPC.TargetClosest(player => !player.ZoneCorrupt);
-            if (!NPC.HasValidTarget || !target.ZoneCorrupt)
+            if (NPC.localAI[0] == 60 * 5)
             {
+                NPC.netUpdate = true;
                 _currentAttack = -1;
             }
         }
+        else
+        {
+            NPC.localAI[0] = 0;
+        } 
         if(_currentAttack < 0)
         {
             NPC.alpha += 5;
@@ -34,17 +110,13 @@ public partial class HiveMind
             }
             return;
         }
-        if (_currentAttack % (Main.expertMode ? 3 : 5) == 0)
+        if (_currentAttack < 13 && _currentAttack % (Main.expertMode ? 3 : 4) == 0)
             Teleport();
         else
         {
-            int whichAttack = (int)_currentAttack % 9;
-            //whichAttack = 1;
-            switch (whichAttack)
+            #region Phase 1
+            switch (_currentAttack)
             {
-                case 0:
-                    VineSpikes();
-                    break;
                 case 1:
                     Boulders();
                     break;
@@ -52,7 +124,7 @@ public partial class HiveMind
                     SporeBombs();
                     break;
                 case 3:
-                    Boulders();
+                    VineSpikes();
                     break;
                 case 4:
                     SporeBombs();
@@ -61,22 +133,136 @@ public partial class HiveMind
                     VineSpikes();
                     break;
                 case 6:
-                    SporeBombs();
+                    Boulders();
                     break;
                 case 7:
                     SporeBombs();
                     break;
                 case 8:
-                    VineSpikes();
+                    SporeBombs();
                     break;
                 case 9:
-                    Boulders();
+                    VineSpikes();
                     break;
                 case 10:
+                    Boulders();
+                    break;
+                case 11:
                     VineSpikes();
                     break;
             }
+            #endregion Phase 1
+
+            #region Phase 2
+            if (NPC.dontTakeDamage)
+            {
+                NPC.localAI[1]++;
+                if(Main.netMode != NetmodeID.MultiplayerClient && NPC.localAI[1] == 120)
+                {
+                    NPC.localAI[1] = 0;
+                    int weeper = ModContent.NPCType<HiveMindWeeper>();
+                    int swooper = ModContent.NPCType<HiveMindSwooper>();
+                    int weeperCount = NPC.CountNPCS(weeper);
+                    int swooperCount = NPC.CountNPCS(swooper);
+                    if (weeperCount + swooperCount < 16)
+                    {
+                        if (weeperCount < 6 && Main.expertMode && Main.rand.NextBool(3))
+                        {
+                            NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
+                            n.velocity = Main.rand.NextVector2Circular(2, 2);
+                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                        }
+                        else if (swooperCount < 10)
+                        {
+                            NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
+                            n.velocity = Main.rand.NextVector2Circular(2, 2);
+                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                        }
+                    }
+                }
+            }
+
+            switch (_currentAttack)
+            {
+                case 21:
+                    VineSpikesP2();
+                    break;
+                case 22:
+                    SporeBombsP2();
+                    break;
+                case 23:
+                    SporeBombsP2();
+                    break;
+                case 24:
+                    BouldersP2();
+                    break;
+                case 25:
+                    VineSpikesP2();
+                    break;
+                case 26:
+                    SporeBombsP2();
+                    break;
+                case 27:
+                    BouldersP2();
+                    break;
+                case 28:
+                    VineSpikesP2();
+                    break;
+                case 29:
+                    BouldersP2();
+                    break;
+                case 30:
+                    SporeBombsP2();
+                    break;
+            }
+            #endregion Phase 2
         }
+    }
+    private void SwitchToPhaseTwo()
+    {
+        SoundEngine.PlaySound(SoundID.Roar, NPC.position);
+        _currentAttack = 21;
+        _shieldAmountForPhase2 = ShieldMax;
+
+        for (int i = 0; i < 50; i++)
+        {
+            Dust d = Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(150, 150), DustID.RainbowMk2);
+            d.velocity = d.position.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -2);
+            d.color = Color.Purple;
+            d.noGravity = true;
+            d.fadeIn = Main.rand.NextFloat(2);
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            var p = VanillaParticles.RequestPrettySparkleParticle();
+            p.ColorTint = Color.Purple;
+            p.TimeToLive = Main.rand.Next(20, 50);
+            p.Scale = new Vector2(6, 3);
+            p.DrawHorizontalAxis = false;
+            p.LocalPosition = NPC.Center + Main.rand.NextVector2Circular(150, 150);
+            p.Velocity = p.LocalPosition.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -6);
+            p.AccelerationPerFrame = -p.Velocity / p.TimeToLive;
+            p.FadeInEnd = 0.1f;
+            p.FadeOutStart = 0.1f;
+            p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
+            Main.ParticleSystem_World_OverPlayers.Add(p);
+        }
+    }
+    private void CycleAttack()
+    {
+        NPC.ai[1] = 0;
+        NPC.ai[2] = 0;
+        if (NPC.life / (float)NPC.lifeMax > _secondPhaseHealthPercent || _currentAttack > 20)
+        {
+            if (_currentAttack == 11)
+                _currentAttack = 1;
+            else if (_currentAttack == 30)
+                _currentAttack = 21;
+            else
+                _currentAttack++;
+        }
+        else
+            _currentAttack = 0;
     }
     private void Teleport()
     {
@@ -136,7 +322,7 @@ public partial class HiveMind
         }
         else if (NPC.ai[1] == teleportTime)
         {
-            if (Main.netMode != NetmodeID.MultiplayerClient && _currentAttack != 0 && _currentAttack % (Main.expertMode ? 6 : 10) == 0)
+            if (Main.netMode != NetmodeID.MultiplayerClient && _currentAttack != 0 /*&& _currentAttack % (Main.expertMode ? 6 : 8) == 0*/)
             {
                 int weeper = ModContent.NPCType<HiveMindWeeper>();
                 int swooper = ModContent.NPCType<HiveMindSwooper>();
@@ -194,10 +380,11 @@ public partial class HiveMind
         else if (NPC.ai[1] > teleportTime && NPC.alpha <= 0)
         {
             NPC.alpha = 0;
-            NPC.ai[1] = 0;
-            NPC.ai[2] = 0;
-            NPC.ai[3] = 0;
-            _currentAttack++;
+            CycleAttack();
+            if(NPC.life / (float)NPC.lifeMax < _secondPhaseHealthPercent)
+            {
+                SwitchToPhaseTwo();
+            }
         }
         else
         {
@@ -221,11 +408,7 @@ public partial class HiveMind
         }
         else if (NPC.ai[1] > 230)
         {
-            NPC.alpha = 0;
-            NPC.ai[1] = 0;
-            NPC.ai[2] = 0;
-            NPC.ai[3] = 0;
-            _currentAttack++;
+            CycleAttack();
         }
     }
     private void SporeBombs()
@@ -241,11 +424,7 @@ public partial class HiveMind
         }
         else if (NPC.ai[1] > 160)
         {
-            NPC.alpha = 0;
-            NPC.ai[1] = 0;
-            NPC.ai[2] = 0;
-            NPC.ai[3] = 0;
-            _currentAttack++;
+            CycleAttack();
         }
     }
     private void Boulders()
@@ -260,8 +439,8 @@ public partial class HiveMind
             {
                 switch (Main.tile[placePoint].TileType)
                 {
-                    case TileID.Stone:
                     case TileID.Ebonstone:
+                    case TileID.Stone:
                         rockType = 1;
                         break;
                     case TileID.Mud:
@@ -287,11 +466,99 @@ public partial class HiveMind
         }
         else if (NPC.ai[1] > 180)
         {
-            NPC.alpha = 0;
-            NPC.ai[1] = 0;
-            NPC.ai[2] = 0;
-            NPC.ai[3] = 0;
-            _currentAttack++;
+            CycleAttack();
         }
     }
+    private void SporeBombsP2()
+    {
+        NPC.ai[1]++;
+        if (((NPC.ai[1] is 100 or 120 or 140) || (!NPC.dontTakeDamage && (NPC.ai[1] is 110 or 130)))&& Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            int type = !NPC.dontTakeDamage && Main.rand.NextBool() ? ModContent.ProjectileType<SporeBomb>() : ModContent.ProjectileType<SporeBombLarge>();
+            int time = 120;
+            Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * time, 0);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128, 128), 0.2f, time), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+        }
+        else if (NPC.ai[1] > 160)
+        {
+            CycleAttack();
+        }
+    }
+    private void BouldersP2()
+    {
+        NPC.ai[1]++;
+        if (NPC.ai[1] is 100 or 130 or 150 or 160 && Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256, 400) * (Main.rand.NextBool() ? 1 : -1)), target.Center.Y - 32), 32);
+            Point placePoint = place.ToTileCoordinates();
+            int rockType = 0;
+            if (Main.tile[placePoint].HasTile)
+            {
+                switch (Main.tile[placePoint].TileType)
+                {
+                    case TileID.Ebonstone:
+                    case TileID.Stone:
+                        rockType = 1;
+                        break;
+                    case TileID.Mud:
+                    case TileID.CorruptJungleGrass:
+                        rockType = 2;
+                        break;
+                    case TileID.SnowBlock:
+                    case TileID.CorruptIce:
+                    case TileID.IceBlock:
+                        rockType = 3;
+                        break;
+                    case TileID.Ebonsand:
+                    case TileID.CorruptSandstone:
+                    case TileID.CorruptHardenedSand:
+                    case TileID.Sand:
+                    case TileID.HardenedSand:
+                    case TileID.Sandstone:
+                        rockType = 4;
+                        break;
+                }
+            }
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
+        }
+        else if (NPC.ai[1] > 180)
+        {
+            CycleAttack();
+        }
+    }
+    private void VineSpikesP2(bool offset = false)
+    {
+        NPC.ai[1]++;
+        if (NPC.ai[1] == 100 && Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            float spacing = Main.expertMode ? Main.rand.Next(220, 240) : Main.rand.Next(250, 280);
+            if (!NPC.dontTakeDamage)
+                spacing *= 0.75f;
+            int type = ModContent.ProjectileType<HiveVineSpawner>();
+            for (int i = -15; i <= 15; i++)
+            {
+                if (i == 0)
+                    continue;
+                Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2((NPC.Center.X + i * spacing) + (offset? spacing / 2 : 0), NPC.Center.Y - 256), 64);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(20, 30));
+            }
+        }
+        else if (NPC.ai[1] > 160)
+        {
+            CycleAttack();
+        }
+    }
+    //private void VineSpikesP2()
+    //{
+    //    NPC.ai[1]++;
+    //    if (NPC.ai[1] % 10 == 0 && NPC.ai[1] < 200 && Main.netMode != NetmodeID.MultiplayerClient)
+    //    {
+    //        Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256, 300) * (Main.rand.NextBool() ? 1 : -1)), target.Center.Y - 32), 64);
+    //        Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, ModContent.ProjectileType<HiveVineSpawner>(), 30, 1, -1, 0, Main.rand.Next(20, 30));
+    //    }
+    //    else if (NPC.ai[1] > 260)
+    //    {
+    //        CycleAttack();
+    //    }
+    //}
 }
