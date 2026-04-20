@@ -116,8 +116,8 @@ FleshLauncher: {
 }
 
 MarbleTome: {
-	DisplayName: Marble Tome
-	Tooltip: ""
+	DisplayName: Marble Barrier
+	Tooltip: "Summons a marble pillar from the earth"
 }
 
 Crystaline: {
@@ -469,10 +469,10 @@ FrostGuardStaff: {
 
 FeatherDicer: {
 	DisplayName: Feather Dicer
-	Tooltip: Casts sharp feathers
+	Tooltip: Casts gliding feathers
 }
 
 WyvernsWrath: {
 	DisplayName: Wyvern's Wrath
-	Tooltip: Casts sharp feathers that create energy feathers on hit
+	Tooltip: Casts gliding feathers that summon energy feathers on hit
 }
