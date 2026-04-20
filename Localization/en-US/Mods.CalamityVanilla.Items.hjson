@@ -117,7 +117,7 @@ FleshLauncher: {
 
 MarbleTome: {
 	DisplayName: Marble Barrier
-	Tooltip: "Summons a marble pillar from the earth"
+	Tooltip: Summons a marble pillar from the earth
 }
 
 Crystaline: {
@@ -475,4 +475,19 @@ FeatherDicer: {
 WyvernsWrath: {
 	DisplayName: Wyvern's Wrath
 	Tooltip: Casts gliding feathers that summon energy feathers on hit
+}
+
+AdrianHelmet: {
+	DisplayName: Adrian Helmet
+	Tooltip: ""
+}
+
+GraniteTomeObjectItem: {
+	DisplayName: Granite Tome Object Item
+	Tooltip: ""
+}
+
+MarbleTomeObjectItem: {
+	DisplayName: Marble Tome Object Item
+	Tooltip: ""
 }
