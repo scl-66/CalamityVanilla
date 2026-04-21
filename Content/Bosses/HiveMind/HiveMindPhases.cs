@@ -156,23 +156,27 @@ public partial class HiveMind
             #region Phase 2
             if (NPC.dontTakeDamage)
             {
+                int weeper = ModContent.NPCType<HiveMindWeeper>();
+                int swooper = ModContent.NPCType<HiveMindSwooper>();
+                int weeperCount = NPC.CountNPCS(weeper);
+                int swooperCount = NPC.CountNPCS(swooper);
+                if(swooperCount + weeper == 0)
+                {
+                    NPC.localAI[1] = 119;
+                }
                 NPC.localAI[1]++;
                 if(Main.netMode != NetmodeID.MultiplayerClient && NPC.localAI[1] == 120)
                 {
                     NPC.localAI[1] = 0;
-                    int weeper = ModContent.NPCType<HiveMindWeeper>();
-                    int swooper = ModContent.NPCType<HiveMindSwooper>();
-                    int weeperCount = NPC.CountNPCS(weeper);
-                    int swooperCount = NPC.CountNPCS(swooper);
                     if (weeperCount + swooperCount < 16)
                     {
-                        if (weeperCount < 6 && Main.expertMode && Main.rand.NextBool(3))
+                        if (weeperCount < 4 && Main.expertMode && Main.rand.NextBool(3))
                         {
                             NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
                             n.velocity = Main.rand.NextVector2Circular(2, 2);
                             NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
                         }
-                        else if (swooperCount < 10)
+                        else if (swooperCount < 12)
                         {
                             NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
                             n.velocity = Main.rand.NextVector2Circular(2, 2);
@@ -472,14 +476,14 @@ public partial class HiveMind
     private void SporeBombsP2()
     {
         NPC.ai[1]++;
-        if (((NPC.ai[1] is 100 or 120 or 140) || (!NPC.dontTakeDamage && (NPC.ai[1] is 110 or 130)))&& Main.netMode != NetmodeID.MultiplayerClient)
+        if (((NPC.ai[1] is 100 or 130 or 160) || (!NPC.dontTakeDamage && (NPC.ai[1] is 190 or 220))) && Main.netMode != NetmodeID.MultiplayerClient)
         {
             int type = !NPC.dontTakeDamage && Main.rand.NextBool() ? ModContent.ProjectileType<SporeBomb>() : ModContent.ProjectileType<SporeBombLarge>();
             int time = 120;
             Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * time, 0);
             Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128, 128), 0.2f, time), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
-        else if (NPC.ai[1] > 160)
+        else if (NPC.ai[1] > (NPC.dontTakeDamage? 350: 250))
         {
             CycleAttack();
         }
@@ -487,7 +491,7 @@ public partial class HiveMind
     private void BouldersP2()
     {
         NPC.ai[1]++;
-        if (NPC.ai[1] is 100 or 130 or 150 or 160 && Main.netMode != NetmodeID.MultiplayerClient)
+        if (NPC.ai[1] is 100 or 140 or 180 or 220 && Main.netMode != NetmodeID.MultiplayerClient)
         {
             Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256, 400) * (Main.rand.NextBool() ? 1 : -1)), target.Center.Y - 32), 32);
             Point placePoint = place.ToTileCoordinates();
@@ -521,7 +525,7 @@ public partial class HiveMind
             }
             Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
         }
-        else if (NPC.ai[1] > 180)
+        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 300 : 220))
         {
             CycleAttack();
         }
@@ -531,7 +535,7 @@ public partial class HiveMind
         NPC.ai[1]++;
         if (NPC.ai[1] == 100 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            float spacing = Main.expertMode ? Main.rand.Next(220, 240) : Main.rand.Next(250, 280);
+            float spacing = Main.expertMode ? Main.rand.Next(260, 280) : Main.rand.Next(320, 340);
             if (!NPC.dontTakeDamage)
                 spacing *= 0.75f;
             int type = ModContent.ProjectileType<HiveVineSpawner>();
@@ -543,7 +547,7 @@ public partial class HiveMind
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(20, 30));
             }
         }
-        else if (NPC.ai[1] > 160)
+        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 360 : 300))
         {
             CycleAttack();
         }

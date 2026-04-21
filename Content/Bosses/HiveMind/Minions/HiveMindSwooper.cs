@@ -156,7 +156,7 @@ public class HiveMindSwooper : ModNPC
                     if (NPC.ai[2] == _swoopAttackTime)
                     {
                         Vector2 adjustedTargetPosition = target.Center + (target.velocity * swoopTime);
-                        NPC.velocity = CVUtils.FindVelocityForGravityAffectedThing(NPC.Bottom, adjustedTargetPosition, swoopUpwardsAcceleration, swoopTime).LengthClamp(24);
+                        NPC.velocity = CVUtils.FindVelocityForGravityAffectedThing(NPC.Bottom, adjustedTargetPosition, swoopUpwardsAcceleration, swoopTime).LengthClamp(16);
                         for(int i = 0; i < 15; i++)
                         {
                             Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption, Scale: 0.75f);
@@ -246,8 +246,11 @@ public class HiveMindSwooper : ModNPC
             Item.NewItem(NPC.GetSource_Loot(), NPC.getRect(), ItemID.Heart);
         }
         int hive = NPC.FindFirstNPC(ModContent.NPCType<HiveMind>());
-        if (Main.npc[hive].ai[0] > 20)
-            Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<HiveShieldBreaker>(), 0, 0, -1, hive);
+        if (hive != -1)
+        {
+            if (Main.npc[hive].ai[0] > 20 && Main.npc[hive].dontTakeDamage)
+                Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<HiveShieldBreaker>(), 0, 0, -1, hive);
+        }
     }
 
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

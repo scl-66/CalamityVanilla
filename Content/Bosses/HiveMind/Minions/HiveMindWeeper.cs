@@ -90,7 +90,7 @@ public class HiveMindWeeper : ModNPC
     }
     public override void AI()
     {
-        int hoverDistance = 128;
+        int hoverDistance = 256;
         NPC.Opacity += 0.05f;
         NPC.rotation = MathHelper.Clamp(NPC.velocity.X / 5f, -1f, 1f);
         if (Main.rand.NextBool(6))
@@ -115,6 +115,10 @@ public class HiveMindWeeper : ModNPC
             }
             else if (NPC.ai[0] < FlyTime + 500)
             {
+                if (NPC.justHit)
+                {
+                    NPC.ai[0] = 0;
+                }
                 if (NPC.ai[0] == FlyTime + 1)
                 {
                     NPC.velocity *= 0.9f;
@@ -195,8 +199,11 @@ public class HiveMindWeeper : ModNPC
             Item.NewItem(NPC.GetSource_Loot(), NPC.getRect(), ItemID.Heart);
         }
         int hive = NPC.FindFirstNPC(ModContent.NPCType<HiveMind>());
-        if (Main.npc[hive].ai[0] > 20)
-            Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<HiveShieldBreaker>(), 0, 0, -1, hive);
+        if (hive != -1)
+        {
+            if (Main.npc[hive].ai[0] > 20 && Main.npc[hive].dontTakeDamage)
+                Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<HiveShieldBreaker>(), 0, 0, -1, hive);
+        }
     }
 }
 public class HiveMindWeeperTears : ModProjectile
