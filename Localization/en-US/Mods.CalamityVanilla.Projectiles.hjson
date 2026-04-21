@@ -1,5 +1,5 @@
 SporeBomb.DisplayName: Spore Bomb
-Spores.DisplayName: Spores
+Spores.DisplayName: Vile Spores
 HiveVine.DisplayName: Hive Vine
 MyceliumShroom.DisplayName: Mycelium Shroom
 MyceliumSpore.DisplayName: Mycelium Spore
@@ -93,8 +93,8 @@ VeinBusterShard.DisplayName: Vein Buster Shard
 FrostShieldCounter.DisplayName: Frost Shield Counter
 FrostShield.DisplayName: Frost Shield
 HiveVineSpawner.DisplayName: Hive Vine Spawner
-HiveMindWeeperTears.DisplayName: Hive Mind Weeper Tears
-SporeBombLarge.DisplayName: Spore Bomb Large
+HiveMindWeeperTears.DisplayName: Corrupted Tears
+SporeBombLarge.DisplayName: Big Spore Bomb
 CorruptBoulder.DisplayName: Corrupt Boulder
 DicerFeather.DisplayName: Dicer Feather
 WyvernsWrathEnergyFeather.DisplayName: Wyverns Wrath Energy Feather
