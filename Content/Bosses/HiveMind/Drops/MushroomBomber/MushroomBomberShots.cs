@@ -236,7 +236,7 @@ public class MushroomBomberSpores : ModProjectile
     {
         Projectile.QuickDefaults(false, 36);
         Projectile.timeLeft = 300;
-        Projectile.alpha = 128;
+        Projectile.alpha = 64;
         Projectile.tileCollide = false;
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.penetrate = -1;
@@ -244,31 +244,37 @@ public class MushroomBomberSpores : ModProjectile
         Projectile.localNPCHitCooldown = 40;
         Projectile.frame = Main.rand.Next(3);
     }
+    public override bool PreDraw(ref Color lightColor)
+    {
+        Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+        Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+        Color c = lightColor * Projectile.Opacity;
+        c.A /= 2;
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c * Projectile.Opacity * 0.25f, Projectile.rotation, frame.Size() / 2, Projectile.scale + (Projectile.Opacity * 0.75f), SpriteEffects.None, 0);
+        return false;
+    }
     public override void AI()
     {
-        if (Main.rand.NextBool(15))
+        if (Main.rand.NextBool(5))
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);
-            d.alpha = 128;
+            d.alpha = 128 + (Projectile.alpha / 2);
             d.velocity *= 0.4f;
         }
 
-        Projectile.ai[0]++;
-        Projectile.velocity *= 0.99f;
-        Projectile.velocity.Y += 0.0025f;
-
-        Projectile.scale = 1f + (float)Math.Sin((Projectile.ai[0] + Projectile.identity) * 0.1f) * 0.1f;
-        Projectile.rotation += Projectile.velocity.X * 0.02f + Projectile.direction * 0.02f;
-
-        foreach(Projectile p in Main.ActiveProjectiles)
+        foreach (Projectile p in Main.ActiveProjectiles)
         {
-            if (p.whoAmI == Projectile.whoAmI || p.type != Type || p.Center == Projectile.Center || p.Center.Distance(Projectile.Center) > 32)
-                continue;
-
-            Projectile.velocity += Projectile.Center.DirectionTo(p.Center) * -0.0015f;
+            if (p.type == Type && p.Center != Projectile.Center && p.Center.Distance(Projectile.Center) < 36)
+                p.velocity += Projectile.Center.DirectionTo(p.Center) * 0.01f;
         }
-        Projectile.velocity = Projectile.velocity.LengthClamp(1f);
-        if (Projectile.timeLeft < 20)
+
+        Projectile.ai[0]++;
+        Projectile.velocity *= 0.95f;
+
+        Projectile.scale = (0.5f + Projectile.Opacity * 0.5f) + (float)Math.Sin(Projectile.ai[0] * 0.1f) * 0.1f;
+        Projectile.rotation += Projectile.velocity.X * 0.02f + Projectile.direction * 0.02f;
+        if (Projectile.timeLeft < 40)
         {
             Projectile.alpha += 6;
         }

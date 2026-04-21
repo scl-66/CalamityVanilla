@@ -296,7 +296,7 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         {
             Projectile.frame++;
             Projectile.frameCounter = 0;
-            if (Projectile.frame > 5)
+            if (Projectile.frame > 3)
                 Projectile.frame = 0;
         }
 
@@ -388,7 +388,7 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
     public override bool PreDraw(ref Color lightColor)
     {
         default(FrigidFlashFlareBoltVertexStrip).Draw(Projectile);
-        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, TextureAssets.Projectile[Type].Frame(1,6,0,Projectile.frame), new Color(1f, Projectile.Opacity * 2, Projectile.Opacity, 0.7f) * Projectile.Opacity * 2, Projectile.rotation - MathHelper.PiOver2, new Vector2(24,40), Projectile.scale, SpriteEffects.None);
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, TextureAssets.Projectile[Type].Frame(1,3,0,Projectile.frame), new Color(1f, Projectile.Opacity * 2, Projectile.Opacity, 0.7f) * Projectile.Opacity * 2, Projectile.rotation - MathHelper.PiOver2, new Vector2(10,32), Projectile.scale, SpriteEffects.None);
         return false;
     }
     public override void Load()

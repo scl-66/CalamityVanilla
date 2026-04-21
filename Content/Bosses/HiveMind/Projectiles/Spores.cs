@@ -20,7 +20,7 @@ public class Spores : ModProjectile
         Projectile.timeLeft = 600;
         Projectile.alpha = 64;
         Projectile.tileCollide = false;
-        Projectile.frame = Main.rand.Next(2);
+        Projectile.frame = Main.rand.Next(3);
     }
     public override bool PreDraw(ref Color lightColor)
     {
