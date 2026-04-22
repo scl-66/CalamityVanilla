@@ -31,7 +31,7 @@ public class WyvernsWrath : ModItem
         Item.UseSound = SoundID.Item66 with { Volume = 0.7f};
 
         // Set damage and knockBack
-        Item.SetWeaponValues(35, 2);
+        Item.SetWeaponValues(27, 2);
 
         // Set rarity and value
         Item.SetShopValues(ItemRarityColor.Pink5, 20000);
@@ -70,6 +70,8 @@ public class WyvernsWrathFeather : ModProjectile
         Projectile.height = 14;
         Projectile.timeLeft = 340;
         Projectile.penetrate = 2;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.localNPCHitCooldown = 10;
     }
 
     public override void AI()
@@ -121,22 +123,25 @@ public class WyvernsWrathFeather : ModProjectile
             d.velocity = Main.rand.NextVector2Circular(1, 1);
             d.noGravity = !Main.rand.NextBool(5);
         }
-        int type = ModContent.DustType<SimpleColorableGlowyDust>();
-        for (int i = 1; i < Projectile.oldPos.Length; i++)
+        if (Projectile.ai[0] < 75)
         {
-            Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);
-            d.color = WyvernFeatherVertexStrip.StripColors((i + 1) / (float)Projectile.oldPos.Length);
-            d.noLight = true;
-            d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * Projectile.oldPos[i].Distance(Projectile.oldPos[i - 1]);
-            d.velocity *= 0.2f;
-            d.scale *= 0.75f;
-            d.noGravity = true;
+            int type = ModContent.DustType<SimpleColorableGlowyDust>();
+            for (int i = 1; i < Projectile.oldPos.Length; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);
+                d.color = WyvernFeatherVertexStrip.StripColors((i + 1) / (float)Projectile.oldPos.Length);
+                d.noLight = true;
+                d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * Projectile.oldPos[i].Distance(Projectile.oldPos[i - 1]);
+                d.velocity *= 0.2f;
+                d.scale *= 0.75f;
+                d.noGravity = true;
+            }
         }
     }
 
     public override bool PreDraw(ref Color lightColor)
     {
-        default(WyvernFeatherVertexStrip).Draw(Projectile);
+        default(WyvernFeatherVertexStrip).Draw(Projectile, Utils.Remap(Projectile.ai[0], 75, 95, 1, 0));
         Rectangle frameBounds = TextureAssets.Projectile[Type].Frame(1, 4, 0, Projectile.frame);
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, frameBounds, new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0.7f) * Projectile.Opacity * 2, Projectile.rotation, frameBounds.Size() / 2, Projectile.scale, SpriteEffects.None);
         return false;
@@ -177,7 +182,7 @@ public class WyvernsWrathEnergyFeather : ModProjectile
         Projectile.width = 14;
         Projectile.height = 14;
         Projectile.timeLeft = 50;
-        Projectile.penetrate = 4;
+        Projectile.penetrate = 2;
         Projectile.tileCollide = false;
         Projectile.alpha = 140;
     }
@@ -260,7 +265,7 @@ public class WyvernsWrathEnergyFeather : ModProjectile
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        default(WyvernFeatherVertexStrip).Draw(Projectile);
+        default(WyvernFeatherVertexStrip).Draw(Projectile, 1);
         Rectangle frameBounds = TextureAssets.Projectile[Type].Frame(1, 4, 0, Projectile.frame);
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, frameBounds, new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0.7f) * Projectile.Opacity * 2, Projectile.rotation, frameBounds.Size() / 2, Projectile.scale, SpriteEffects.None);
         return false;
@@ -270,11 +275,11 @@ public class WyvernsWrathEnergyFeather : ModProjectile
 public struct WyvernFeatherVertexStrip
 {
     private static VertexStrip _vertexStrip = new VertexStrip();
-    public void Draw(Projectile proj, float saturation = -3)
+    public void Draw(Projectile proj, float opacity)
     {
         MiscShaderData miscShaderData = GameShaders.Misc["WyvernsWrathFeather"];
-        miscShaderData.UseOpacity(proj.Opacity);
-        miscShaderData.UseSaturation(saturation);
+        miscShaderData.UseOpacity(proj.Opacity * opacity);
+        miscShaderData.UseSaturation(-3);
         miscShaderData.Apply();
         _vertexStrip.PrepareStripWithProceduralPadding(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f, true);
         _vertexStrip.DrawTrail();

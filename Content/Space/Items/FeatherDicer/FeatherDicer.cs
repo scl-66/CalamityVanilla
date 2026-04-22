@@ -60,6 +60,8 @@ public class DicerFeather : ModProjectile
         Projectile.height = 14;
         Projectile.timeLeft = 280;
         Projectile.penetrate = 3;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.localNPCHitCooldown = 10;
     }
 
     public override void AI()
@@ -104,22 +106,26 @@ public class DicerFeather : ModProjectile
             d.velocity = Main.rand.NextVector2Circular(1, 1);
             d.noGravity = !Main.rand.NextBool(5);
         }
-        int type = ModContent.DustType<SimpleColorableGlowyDust>();
-        for (int i = 1; i < Projectile.oldPos.Length; i++)
+        if (Projectile.ai[0] < 75)
         {
-            Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);
-            d.color = DicerFeatherVertexStrip.StripColors((i + 1) / (float)Projectile.oldPos.Length);
-            d.noLight = true;
-            d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * Projectile.oldPos[i].Distance(Projectile.oldPos[i - 1]);
-            d.velocity *= 0.2f;
-            d.scale *= 0.75f;
-            d.noGravity = true;
+            int type = ModContent.DustType<SimpleColorableGlowyDust>();
+            for (int i = 1; i < Projectile.oldPos.Length; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);
+                d.color = DicerFeatherVertexStrip.StripColors((i + 1) / (float)Projectile.oldPos.Length);
+                d.noLight = true;
+                d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * Projectile.oldPos[i].Distance(Projectile.oldPos[i - 1]);
+                d.velocity *= 0.2f;
+                d.scale *= 0.75f;
+                d.noGravity = true;
+            }
         }
     }
 
     public override bool PreDraw(ref Color lightColor)
     {
-        default(DicerFeatherVertexStrip).Draw(Projectile);
+        default(DicerFeatherVertexStrip).Draw(Projectile, Utils.Remap(Projectile.ai[0], 75, 95, 1, 0));
+
         Rectangle frameBounds = TextureAssets.Projectile[Type].Frame(1, 8, 0, Projectile.frame);
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, frameBounds, new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0.7f) * Projectile.Opacity * 2, Projectile.rotation, frameBounds.Size() / 2, Projectile.scale, SpriteEffects.None);
         return false;
@@ -138,11 +144,11 @@ public class DicerFeather : ModProjectile
 public struct DicerFeatherVertexStrip
 {
     private static VertexStrip _vertexStrip = new VertexStrip();
-    public void Draw(Projectile proj, float saturation = -3)
+    public void Draw(Projectile proj, float opacity)
     {
         MiscShaderData miscShaderData = GameShaders.Misc["DicerFeather"];
-        miscShaderData.UseOpacity(proj.Opacity);
-        miscShaderData.UseSaturation(saturation);
+        miscShaderData.UseOpacity(proj.Opacity * opacity);
+        miscShaderData.UseSaturation(-3);
         miscShaderData.Apply();
         _vertexStrip.PrepareStripWithProceduralPadding(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f, true);
         _vertexStrip.DrawTrail();
