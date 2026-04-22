@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -15,7 +16,7 @@ public class UrchinSpine : ModItem
     {
         Item.DefaultToThrownWeapon(ModContent.ProjectileType<UrchinSpineProj>(), 18, 5, true);
         Item.SetWeaponValues(35, 2);
-        Item.value = 25;
+        Item.SetShopValues(ItemRarityColor.Orange3, 2500);
         Item.noUseGraphic = true;
         Item.ammo = AmmoID.Dart;
         Item.UseSound = SoundID.Item1;

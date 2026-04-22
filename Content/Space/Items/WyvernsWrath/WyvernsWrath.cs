@@ -70,6 +70,8 @@ public class WyvernsWrathFeather : ModProjectile
         Projectile.height = 14;
         Projectile.timeLeft = 340;
         Projectile.penetrate = 2;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.localNPCHitCooldown = 10;
     }
 
     public override void AI()

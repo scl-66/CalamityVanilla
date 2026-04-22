@@ -133,6 +133,7 @@ public class MarbleTomePillar : ModProjectile
         if (Projectile.ai[0] > 5)
         {
             modifiers.SourceDamage *= 0.2f;
+            modifiers.Knockback *= 0.35f;
         }
     }
 

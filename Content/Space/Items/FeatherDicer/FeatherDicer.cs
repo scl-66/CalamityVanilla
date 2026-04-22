@@ -60,6 +60,8 @@ public class DicerFeather : ModProjectile
         Projectile.height = 14;
         Projectile.timeLeft = 280;
         Projectile.penetrate = 3;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.localNPCHitCooldown = 10;
     }
 
     public override void AI()

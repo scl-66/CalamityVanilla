@@ -83,11 +83,13 @@ public class ThrowingBrickProjectile : ModProjectile
         bool hitTile = false;
         int rand = Main.rand.Next(1, 3);
         Point tileCoord = Projectile.Center.ToTileCoordinates();
+        Tile mainTile = Main.tile[tileCoord.X, tileCoord.Y];
         for (int i = -2; i < 3; i++)
         {
             for (int j = -2; j < 3; j++)
             {
-                if (Main.tile[tileCoord.X + i, tileCoord.Y + j].TileType == ModContent.TileType<CryogenIceTile>() || Main.tile[tileCoord.X + i, tileCoord.Y + j].TileType is TileID.Glass or TileID.BreakableIce or TileID.MagicalIceBlock or TileID.Waterfall or TileID.Lavafall or TileID.Honeyfall or TileID.SandFallBlock or TileID.Confetti or TileID.ConfettiBlack or TileID.BlueStarryGlassBlock or TileID.GoldStarryGlassBlock or TileID.SnowFallBlock)
+                ushort thisTileID = Main.tile[tileCoord.X + i, tileCoord.Y + j].TileType;
+                if (thisTileID == ModContent.TileType<CryogenIceTile>() || thisTileID is TileID.Glass or TileID.BreakableIce or TileID.MagicalIceBlock or TileID.Waterfall or TileID.Lavafall or TileID.Honeyfall or TileID.SandFallBlock or TileID.Confetti or TileID.ConfettiBlack or TileID.BlueStarryGlassBlock or TileID.GoldStarryGlassBlock or TileID.SnowFallBlock)
                 {
                     // set throwing glass achievement to complete
                     ModContent.GetInstance<ThrowBrickAtGlass>().Condition.Complete();
