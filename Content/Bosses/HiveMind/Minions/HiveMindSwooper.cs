@@ -84,10 +84,10 @@ public class HiveMindSwooper : ModNPC
         NPC.aiStyle = -1;
         NPC.noGravity = true;
         NPC.noTileCollide = true;
-        NPC.knockBackResist = 0.4f;
+        NPC.knockBackResist = 0.6f;
 
-        NPC.lifeMax = 200;
-        NPC.defense = 20;
+        NPC.lifeMax = 250;
+        NPC.defense = 5;
         NPC.damage = 60;
 
         NPC.width = 34;
@@ -99,6 +99,11 @@ public class HiveMindSwooper : ModNPC
         NPC.HitSound = SoundID.NPCHit1;
         NPC.DeathSound = SoundID.NPCDeath6;
     }
+    public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+    {
+        NPC.lifeMax = (int)(NPC.lifeMax * 0.85f);
+    }
+
     private const int _swoopAttackTime = 120;
     public override void AI()
     {
@@ -222,7 +227,8 @@ public class HiveMindSwooper : ModNPC
         for (int i = 3; i >= 0; i--)
         {
             float percent = Utils.Remap(NPC.ai[2], _swoopAttackTime - (i * 10) - 30, _swoopAttackTime - (i * 10), 0, 1);
-            spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c * percent, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
+            Color c2 = c with { A = 0 } * Utils.Remap(NPC.ai[2],_swoopAttackTime, _swoopAttackTime + 60, 0.5f, 0) * percent;
+            spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c2, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
         }
 
         if(NPC.Opacity < 1)

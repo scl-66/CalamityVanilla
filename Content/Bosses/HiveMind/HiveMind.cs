@@ -7,6 +7,7 @@ using CalamityVanilla.Content.Bosses.HiveMind.Drops.MushroomBomber;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.MyceliumStaff;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.PerfectDark;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.SinisterIncubator;
+using CalamityVanilla.Content.Bosses.HiveMind.Minions;
 using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -97,15 +98,14 @@ public partial class HiveMind : ModNPC
         };
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
     }
-
     public override void FindFrame(int frameHeight)
     {
         NPC.frame.Width = 180;
-        if(_currentAttack > 20)
+        if (_currentAttack > 20)
         {
             NPC.frame.X = 180;
-            if(!NPC.dontTakeDamage)
-            NPC.frameCounter++;
+            if (!NPC.dontTakeDamage)
+                NPC.frameCounter++;
         }
         else
         {
@@ -125,9 +125,33 @@ public partial class HiveMind : ModNPC
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
     {
         Texture2D tex = TextureAssets.Npc[NPC.type].Value;
-        spriteBatch.Draw(tex,NPC.Bottom - screenPos, NPC.frame, NPC.GetNPCColorTintedByBuffs(drawColor) * NPC.Opacity, NPC.rotation, new Vector2(NPC.frame.Width / 2,NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(tex, NPC.Bottom - screenPos, NPC.frame, NPC.GetNPCColorTintedByBuffs(drawColor) * NPC.Opacity, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+        if (NPC.Opacity != 1)
+        {
+            //Color glowColor = NPC.GetNPCColorTintedByBuffs(Color.Lerp(drawColor, Color.Purple with { A = 0 }, 1f - NPC.Opacity)) * NPC.Opacity * NPC.Opacity;
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(0,NPC.alpha * 0.1f).RotatedBy(i * MathHelper.PiOver2), NPC.frame, glowColor, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+            //    spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(0, NPC.alpha * 0.15f).RotatedBy(i * MathHelper.PiOver2 + MathHelper.PiOver4), NPC.frame, glowColor * 0.5f, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+            //}
+            Color glowColor = NPC.GetNPCColorTintedByBuffs(drawColor) * NPC.Opacity * NPC.Opacity;
+            for (int i = -1; i <= 1; i++)
+            {
+                spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(NPC.alpha * 0.3f * i, 0), NPC.frame, glowColor, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(NPC.alpha * 0.6f * i, 0), NPC.frame, glowColor, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+            }
+        }
         if (NPC.dontTakeDamage)
         {
+            //int swooper = ModContent.NPCType<HiveMindSwooper>();
+            //int weeper = ModContent.NPCType<HiveMindWeeper>();
+            //foreach (NPC n in Main.ActiveNPCs)
+            //{
+            //    if (n.type != weeper && n.type != swooper)
+            //        continue;
+            //    Utils.DrawLine(spriteBatch, NPC.Center, n.Center, Color.Transparent, Color.Purple with { A = 0 } * 0.25f, 4);
+            //}
+
             float interval = 160;
             float amount = (float)(Main.timeForVisualEffects % interval) / interval;
             Color c = Color.Purple with { A = 0 } * amount * NPC.Opacity * (1f - amount);
@@ -143,7 +167,7 @@ public partial class HiveMind : ModNPC
             }
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
-            DrawData value91 = new DrawData(Main.Assets.Request<Texture2D>("Images/Misc/noise").Value, NPC.Center - screenPos, new Rectangle(0, 0, 500, 340), Color.Purple with { A = 0 }, 0, new Vector2(500, 340) / 2, new Vector2(1f + (float)Math.Sin(Main.timeForVisualEffects * 0.015f) * 0.05f, 1f + (float)Math.Sin(Main.timeForVisualEffects * 0.02f) * 0.05f), SpriteEffects.None, 0);
+            DrawData value91 = new DrawData(Main.Assets.Request<Texture2D>("Images/Misc/noise").Value, NPC.Center - screenPos, new Rectangle(0, 0, 500, 340), Color.Purple with { A = 0 }, 0, new Vector2(500, 340) / 2, new Vector2(1f + (float)Math.Sin(Main.timeForVisualEffects * 0.015f) * 0.05f, 1f + (float)Math.Sin(Main.timeForVisualEffects * 0.02f) * 0.05f) * NPC.Opacity, SpriteEffects.None, 0);
             GameShaders.Misc["ForceField"].UseColor(new Vector3((_shieldAmountForPhase2 / (float)ShieldMax) + 1f) * NPC.localAI[2]);
             GameShaders.Misc["ForceField"].Apply(value91);
             value91.Draw(spriteBatch);
@@ -171,7 +195,7 @@ public partial class HiveMind : ModNPC
             ModContent.ItemType<MyceliumStaff>(),
             ModContent.ItemType<SinisterIncubator>()));
         notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<AdrianHelmet>(), 50));
-        notExpertRule.OnSuccess(ItemDropRule.Common(ItemID.SoulofNight, 1,7,12));
+        notExpertRule.OnSuccess(ItemDropRule.Common(ItemID.SoulofNight, 1, 7, 12));
 
         npcLoot.Add(notExpertRule);
         npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<HiveMindBag>()));
@@ -185,12 +209,15 @@ public partial class HiveMind : ModNPC
         if (Main.netMode == NetmodeID.Server)
             NetMessage.SendData(MessageID.WorldData);
     }
-
+    public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+    {
+        NPC.lifeMax = (int)(NPC.lifeMax * balance * bossAdjustment * (2 / 3f));
+    }
     public override void SetDefaults()
     {
         NPC.CloneDefaults(NPCID.EyeofCthulhu);
 
-        NPC.lifeMax = 27000;
+        NPC.lifeMax = 28800;
         NPC.defense = 30;
 
         NPC.aiStyle = -1;

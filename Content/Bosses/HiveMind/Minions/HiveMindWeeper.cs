@@ -77,7 +77,7 @@ public class HiveMindWeeper : ModNPC
         NPC.lifeMax = 130;
         NPC.defense = 20;
         NPC.damage = 60;
-        NPC.knockBackResist = 1f;
+        NPC.knockBackResist = 0.4f;
 
         NPC.width = 34;
         NPC.height = 36;
@@ -88,9 +88,13 @@ public class HiveMindWeeper : ModNPC
         NPC.HitSound = SoundID.NPCHit1;
         NPC.DeathSound = SoundID.NPCDeath6;
     }
+    public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+    {
+        NPC.lifeMax = (int)(NPC.lifeMax * 0.85f);
+    }
     public override void AI()
     {
-        int hoverDistance = 256;
+        int hoverDistance = 200;
         NPC.Opacity += 0.05f;
         NPC.rotation = MathHelper.Clamp(NPC.velocity.X / 5f, -1f, 1f);
         if (Main.rand.NextBool(6))
@@ -105,6 +109,10 @@ public class HiveMindWeeper : ModNPC
 
         if (NPC.HasValidTarget)
         {
+            if (NPC.justHit)
+            {
+                NPC.ai[0] = 0;
+            }
             int FlyTime = 200;
             NPC.ai[0]++;
             if (NPC.ai[0] < FlyTime)
@@ -115,10 +123,6 @@ public class HiveMindWeeper : ModNPC
             }
             else if (NPC.ai[0] < FlyTime + 500)
             {
-                if (NPC.justHit)
-                {
-                    NPC.ai[0] = 0;
-                }
                 if (NPC.ai[0] == FlyTime + 1)
                 {
                     NPC.velocity *= 0.9f;
@@ -169,7 +173,8 @@ public class HiveMindWeeper : ModNPC
         for (int i = 3; i >= 0; i--)
         {
             float percent = Utils.Remap(NPC.ai[0], FlyTime - (i * 10) - 30, FlyTime - (i * 10), 0, 1);
-            spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c * percent, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
+            Color c2 = c with { A = 0 } * Utils.Remap(NPC.ai[0], FlyTime, FlyTime + 60, 0.5f, 0) * percent;
+            spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c2 * percent, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
         }
         if (NPC.Opacity < 1)
         {

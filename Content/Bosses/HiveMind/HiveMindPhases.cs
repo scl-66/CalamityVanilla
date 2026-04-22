@@ -19,33 +19,7 @@ public partial class HiveMind
     private ref float _currentAttack => ref NPC.ai[0];
     public override void AI()
     {
-        //if(Main.timeForVisualEffects % 60 == 0)
-        //{
-        //    for (int i = 0; i < 50; i++)
-        //    {
-        //        Dust d = Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(150, 150), DustID.RainbowMk2);
-        //        d.velocity = d.position.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -2);
-        //        d.color = Color.Purple;
-        //        d.noGravity = true;
-        //        d.fadeIn = Main.rand.NextFloat(2);
-        //    }
-        //    for(int i = 0; i < 10; i++)
-        //    {
-        //        var p = VanillaParticles.RequestPrettySparkleParticle();
-        //        p.ColorTint = Color.Purple;
-        //        p.TimeToLive = Main.rand.Next(20,50);
-        //        p.Scale = new Vector2(6, 3);
-        //        p.DrawHorizontalAxis = false;
-        //        p.LocalPosition = NPC.Center + Main.rand.NextVector2Circular(150, 150);
-        //        p.Velocity = p.LocalPosition.DirectionTo(NPC.Center) * Main.rand.NextFloat(-20, -6);
-        //        p.AccelerationPerFrame = -p.Velocity / p.TimeToLive;
-        //        p.FadeInEnd = 0.1f;
-        //        p.FadeOutStart = 0.1f;
-        //        p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
-        //        Main.ParticleSystem_World_OverPlayers.Add(p);
-        //    }
-        //}
-        if(_currentAttack > 20)
+        if (_currentAttack > 20)
         {
             Lighting.AddLight(NPC.Center, new Vector3(1.7f,0,2) * NPC.localAI[2]);
             if (_shieldAmountForPhase2 > 0)
@@ -81,7 +55,7 @@ public partial class HiveMind
                     p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
                     Main.ParticleSystem_World_OverPlayers.Add(p);
                 }
-
+                SoundEngine.PlaySound(SoundID.NPCDeath55, NPC.position);
                 NPC.defense = 0;
                 NPC.dontTakeDamage = false;
             }
@@ -112,6 +86,10 @@ public partial class HiveMind
         }
         if (_currentAttack < 13 && _currentAttack % (Main.expertMode ? 3 : 4) == 0)
             Teleport();
+        else if (NPC.alpha > 0)
+        {
+            NPC.alpha -= 255 / 15;
+        }
         else
         {
             #region Phase 1
@@ -160,28 +138,43 @@ public partial class HiveMind
                 int swooper = ModContent.NPCType<HiveMindSwooper>();
                 int weeperCount = NPC.CountNPCS(weeper);
                 int swooperCount = NPC.CountNPCS(swooper);
-                if(swooperCount + weeper == 0)
-                {
-                    NPC.localAI[1] = 119;
-                }
                 NPC.localAI[1]++;
-                if(Main.netMode != NetmodeID.MultiplayerClient && NPC.localAI[1] == 120)
+                if(Main.netMode != NetmodeID.MultiplayerClient && (NPC.localAI[1] == 300 || swooperCount + weeperCount == 0))
                 {
                     NPC.localAI[1] = 0;
-                    if (weeperCount + swooperCount < 16)
+                    if (weeperCount + swooperCount < 12)
                     {
-                        if (weeperCount < 4 && Main.expertMode && Main.rand.NextBool(3))
+                        int rand = Main.rand.Next(2, 5);
+                        for (int i = 0; i < rand; i++)
                         {
-                            NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
-                            n.velocity = Main.rand.NextVector2Circular(2, 2);
-                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                            if (weeperCount < 4 && Main.expertMode && Main.rand.NextBool(3))
+                            {
+                                NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI, -60 + (i * -30));
+                                n.velocity = Main.rand.NextVector2Circular(2, 2);
+                                n.velocity.Y -= Main.rand.Next(4, 8);
+                                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                            }
+                            else if (swooperCount < 8)
+                            {
+                                NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI, -60 + (i * -30));
+                                n.velocity = Main.rand.NextVector2Circular(2, 2);
+                                n.velocity.Y -= Main.rand.Next(4, 8);
+                                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                            }
                         }
-                        else if (swooperCount < 12)
-                        {
-                            NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
-                            n.velocity = Main.rand.NextVector2Circular(2, 2);
-                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
-                        }
+
+                        //if (weeperCount < 4 && Main.expertMode && Main.rand.NextBool(3))
+                        //{
+                        //    NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
+                        //    n.velocity = Main.rand.NextVector2Circular(2, 2);
+                        //    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                        //}
+                        //else if (swooperCount < 12)
+                        //{
+                        //    NPC n = NPC.NewNPCDirect(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextBool(3) && Main.expertMode ? weeper : swooper, NPC.whoAmI);
+                        //    n.velocity = Main.rand.NextVector2Circular(2, 2);
+                        //    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
+                        //}
                     }
                 }
             }
@@ -221,6 +214,97 @@ public partial class HiveMind
             }
             #endregion Phase 2
         }
+    }
+    private bool FindValidSpotsForBoulder(ref Vector2 chosenTile, int targetTileX, int targetTileY, int rangeFromTargetTile = 20, int telefragPreventionDistanceInTiles = 5, bool teleportInAir = false)
+    {
+        int solidTileCheckFluff = 1;
+        int num = (int)target.Center.X / 16;
+        int num2 = (int)target.Center.Y / 16;
+        int num3 = 0;
+        bool flag = false;
+        float num4 = 20f;
+        if (Math.Abs(num * 16 - targetTileX * 16) + Math.Abs(num2 * 16 - targetTileY * 16) > 2000)
+        {
+            num3 = 100;
+            flag = false;
+        }
+
+        while (!flag && num3 < 100)
+        {
+            num3++;
+            int num5 = Main.rand.Next(targetTileX - rangeFromTargetTile, targetTileX + rangeFromTargetTile + 1);
+            for (int i = Main.rand.Next(targetTileY - rangeFromTargetTile, targetTileY + rangeFromTargetTile + 1); i < targetTileY + rangeFromTargetTile; i++)
+            {
+                if ((i >= num2 - 1 && i <= num2 + 1 && num5 >= num - 1 && num5 <= num + 1) || (!teleportInAir && !Main.tile[num5, i].HasUnactuatedTile))
+                    continue;
+
+                bool flag2 = true;
+
+                if (!flag2 || (!teleportInAir && !Main.tileSolid[Main.tile[num5, i].TileType]))
+                    continue;
+
+                if (!Collision.SolidTiles(num5 - solidTileCheckFluff, num5 + solidTileCheckFluff, i - solidTileCheckFluff, i + solidTileCheckFluff,false))
+                    continue;
+
+                Rectangle rectangle = new Rectangle(num5 * 16, i * 16, 16, 16);
+                rectangle.Inflate(telefragPreventionDistanceInTiles * 16, telefragPreventionDistanceInTiles * 16);
+                for (int j = 0; j < Main.player.Length; j++)
+                {
+                    Player player = Main.player[j];
+                    if (player != null && player.active && !player.DeadOrGhost)
+                    {
+                        Rectangle value = player.Hitbox;
+                        Rectangle value2 = value.Modified((int)(player.velocity.X * num4), (int)(player.velocity.Y * num4), 0, 0);
+                        Rectangle.Union(ref value2, ref value, out value2);
+                        if (value2.Intersects(rectangle))
+                        {
+                            flag2 = false;
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (flag2)
+                {
+                    chosenTile = new Vector2(num5, i);
+                    flag = true;
+                }
+
+                break;
+            }
+        }
+
+        return flag;
+    }
+    private Vector2 FindBoulderSpot()
+    {
+        Vector2 chosenTile = Vector2.Zero;
+        Vector2 targetPos = target.Center;
+        targetPos /= 16;
+        if (FindValidSpotsForBoulder(ref chosenTile, (int)targetPos.X, (int)targetPos.Y,30, 15,false))
+        {
+            chosenTile *= 16;
+            targetPos.X = chosenTile.X;
+            targetPos.Y = chosenTile.Y;
+        }
+        else
+        {
+            targetPos = CVUtils.FindFloorBelow(target.Center, 32);
+            targetPos /= 16;
+            if (FindValidSpotsForBoulder(ref chosenTile, (int)targetPos.X, (int)targetPos.Y, 50, 15, true))
+            {
+                chosenTile *= 16;
+                targetPos.X = chosenTile.X;
+                targetPos.Y = chosenTile.Y;
+            }
+            else
+            {
+                targetPos.X = target.Bottom.X;
+                targetPos.Y = target.Bottom.Y;
+            }
+        }
+        return targetPos;
     }
     private void SwitchToPhaseTwo()
     {
@@ -280,7 +364,7 @@ public partial class HiveMind
             Vector2 chosenTile = Vector2.Zero;
             Vector2 targetPos = target.Center;
             targetPos /= 16;
-            if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y))
+            if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y,40))
             {
                 chosenTile *= 16;
                 teleportX = chosenTile.X;
@@ -290,7 +374,7 @@ public partial class HiveMind
             {
                 targetPos = CVUtils.FindFloorBelow(target.Center, 32);
                 targetPos /= 16;
-                if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y))
+                if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y,40))
                 {
                     chosenTile *= 16;
                     teleportX = chosenTile.X;
@@ -319,9 +403,9 @@ public partial class HiveMind
                 p.FadeOutNormalizedTime = 0.5f;
                 Main.ParticleSystem_World_OverPlayers.Add(p);
             }
-            if (NPC.ai[1] > teleportTime - 5)
+            if (NPC.ai[1] > teleportTime - 15)
             {
-                NPC.alpha += 255 / 5;
+                NPC.alpha += 255 / 15;
             }
         }
         else if (NPC.ai[1] == teleportTime)
@@ -371,7 +455,7 @@ public partial class HiveMind
                 d.color = Color.Purple;
                 d.noGravity = true;
                 d.fadeIn = Main.rand.NextFloat(2);
-                d.velocity += teleportVel * Main.rand.NextFloat(12);
+                d.velocity += teleportVel * Main.rand.NextFloat(24);
                 Dust d2 = Dust.NewDustDirect(teleportPos, NPC.width, NPC.height, DustID.RainbowMk2);
                 d2.color = Color.Purple;
                 d2.fadeIn = Main.rand.NextFloat(2);
@@ -381,18 +465,13 @@ public partial class HiveMind
             NPC.position = teleportPos;
             SoundEngine.PlaySound(SoundID.Item8, NPC.position);
         }
-        else if (NPC.ai[1] > teleportTime && NPC.alpha <= 0)
+        else if (NPC.ai[1] > teleportTime)
         {
-            NPC.alpha = 0;
             CycleAttack();
             if(NPC.life / (float)NPC.lifeMax < _secondPhaseHealthPercent)
             {
                 SwitchToPhaseTwo();
             }
-        }
-        else
-        {
-            NPC.alpha -= 255 / 5;
         }
     }
     private void VineSpikes()
@@ -436,7 +515,8 @@ public partial class HiveMind
         NPC.ai[1]++;
         if (NPC.ai[1] is 100 or 140 or 180 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256,400) * (Main.rand.NextBool()? 1 : -1)), target.Center.Y - 32), 32);
+            //Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256,400) * (Main.rand.NextBool()? 1 : -1)), target.Center.Y - 128), 64);
+            Vector2 place = FindBoulderSpot();
             Point placePoint = place.ToTileCoordinates();
             int rockType = 0;
             if (Main.tile[placePoint].HasTile)
@@ -466,9 +546,9 @@ public partial class HiveMind
                         break;
                 }
             }
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place + new Vector2(0,16), Vector2.Zero, ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
         }
-        else if (NPC.ai[1] > 180)
+        else if (NPC.ai[1] > 240)
         {
             CycleAttack();
         }
@@ -476,14 +556,23 @@ public partial class HiveMind
     private void SporeBombsP2()
     {
         NPC.ai[1]++;
-        if (((NPC.ai[1] is 100 or 130 or 160) || (!NPC.dontTakeDamage && (NPC.ai[1] is 190 or 220))) && Main.netMode != NetmodeID.MultiplayerClient)
+        if ((NPC.ai[1] is 100 or 110 or 120 or 130 or 140 or 150) && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            int type = !NPC.dontTakeDamage && Main.rand.NextBool() ? ModContent.ProjectileType<SporeBomb>() : ModContent.ProjectileType<SporeBombLarge>();
-            int time = 120;
-            Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * time, 0);
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128, 128), 0.2f, time), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+            int type = ModContent.ProjectileType<SporeBomb>();
+
+            Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * 120, 0);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128, 128), 0.2f, 120), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+            //Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(6, 9), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
-        else if (NPC.ai[1] > (NPC.dontTakeDamage? 350: 250))
+        //NPC.ai[1]++;
+        //if (((NPC.ai[1] is 100 or 130 or 160) || (!NPC.dontTakeDamage && (NPC.ai[1] is 190 or 220))) && Main.netMode != NetmodeID.MultiplayerClient)
+        //{
+        //    int type = !NPC.dontTakeDamage && Main.rand.NextBool() ? ModContent.ProjectileType<SporeBomb>() : ModContent.ProjectileType<SporeBombLarge>();
+        //    int time = 120;
+        //    Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * time, 0);
+        //    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128, 128), 0.2f, time), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+        //}
+        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 250 : 200))
         {
             CycleAttack();
         }
@@ -493,7 +582,7 @@ public partial class HiveMind
         NPC.ai[1]++;
         if (NPC.ai[1] is 100 or 140 or 180 or 220 && Main.netMode != NetmodeID.MultiplayerClient)
         {
-            Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2(target.Center.X + (Main.rand.Next(256, 400) * (Main.rand.NextBool() ? 1 : -1)), target.Center.Y - 32), 32);
+            Vector2 place = FindBoulderSpot();
             Point placePoint = place.ToTileCoordinates();
             int rockType = 0;
             if (Main.tile[placePoint].HasTile)
@@ -523,9 +612,9 @@ public partial class HiveMind
                         break;
                 }
             }
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), place, new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3)), ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place + new Vector2(0, 16), Vector2.Zero, ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
         }
-        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 300 : 220))
+        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 360 : 280))
         {
             CycleAttack();
         }
@@ -547,7 +636,7 @@ public partial class HiveMind
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(20, 30));
             }
         }
-        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 360 : 300))
+        else if (NPC.ai[1] > (NPC.dontTakeDamage ? 330 : 260))
         {
             CycleAttack();
         }

@@ -1,6 +1,8 @@
 ﻿using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -81,6 +83,7 @@ public class SporeBomb : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
+
         SoundEngine.PlaySound(DeathSound, Projectile.position);
         if (Main.netMode != NetmodeID.MultiplayerClient)
         {
@@ -107,8 +110,11 @@ public class SporeBomb : ModProjectile
 }
 public class SporeBombLarge : SporeBomb
 {
+
+    private static Asset<Texture2D> _explosionTexture;
     public override void SetStaticDefaults()
     {
+        _explosionTexture = ModContent.Request<Texture2D>(Texture + "Explosion");
         Main.projFrames[Type] = 3;
         ProjectileID.Sets.TrailCacheLength[Type] = 3;
         ProjectileID.Sets.TrailingMode[Type] = 0;
@@ -121,7 +127,13 @@ public class SporeBombLarge : SporeBomb
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(DeathSound with { Pitch = -0.3f}, Projectile.position);
+        //var p = AnimatedParticle.RequestAnimatedParticle();
+        //p.SetTypeInfo(10, 50, _explosionTexture, Color.White);
+        //p.LocalPosition = Projectile.Center + new Vector2(0, -10);
+        //p.Scale = Vector2.One;
+        //Main.ParticleSystem_World_OverPlayers.Add(p);
+        SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+        SoundEngine.PlaySound(DeathSound with { Pitch = -0.5f}, Projectile.position);
         if (Main.netMode != NetmodeID.MultiplayerClient)
         {
             for (int i = 0; i < 15; i++)

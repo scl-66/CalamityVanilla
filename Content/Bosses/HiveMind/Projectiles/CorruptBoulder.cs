@@ -3,6 +3,7 @@ using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -22,58 +23,97 @@ public class CorruptBoulder : ModProjectile
         Main.projFrames[Type] = 4;
         ProjectileID.Sets.TrailCacheLength[Type] = 5;
         ProjectileID.Sets.TrailingMode[Type] = 2;
+        ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
+    }
+    public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+    {
+        if (Projectile.hide)
+            behindNPCsAndTiles.Add(index);
     }
     public override void SetDefaults()
     {
-        Projectile.QuickDefaults(true, 480);
+        Projectile.scale = 0.1f;
+        Projectile.QuickDefaults(true, (int)(48f / 0.1f));
         Projectile.tileCollide = false;
         Projectile.frame = Main.rand.Next(3);
-        Projectile.scale = 0.1f;
+        Projectile.hide = true;
     }
     public override void AI()
     {
         Player target = Main.player[(int)Projectile.ai[0]];
         Projectile.ai[1]++;
-        if(Projectile.scale < 1f)
-            Projectile.scale += 0.1f;
+        if(Projectile.scale < 1.2f)
+            Projectile.scale += 0.06f;
 
-        float PrepareTime = 120;
+        float LaunchTime = 240;
         if (Projectile.ai[1] == 1)
         {
-            SoundEngine.PlaySound(_spawn, Projectile.position);
-            Point center = Projectile.Center.ToTileCoordinates();
-            for (int x = center.X - 3; x <= center.X + 3; x++)
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss, Projectile.position);
+        }
+        if (Projectile.ai[1] < LaunchTime)
+        {
+            Projectile.velocity.Y *= 0.98f;
+            Projectile.velocity.X *= 0.99f;
+            if (Projectile.ai[1] < 60)
             {
-                for (int y = center.Y - 3; y <= center.Y + 3; y++)
+                //if (Main.rand.NextBool(3))
+                //{
+                //    var p2 = VanillaParticles.RequestRandomizedFrameParticle();
+                //    int tex = ProjectileID.ScytheWhipProj;
+                //    Main.instance.LoadProjectile(tex);
+                //    p2.SetBasicInfo(TextureAssets.Projectile[tex], null, Vector2.Zero, Projectile.Top + Main.rand.NextVector2CircularEdge(32, 32));
+                //    p2.SetTypeInfo(Main.projFrames[tex], 2, 24f);
+                //    p2.Velocity = p2.LocalPosition.DirectionFrom(Projectile.Center) * 3;
+                //    p2.Rotation = p2.Velocity.ToRotation();
+                //    p2.Scale = new Vector2(0.5f);
+                //    p2.FadeInNormalizedTime = 0.01f;
+                //    p2.FadeOutNormalizedTime = 0.5f;
+                //    p2.ScaleVelocity = new Vector2(0.025f);
+                //    p2.ColorTint = Color.Purple with { A = 128 };
+                //    Main.ParticleSystem_World_OverPlayers.Add(p2);
+                //}
+
+                Projectile.position.Y -= 0.5f;
+                Projectile.rotation += MathF.Sin((Projectile.ai[1] * 0.5f) + (Projectile.identity * 7) * 0.1f) * 0.1f;
+                if(Main.rand.NextBool(15))
+                Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+            }
+            else if (Projectile.ai[1] == 61)
+            {
+                SoundEngine.PlaySound(_spawn, Projectile.position);
+                Projectile.velocity = new Vector2(Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-6, -3));
+                Projectile.netUpdate = true;
+                Projectile.hide = false;
+                Point center = Projectile.Center.ToTileCoordinates();
+                for (int x = center.X - 3; x <= center.X + 3; x++)
                 {
-                    if (Main.tile[x, y].HasTile && (Main.tileSolid[Main.tile[x, y].TileType] || Main.tileSolidTop[Main.tile[x, y].TileType]))
+                    for (int y = center.Y - 3; y <= center.Y + 3; y++)
                     {
-                        for (int i = 0; i < 3; i++)
+                        if (Main.tile[x, y].HasTile && (Main.tileSolid[Main.tile[x, y].TileType] || Main.tileSolidTop[Main.tile[x, y].TileType]))
                         {
-                            Dust d = Main.dust[WorldGen.KillTile_MakeTileDust(x, y, Main.tile[x, y])];
-                            d.velocity.Y -= Main.rand.NextFloat(1, 4);
-                            d.velocity.X *= 2;
-                            d.scale *= Main.rand.NextFloat(1f,1.25f);
-                            d.noGravity |= Main.rand.NextBool();
+                            for (int i = 0; i < 3; i++)
+                            {
+                                Dust d = Main.dust[WorldGen.KillTile_MakeTileDust(x, y, Main.tile[x, y])];
+                                d.velocity.Y -= Main.rand.NextFloat(1, 4);
+                                d.velocity.X *= 2;
+                                d.scale *= Main.rand.NextFloat(1f, 1.25f);
+                                d.noGravity |= Main.rand.NextBool();
+                            }
                         }
                     }
                 }
             }
-        }
-        if (Projectile.ai[1] < PrepareTime)
-        {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
-            d.color = Color.Purple;
-            d.noGravity = true;
-            d.velocity += Projectile.velocity;
-            d.velocity += Vector2.One.RotatedBy(Projectile.rotation);
+            else
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
+                d.color = Color.Purple * Utils.Remap(Projectile.ai[1], 30, 60, 0, 1);
+                d.noGravity = true;
+                d.velocity += Projectile.velocity * Main.rand.NextFloat();
 
-            Projectile.localAI[0] += 0.003f * MathF.Sign(target.Center.X - Projectile.Center.X);
-            Projectile.localAI[0] = MathHelper.Clamp(Projectile.localAI[0], -0.15f, 0.15f);
-            Projectile.velocity.Y *= 0.98f;
-            Projectile.velocity.X *= 0.99f;
-
-            if (Projectile.ai[1] > PrepareTime - 61 && (Projectile.ai[1] - 1) % 15 == 0)
+                Projectile.localAI[0] += 0.003f * MathF.Sign(target.Center.X - Projectile.Center.X);
+                Projectile.localAI[0] = MathHelper.Clamp(Projectile.localAI[0], -0.15f, 0.15f);
+            }
+            if ((Projectile.ai[1] > LaunchTime - 31 || Projectile.ai[1] < 60) && (Projectile.ai[1] - 1) % 15 == 0)
             {
                 var p = VanillaParticles.RequestFadingParticle();
                 p.SetBasicInfo(TextureAssets.Extra[ExtrasID.KeybrandRing], null, Vector2.Zero, Projectile.Center);
@@ -90,7 +130,7 @@ public class CorruptBoulder : ModProjectile
                 Main.ParticleSystem_World_OverPlayers.Add(p);
             }
         }
-        else if (Projectile.ai[1] == PrepareTime)
+        else if (Projectile.ai[1] == LaunchTime)
         {
             SoundEngine.PlaySound(SoundID.Item69, Projectile.position);
             int time = 40;
@@ -119,8 +159,13 @@ public class CorruptBoulder : ModProjectile
     {
         Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
         Rectangle frame = tex.Frame(3, 5, Projectile.frame, (int)Projectile.ai[2]);
-
-        if (Projectile.ai[1] >= 120)
+        Vector2 jitter = Vector2.Zero;
+        if (Projectile.ai[1] < 60)
+        {
+            var randSeed = Main.TileFrameSeed;
+            jitter = new Vector2(Utils.RandomInt(ref randSeed, -20, 21) * 0.2f, Utils.RandomInt(ref randSeed, -20, 21) * 0.2f);
+        }
+        if (Projectile.ai[1] >= 240)
         {
             for (int i = 0; i < Projectile.oldPos.Length; i++)
             {
@@ -128,22 +173,23 @@ public class CorruptBoulder : ModProjectile
                 Main.EntitySpriteDraw(tex, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, lightColor * opacity, Projectile.oldRot[i], frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             }
         }
-        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-        if (Projectile.ai[1] < 120)
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + jitter, frame, lightColor * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+        if (Projectile.ai[1] < 240)
         {
             //for(int i = 0; i < 4; i++)
             //{
             //    Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0,8 + (float)Math.Sin(Main.timeForVisualEffects * 0.1f) * 4).RotatedBy(i * MathHelper.PiOver2), frame, Color.Purple with { A = 0 } * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             //}
+            float colorMultiply = Projectile.Opacity * Utils.Remap(Projectile.ai[1],30,120,0,2);
             float interval = 60;
             float amount = (float)(Main.timeForVisualEffects % interval) / interval;
-            Color c = Color.Purple with { A = 0 } * amount * Projectile.Opacity * (1f - amount) * (1f + (Projectile.ai[1] / 60));
+            Color c = Color.Purple with { A = 0 } * amount * colorMultiply * (1f - amount);
             for (int i = 0; i < 4; i++)
             {
                 Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 16 * amount).RotatedBy((i * MathHelper.PiOver2) + MathHelper.PiOver4), frame, c, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             }
             amount = (float)((Main.timeForVisualEffects + (interval / 2)) % interval) / interval;
-            c = Color.Purple with { A = 0 } * amount * Projectile.Opacity * (1f - amount) * (1f + (Projectile.ai[1] / 60));
+            c = Color.Purple with { A = 0 } * amount * colorMultiply * (1f - amount);
             for (int i = 0; i < 4; i++)
             {
                 Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 16 * amount).RotatedBy(i * MathHelper.PiOver2), frame, c, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
