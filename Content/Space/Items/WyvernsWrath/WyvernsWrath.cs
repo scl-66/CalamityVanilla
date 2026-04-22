@@ -31,7 +31,7 @@ public class WyvernsWrath : ModItem
         Item.UseSound = SoundID.Item66 with { Volume = 0.7f};
 
         // Set damage and knockBack
-        Item.SetWeaponValues(35, 2);
+        Item.SetWeaponValues(27, 2);
 
         // Set rarity and value
         Item.SetShopValues(ItemRarityColor.Pink5, 20000);
@@ -182,7 +182,7 @@ public class WyvernsWrathEnergyFeather : ModProjectile
         Projectile.width = 14;
         Projectile.height = 14;
         Projectile.timeLeft = 50;
-        Projectile.penetrate = 4;
+        Projectile.penetrate = 2;
         Projectile.tileCollide = false;
         Projectile.alpha = 140;
     }
