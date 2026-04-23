@@ -91,12 +91,12 @@ public partial class HiveMind : ModNPC
         NPCID.Sets.MPAllowedEnemies[Type] = true;
         NPCID.Sets.BossBestiaryPriority.Add(Type);
         NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
-        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
-        {
-            CustomTexturePath = Texture + "_Bestiary",
-            PortraitPositionYOverride = 0f,
-        };
-        NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+        //NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+        //{
+        //    CustomTexturePath = Texture + "_Bestiary",
+        //    PortraitPositionYOverride = 0f,
+        //};
+        //NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
     }
     public override void FindFrame(int frameHeight)
     {
@@ -125,6 +125,11 @@ public partial class HiveMind : ModNPC
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
     {
         Texture2D tex = TextureAssets.Npc[NPC.type].Value;
+        if (NPC.IsABestiaryIconDummy)
+        {
+            spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(0,6), NPC.frame, Color.White, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+            return false;
+        }
         spriteBatch.Draw(tex, NPC.Bottom - screenPos, NPC.frame, NPC.GetNPCColorTintedByBuffs(drawColor) * NPC.Opacity, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
         if (NPC.Opacity != 1)
         {
