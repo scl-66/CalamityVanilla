@@ -238,7 +238,7 @@ public partial class HiveMind
             {
                 continue;
             }
-            if (Main.tile[x, y].HasTile && Main.tileSolid[Main.tile[x, y].TileType] && (!Main.tile[x, y - 1].HasTile || !Main.tileSolid[Main.tile[x, y - 1].TileType]))
+            if (Main.tile[x, y].HasTile && Main.tileSolid[Main.tile[x, y].TileType] && !Main.tileSolidTop[Main.tile[x, y].TileType] && (!Main.tile[x, y - 1].HasTile || !Main.tileSolid[Main.tile[x, y - 1].TileType]))
             {
                 chosenTile = new Vector2((x * 16) + 8, (y * 16) + 8);
                 return true;
