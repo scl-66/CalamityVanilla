@@ -134,7 +134,7 @@ public class CorruptBoulder : ModProjectile
         {
             SoundEngine.PlaySound(SoundID.Item69, Projectile.position);
             int time = 40;
-            Vector2 adjustedTargetPosition = target.Top + new Vector2(target.velocity.X * time, 0);
+            Vector2 adjustedTargetPosition = target.Top;// + new Vector2(target.velocity.X * time, 0);
             Projectile.velocity = CVUtils.FindVelocityForGravityAffectedThing(Projectile.Bottom, adjustedTargetPosition, 0.2f, time).LengthClamp(32);
             for(int i = 0; i < 25; i++)
             {

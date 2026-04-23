@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.Bosses.HiveMind;
 public partial class HiveMind
@@ -139,7 +140,7 @@ public partial class HiveMind
                 int weeperCount = NPC.CountNPCS(weeper);
                 int swooperCount = NPC.CountNPCS(swooper);
                 NPC.localAI[1]++;
-                if(Main.netMode != NetmodeID.MultiplayerClient && (NPC.localAI[1] == 300 || swooperCount + weeperCount == 0))
+                if(Main.netMode != NetmodeID.MultiplayerClient && (NPC.localAI[1] == 600 || swooperCount + weeperCount == 0))
                 {
                     NPC.localAI[1] = 0;
                     if (weeperCount + swooperCount < 12)
@@ -215,96 +216,43 @@ public partial class HiveMind
             #endregion Phase 2
         }
     }
-    private bool FindValidSpotsForBoulder(ref Vector2 chosenTile, int targetTileX, int targetTileY, int rangeFromTargetTile = 20, int telefragPreventionDistanceInTiles = 5, bool teleportInAir = false)
+    private bool FindValidSpotsForBoulder(ref Vector2 chosenTile, Point targetPos, int rangeFromTargetTile = 20, int telefragPreventionDistanceInTiles = 5, bool teleportInAir = false)
     {
-        int solidTileCheckFluff = 1;
-        int num = (int)target.Center.X / 16;
-        int num2 = (int)target.Center.Y / 16;
-        int num3 = 0;
-        bool flag = false;
-        float num4 = 20f;
-        if (Math.Abs(num * 16 - targetTileX * 16) + Math.Abs(num2 * 16 - targetTileY * 16) > 2000)
+        //for (int i = 0; i < 60; i++)
+        //{
+        //    Dust d = Dust.NewDustDirect(targetPos.ToWorldCoordinates() - new Vector2(rangeFromTargetTile * 16, rangeFromTargetTile / 2 * 16), rangeFromTargetTile * 32, rangeFromTargetTile * 16, DustID.RainbowMk2);
+        //    d.noGravity = true;
+        //    d.color = Color.Red;
+        //}
+        for (int iterations = 0; iterations < 300; iterations++)
         {
-            num3 = 100;
-            flag = false;
-        }
 
-        while (!flag && num3 < 100)
-        {
-            num3++;
-            int num5 = Main.rand.Next(targetTileX - rangeFromTargetTile, targetTileX + rangeFromTargetTile + 1);
-            for (int i = Main.rand.Next(targetTileY - rangeFromTargetTile, targetTileY + rangeFromTargetTile + 1); i < targetTileY + rangeFromTargetTile; i++)
+            int x = Main.rand.Next(targetPos.X - rangeFromTargetTile, targetPos.X + rangeFromTargetTile + 1);
+            int y = Main.rand.Next(targetPos.Y - (rangeFromTargetTile / 2), targetPos.Y + (rangeFromTargetTile / 2) + 1);
+            if (!WorldGen.InWorld(x, y, 10))
+                continue;
+
+            Point playerTargetTileCoords = target.Center.ToTileCoordinates();
+            Rectangle telefragBox = new Rectangle(playerTargetTileCoords.X - telefragPreventionDistanceInTiles, playerTargetTileCoords.Y - telefragPreventionDistanceInTiles, telefragPreventionDistanceInTiles * 2, telefragPreventionDistanceInTiles * 2);
+            if (telefragBox.Contains(x, y))
             {
-                if ((i >= num2 - 1 && i <= num2 + 1 && num5 >= num - 1 && num5 <= num + 1) || (!teleportInAir && !Main.tile[num5, i].HasUnactuatedTile))
-                    continue;
-
-                bool flag2 = true;
-
-                if (!flag2 || (!teleportInAir && !Main.tileSolid[Main.tile[num5, i].TileType]))
-                    continue;
-
-                if (!Collision.SolidTiles(num5 - solidTileCheckFluff, num5 + solidTileCheckFluff, i - solidTileCheckFluff, i + solidTileCheckFluff,false))
-                    continue;
-
-                Rectangle rectangle = new Rectangle(num5 * 16, i * 16, 16, 16);
-                rectangle.Inflate(telefragPreventionDistanceInTiles * 16, telefragPreventionDistanceInTiles * 16);
-                for (int j = 0; j < Main.player.Length; j++)
-                {
-                    Player player = Main.player[j];
-                    if (player != null && player.active && !player.DeadOrGhost)
-                    {
-                        Rectangle value = player.Hitbox;
-                        Rectangle value2 = value.Modified((int)(player.velocity.X * num4), (int)(player.velocity.Y * num4), 0, 0);
-                        Rectangle.Union(ref value2, ref value, out value2);
-                        if (value2.Intersects(rectangle))
-                        {
-                            flag2 = false;
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (flag2)
-                {
-                    chosenTile = new Vector2(num5, i);
-                    flag = true;
-                }
-
-                break;
+                continue;
+            }
+            if (Main.tile[x, y].HasTile && Main.tileSolid[Main.tile[x, y].TileType] && !Main.tileSolidTop[Main.tile[x, y].TileType] && (!Main.tile[x, y - 1].HasTile || !Main.tileSolid[Main.tile[x, y - 1].TileType]))
+            {
+                chosenTile = new Vector2((x * 16) + 8, (y * 16) + 8);
+                return true;
             }
         }
-
-        return flag;
+        return false;
     }
     private Vector2 FindBoulderSpot()
     {
-        Vector2 chosenTile = Vector2.Zero;
-        Vector2 targetPos = target.Center;
-        targetPos /= 16;
-        if (FindValidSpotsForBoulder(ref chosenTile, (int)targetPos.X, (int)targetPos.Y,30, 15,false))
-        {
-            chosenTile *= 16;
-            targetPos.X = chosenTile.X;
-            targetPos.Y = chosenTile.Y;
-        }
-        else
-        {
-            targetPos = CVUtils.FindFloorBelow(target.Center, 32);
-            targetPos /= 16;
-            if (FindValidSpotsForBoulder(ref chosenTile, (int)targetPos.X, (int)targetPos.Y, 50, 15, true))
-            {
-                chosenTile *= 16;
-                targetPos.X = chosenTile.X;
-                targetPos.Y = chosenTile.Y;
-            }
-            else
-            {
-                targetPos.X = target.Bottom.X;
-                targetPos.Y = target.Bottom.Y;
-            }
-        }
-        return targetPos;
+        Vector2 chosenSpot = Vector2.Zero;
+        if (!FindValidSpotsForBoulder(ref chosenSpot, target.Center.ToTileCoordinates(), 20, 15, false))
+            if (!FindValidSpotsForBoulder(ref chosenSpot, CVUtils.FindFloorBelowIgnoringSolidTops(target.Center, 32).ToTileCoordinates(), 40, 15, true))
+                chosenSpot = CVUtils.FindFloorBelowIgnoringSolidTops(target.Center, 32);
+        return chosenSpot;// + Main.rand.NextVector2CircularEdge(128,128);
     }
     private void SwitchToPhaseTwo()
     {

@@ -14,6 +14,7 @@ public class HiveShieldBreaker : ModProjectile
         Projectile.width = Projectile.height = 8;
         Projectile.hide = true;
         Projectile.extraUpdates = 2;
+        Projectile.tileCollide = false;
     }
     public override void AI()
     {
