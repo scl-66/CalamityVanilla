@@ -1,15 +1,12 @@
-﻿using CalamityVanilla.Content.Bosses.HiveMind.Drops.PerfectDark;
-using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.Graphics.Renderers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,7 +19,7 @@ public class MushroomBomberShotSmall : ModProjectile
         Projectile.width = 14;
         Projectile.height = 14;
         Projectile.friendly = true;
-        Projectile.penetrate = 3;
+        Projectile.penetrate = 6;
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 20;
@@ -51,6 +48,54 @@ public class MushroomBomberShotSmall : ModProjectile
         }
     }
 }
+public class MushroomBomberShotMedium : ModProjectile
+{
+    public override void SetDefaults()
+    {
+        Projectile.width = 14;
+        Projectile.height = 14;
+        Projectile.friendly = true;
+        Projectile.penetrate = 3;
+        Projectile.DamageType = DamageClass.Ranged;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.localNPCHitCooldown = 20;
+    }
+    public override void AI()
+    {
+        Projectile.ai[0]++;
+        if (Projectile.ai[0] > 20)
+            Projectile.velocity.Y += 0.3f;
+
+        Projectile.rotation += Projectile.velocity.X * 0.05f;
+    }
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        Projectile.velocity = -Projectile.Center.DirectionTo(target.Center) * Projectile.velocity.Length();
+        int spore = ModContent.ProjectileType<MushroomBomberSpores>();
+        for (int i = 0; i < 5; i++)
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.1f, 0.4f) + new Vector2(0, -1), spore, Projectile.damage / 20, 0, Projectile.owner, Main.rand.Next(90, 150));
+    }
+    public override void OnKill(int timeLeft)
+    {
+        SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.position);
+        int type = ModContent.DustType<VileMushroomDust>();
+        for (int i = 0; i < 15; i++)
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
+            d.velocity *= 2.5f;
+            d.fadeIn = Main.rand.NextFloat(0.2f, 0.5f);
+            d.noGravity = Main.rand.NextBool();
+        }
+        if(Projectile.owner == Main.myPlayer)
+        {
+            int spore = ModContent.ProjectileType<MushroomBomberSpores>();
+            for (int i = 0; i < 5; i++)
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.1f, 0.4f) + new Vector2(0, -1), spore, Projectile.damage / 20, 0, Projectile.owner, Main.rand.Next(90, 150));
+        }
+    }
+}
+#region old shot medium
+/*
 public class MushroomBomberShotMedium : ModProjectile
 {
     public override void SetStaticDefaults()
@@ -136,7 +181,8 @@ public class MushroomBomberShotMedium : ModProjectile
             d.noGravity = Main.rand.NextBool();
         }
     }
-}
+}*/
+#endregion
 public class MushroomBomberShotLarge : ModProjectile
 {
     private static Asset<Texture2D> _explosionTexture;
@@ -156,12 +202,25 @@ public class MushroomBomberShotLarge : ModProjectile
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 20;
     }
+    public override bool PreDraw(ref Color lightColor)
+    {
+        Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+        Rectangle frame = tex.Frame(2, Main.projFrames[Type], 0, Projectile.frame);
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+        Color glow = Color.Lerp(new Color(1f, 0.5f, 0.5f, 0f), new Color(0.5f, 0.25f, 1f, 0f), Main.masterColor);
+        frame.X += frame.Width;
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, glow * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+        for (int i = 0; i < 4; i++)
+        {
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(MathF.Sin((float)Main.timeForVisualEffects * 0.03f) * 4, 0).RotatedBy(Projectile.rotation + i * MathHelper.PiOver2), frame, glow * Projectile.Opacity * 0.15f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+        }
+        return false;
+    }
     public override void AI()
     {
         Projectile.ai[0]++;
         if (Projectile.ai[0] > 20)
             Projectile.velocity.Y += 0.3f;
-
         Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
     }
     public override bool? CanHitNPC(NPC target)
@@ -177,12 +236,13 @@ public class MushroomBomberShotLarge : ModProjectile
         if(Main.myPlayer == Projectile.owner)
         {
             int spore = ModContent.ProjectileType<MushroomBomberSpores>();
-            for(int i = 0; i < 12; i++)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.1f,0.4f) + new Vector2(0,-1), spore, Projectile.damage / 5, 0, Projectile.owner, Main.rand.Next(90, 150));
+            for(int i = 0; i < 16; i++)
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.1f,0.4f) + new Vector2(0,-1), spore, Projectile.damage / 20, 0, Projectile.owner, Main.rand.Next(90, 150));
         }
 
         SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
         Projectile.ai[1] = 1;
+        Projectile.damage /= 3;
         Projectile.Resize(200, 200);
         Projectile.Damage();
         int type = ModContent.DustType<VileMushroomDust>();
@@ -240,18 +300,19 @@ public class MushroomBomberSpores : ModProjectile
         Projectile.tileCollide = false;
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.penetrate = -1;
-        Projectile.usesLocalNPCImmunity = true;
-        Projectile.localNPCHitCooldown = 40;
         Projectile.frame = Main.rand.Next(3);
+        Projectile.usesIDStaticNPCImmunity = true;
+        Projectile.idStaticNPCHitCooldown = 15;
+        Projectile.stopsDealingDamageAfterPenetrateHits = true;
     }
     public override bool PreDraw(ref Color lightColor)
     {
         Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
         Rectangle frame = tex.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
-        Color c = lightColor * Projectile.Opacity;
+        Color c = lightColor * Projectile.Opacity * 0.4f;
         c.A /= 2;
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c * Projectile.Opacity * 0.25f, Projectile.rotation, frame.Size() / 2, Projectile.scale + (Projectile.Opacity * 0.75f), SpriteEffects.None, 0);
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale + (Projectile.Opacity * 0.75f), SpriteEffects.None, 0);
         return false;
     }
     public override void AI()
@@ -271,12 +332,15 @@ public class MushroomBomberSpores : ModProjectile
 
         Projectile.ai[0]++;
         Projectile.velocity *= 0.95f;
-
         Projectile.scale = (0.5f + Projectile.Opacity * 0.5f) + (float)Math.Sin(Projectile.ai[0] * 0.1f) * 0.1f;
         Projectile.rotation += Projectile.velocity.X * 0.02f + Projectile.direction * 0.02f;
-        if (Projectile.timeLeft < 40)
+        if (Projectile.timeLeft <= 2)
         {
+            Projectile.damage = 0;
+            Projectile.timeLeft = 2;
             Projectile.alpha += 6;
+            if (Projectile.alpha > 255)
+                Projectile.Kill();
         }
     }
 }

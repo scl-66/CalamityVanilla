@@ -391,9 +391,10 @@ MushroomBomber: {
 	Tooltip:
 		'''
 		Fires Sinister Mushrooms that bounce off enemies
-		Charged shots latch on and infect enemies
-		Fully charged shots unleash fungal destruction
+		Charge up to unleash fungal destruction
+		'NOW THAT'S A LOTTA DAMAGE!'
 		'''
+	SpecialTooltip: Comically slow speed
 }
 
 SeaUrchinBanner: {

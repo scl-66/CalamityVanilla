@@ -213,6 +213,11 @@ public class CorruptBoulder : ModProjectile
             d.alpha = 128;
             d.velocity *= 3;
         }
+        for(int i = 1; i <= 3; i++)
+        {
+            Gore g = Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center + Main.rand.NextVector2Circular(8,8), Main.rand.NextVector2Circular(7,7), Mod.Find<ModGore>(Name + $"_{Projectile.ai[2] + 1}_{i}").Type);
+            g.timeLeft = 120;
+        }
         Point center = Projectile.Center.ToTileCoordinates();
         for (int x = center.X - 3; x <= center.X + 3; x++)
         {
