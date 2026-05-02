@@ -1,23 +1,31 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.Bosses.HiveMind.Drops.MushroomBomber;
 
 public class MushroomBomber : ModItem
 {
+    public override void SetStaticDefaults()
+    {
+        ItemID.Sets.IsRangedSpecialistWeapon[Type] = true;
+    }
     public override void SetDefaults()
     {
         Item.channel = true;
         Item.DamageType = DamageClass.Ranged;
-        Item.damage = 100;
+        Item.damage = 1500;
         Item.useStyle = ItemUseStyleID.Shoot;
-        Item.useTime = Item.useAnimation = 60;
+        Item.useTime = Item.useAnimation = 60 * 5;
+        Item.knockBack = 10;
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(0, 2, 10, 0);
         Item.width = 32;
@@ -26,6 +34,10 @@ public class MushroomBomber : ModItem
         Item.shootSpeed = 5;
         Item.noUseGraphic = true;
         Item.noMelee = true;
+    }
+    public override void ModifyTooltips(List<TooltipLine> tooltips)
+    {
+        tooltips.FirstOrDefault(tooltip => tooltip.Name == "Speed" && tooltip.Mod == "Terraria").Text = this.GetLocalization("SpecialTooltip", () => "").Value;
     }
 }
 
@@ -49,7 +61,7 @@ public class MushroomBomberHeld : ModProjectile
         Projectile.frame = 1;
     }
     private const int _mediumTime = 60 * 2;
-    private const int _bigTime = 60 * 6;
+    private const int _bigTime = 60 * 5;
     public override void AI()
     {
         Player owner = Main.player[Projectile.owner];
@@ -86,6 +98,13 @@ public class MushroomBomberHeld : ModProjectile
             float Power = Projectile.frame == 1? Utils.Remap(Projectile.ai[0], 0, _mediumTime, 0, 1, true) : Utils.Remap(Projectile.ai[0], _mediumTime, _bigTime, 0, 1, true);
             if (owner == Main.LocalPlayer)
             {
+                StatModifier damageModifier = owner.GetTotalDamage(Projectile.DamageType);
+                damageModifier = damageModifier.CombineWith(owner.specialistDamage);
+                damageModifier = damageModifier.CombineWith(new StatModifier((float)owner.HeldItem.damage / owner.HeldItem.OriginalDamage, 1));
+                CombinedHooks.ModifyWeaponDamage(owner, owner.HeldItem, ref damageModifier);
+                StatModifier knockbackModifier = owner.GetTotalKnockback(Projectile.DamageType);
+                knockbackModifier.CombineWith(new StatModifier(owner.HeldItem.knockBack / ContentSamples.ItemsByType[owner.HeldItem.type].knockBack,1));
+                CombinedHooks.ModifyWeaponKnockback(owner, owner.HeldItem, ref knockbackModifier);
                 switch (Projectile.frame)
                 {
                     case 1:
@@ -93,8 +112,8 @@ public class MushroomBomberHeld : ModProjectile
                             mouthPos,
                             Projectile.velocity * Utils.Remap(Power, 0, 1, 0.7f, 1.5f),
                             ModContent.ProjectileType<MushroomBomberShotSmall>(),
-                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(Utils.Remap(Power, 0, 1, 30, 80)),
-                            Utils.Remap(Power, 0, 1, 3, 5),
+                            (int)damageModifier.ApplyTo(Utils.Remap(Power, 0, 1, 140, 650)),
+                            knockbackModifier.ApplyTo(Utils.Remap(Power, 0, 1, 3, 5)),
                             owner.whoAmI);
                         break;
                     case 2:
@@ -102,8 +121,8 @@ public class MushroomBomberHeld : ModProjectile
                             mouthPos,
                             Projectile.velocity * Utils.Remap(Power, 0, 1, 1.5f, 1.8f),
                             ModContent.ProjectileType<MushroomBomberShotMedium>(),
-                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(Utils.Remap(Power, 0, 1, 120, 300)),
-                            Utils.Remap(Power, 0, 1, 3, 5),
+                            (int)damageModifier.ApplyTo(Utils.Remap(Power, 0, 1, 650, 1250)),
+                            knockbackModifier.ApplyTo(Utils.Remap(Power, 0, 1, 5, 8)),
                             owner.whoAmI);
                         break;
                     case 3:
@@ -111,8 +130,8 @@ public class MushroomBomberHeld : ModProjectile
                             mouthPos,
                             Projectile.velocity * 1.8f,
                             ModContent.ProjectileType<MushroomBomberShotLarge>(),
-                            (int)owner.GetTotalDamage(DamageClass.Ranged).ApplyTo(520),
-                            10,
+                            (int)damageModifier.ApplyTo(1500),
+                            knockbackModifier.ApplyTo(10),
                             owner.whoAmI);
                         break;
                 }
@@ -138,17 +157,32 @@ public class MushroomBomberHeld : ModProjectile
     public override bool PreDraw(ref Color lightColor)
     {
         SpriteEffects effect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-        int xFrame = ((Projectile.frame == 1 && Projectile.ai[0] > _mediumTime - 4) || (Projectile.frame == 2 && Projectile.ai[0] > _bigTime - 4)) ? 1 : 0;
-        Rectangle frame = TextureAssets.Projectile[Type].Frame(2, 4, xFrame, Projectile.frame);
+        //int xFrame = ((Projectile.frame == 1 && Projectile.ai[0] > _mediumTime - 60) || (Projectile.frame == 2 && Projectile.ai[0] > _bigTime - 60)) ? 1 : 0;
+        Rectangle frame = TextureAssets.Projectile[Type].Frame(2, 4, 0, Projectile.frame);
         int xOrigin = Projectile.spriteDirection == 1 ? 38 : frame.Width - 38;
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value,Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
-        frame = TextureAssets.Projectile[Type].Frame(2, 4, 1, Projectile.frame);
+        float glowRotation = (float)(Main.timeForVisualEffects * 0.04f);
         if (Projectile.frame == 3)
         {
-            Color glow = Color.Lerp(new Color(1f, 0.5f, 0.5f, 0f), new Color(0.5f, 0.25f, 1f, 0f), Main.masterColor) * Utils.Remap(Projectile.ai[0],_bigTime, _bigTime + 30, 0, 1);
+            frame = TextureAssets.Projectile[Type].Frame(2, 4, 1, Projectile.frame);
+            float percent = Utils.Remap(Projectile.ai[0], _bigTime, _bigTime + 30, 0, 1);
+            Color glow = Color.Lerp(new Color(1f, 0.5f, 0.5f, 0f), new Color(0.5f, 0.25f, 1f, 0f), Main.masterColor) * percent;
             Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, frame, glow * 0.5f, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
-            for(int i = 0; i < 4; i++)
-                Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition + new Vector2(MathF.Sin((float)Main.timeForVisualEffects * 0.03f) * 4,0).RotatedBy(Projectile.rotation + i * MathHelper.PiOver2), frame, glow * 0.15f, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
+            for (int i = 0; i < 4; i++)
+                Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition + new Vector2(MathF.Sin((float)Main.timeForVisualEffects * 0.03f) * 4, 0).RotatedBy(Projectile.rotation + i * MathHelper.PiOver2 + glowRotation), frame, glow * 0.15f, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
+        }
+        else
+        {
+            frame.Width -= 46;
+            frame.X += 46;
+            xOrigin = Projectile.spriteDirection == 1 ? 38 - 46 : frame.Width - 38 + 46;
+            float percent = Projectile.frame == 2 ? Utils.Remap(Projectile.ai[0], _mediumTime, _bigTime, 0, 1) : Utils.Remap(Projectile.ai[0], 0, _mediumTime, 0, 1);
+            float antiPercent = 1f - percent;
+            Color c = lightColor with { A = 0 } * MathF.Pow(percent, 3) * antiPercent * 3;
+            for (int i = 0; i < 4; i++)
+            {
+                Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition + new Vector2(0, 2 + (antiPercent * 4 * Projectile.frame)).RotatedBy(i * MathHelper.PiOver2 + glowRotation), frame, c, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
+            }
         }
         return false;
     }

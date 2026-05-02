@@ -108,52 +108,52 @@ public class SporeBomb : ModProjectile
         }
     }
 }
-public class SporeBombLarge : SporeBomb
-{
+//public class SporeBombLarge : SporeBomb
+//{
 
-    private static Asset<Texture2D> _explosionTexture;
-    public override void SetStaticDefaults()
-    {
-        _explosionTexture = ModContent.Request<Texture2D>(Texture + "Explosion");
-        Main.projFrames[Type] = 3;
-        ProjectileID.Sets.TrailCacheLength[Type] = 3;
-        ProjectileID.Sets.TrailingMode[Type] = 0;
-    }
-    public override void SetDefaults()
-    {
-        Projectile.QuickDefaults(true, 50);
-        Projectile.timeLeft = 120;
-        Projectile.Opacity = 0;
-    }
-    public override void OnKill(int timeLeft)
-    {
-        //var p = AnimatedParticle.RequestAnimatedParticle();
-        //p.SetTypeInfo(10, 50, _explosionTexture, Color.White);
-        //p.LocalPosition = Projectile.Center + new Vector2(0, -10);
-        //p.Scale = Vector2.One;
-        //Main.ParticleSystem_World_OverPlayers.Add(p);
-        SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
-        SoundEngine.PlaySound(DeathSound with { Pitch = -0.5f}, Projectile.position);
-        if (Main.netMode != NetmodeID.MultiplayerClient)
-        {
-            for (int i = 0; i < 15; i++)
-            {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<Spores>(), 23, 2, ai0: Main.rand.NextFloat(MathF.PI * 10));
-            }
-        }
-        for (int i = 0; i < 40; i++)
-        {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);
-            d.alpha = 128;
-            d.velocity *= 3;
-        }
-        int type = ModContent.DustType<VileMushroomDust>();
-        for (int i = 0; i < 25; i++)
-        {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
-            d.velocity *= 2.5f;
-            d.fadeIn = Main.rand.NextFloat(0.2f, 0.5f);
-            d.noGravity = Main.rand.NextBool();
-        }
-    }
-}
+//    private static Asset<Texture2D> _explosionTexture;
+//    public override void SetStaticDefaults()
+//    {
+//        _explosionTexture = ModContent.Request<Texture2D>(Texture + "Explosion");
+//        Main.projFrames[Type] = 3;
+//        ProjectileID.Sets.TrailCacheLength[Type] = 3;
+//        ProjectileID.Sets.TrailingMode[Type] = 0;
+//    }
+//    public override void SetDefaults()
+//    {
+//        Projectile.QuickDefaults(true, 50);
+//        Projectile.timeLeft = 120;
+//        Projectile.Opacity = 0;
+//    }
+//    public override void OnKill(int timeLeft)
+//    {
+//        //var p = AnimatedParticle.RequestAnimatedParticle();
+//        //p.SetTypeInfo(10, 50, _explosionTexture, Color.White);
+//        //p.LocalPosition = Projectile.Center + new Vector2(0, -10);
+//        //p.Scale = Vector2.One;
+//        //Main.ParticleSystem_World_OverPlayers.Add(p);
+//        SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+//        SoundEngine.PlaySound(DeathSound with { Pitch = -0.5f}, Projectile.position);
+//        if (Main.netMode != NetmodeID.MultiplayerClient)
+//        {
+//            for (int i = 0; i < 15; i++)
+//            {
+//                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<Spores>(), 23, 2, ai0: Main.rand.NextFloat(MathF.PI * 10));
+//            }
+//        }
+//        for (int i = 0; i < 40; i++)
+//        {
+//            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);
+//            d.alpha = 128;
+//            d.velocity *= 3;
+//        }
+//        int type = ModContent.DustType<VileMushroomDust>();
+//        for (int i = 0; i < 25; i++)
+//        {
+//            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
+//            d.velocity *= 2.5f;
+//            d.fadeIn = Main.rand.NextFloat(0.2f, 0.5f);
+//            d.noGravity = Main.rand.NextBool();
+//        }
+//    }
+//}

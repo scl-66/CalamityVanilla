@@ -183,34 +183,37 @@ public partial class HiveMind
             switch (_currentAttack)
             {
                 case 21:
-                    VineSpikesP2();
+                    BouldersP2();
                     break;
                 case 22:
                     SporeBombsP2();
                     break;
                 case 23:
-                    SporeBombsP2();
+                    VineSpikesP2();
                     break;
                 case 24:
-                    BouldersP2();
+                    SporeBombsP2();
                     break;
                 case 25:
                     VineSpikesP2();
                     break;
                 case 26:
-                    SporeBombsP2();
+                    BouldersP2();
                     break;
                 case 27:
-                    BouldersP2();
+                    SporeBombsP2();
                     break;
                 case 28:
-                    VineSpikesP2();
+                    SporeBombsP2();
                     break;
                 case 29:
-                    BouldersP2();
+                    VineSpikesP2();
                     break;
                 case 30:
-                    SporeBombsP2();
+                    BouldersP2();
+                    break;
+                case 31:
+                    VineSpikesP2();
                     break;
             }
             #endregion Phase 2
@@ -292,7 +295,7 @@ public partial class HiveMind
         {
             if (_currentAttack == 11)
                 _currentAttack = 1;
-            else if (_currentAttack == 30)
+            else if (_currentAttack == 31)
                 _currentAttack = 21;
             else
                 _currentAttack++;
