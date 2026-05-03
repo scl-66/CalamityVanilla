@@ -1,4 +1,11 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
+using System.Reflection;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -14,5 +21,104 @@ public class SixtyHead : ModItem
         Item.rare = ItemRarityID.Cyan;
         Item.vanity = true;
         Item.value = Item.sellPrice(0, 5);
+    }
+}
+[AutoloadEquip(EquipType.Body)]
+public class SixtyBody : ModItem
+{
+    public override void SetDefaults()
+    {
+        Item.width = 18;
+        Item.height = 18;
+        Item.rare = ItemRarityID.Cyan;
+        Item.vanity = true;
+        Item.value = Item.sellPrice(0, 5);
+    }
+}
+public class SixtyLegsLongCoat : PlayerDrawLayer
+{
+    private static Asset<Texture2D> _texture;
+    public override void Load()
+    {
+        _texture = ModContent.Request<Texture2D>((GetType().Namespace + ".SixtyBody_LongCoat").Replace('.', '/'));
+    }
+    public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.ArmorLongCoat);
+    public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+    {
+        return drawInfo.drawPlayer.legs == ContentSamples.ItemsByType[ModContent.ItemType<SixtyLegs>()].legSlot;
+    }
+    protected override void Draw(ref PlayerDrawSet drawInfo)
+    {
+        if (drawInfo.drawPlayer.invis)
+            return;
+        if (!drawInfo.isSitting)
+        {
+            DrawData item = new DrawData(_texture.Value, new Vector2((int)(drawInfo.Position.X - Main.screenPosition.X - (float)(drawInfo.drawPlayer.legFrame.Width / 2) + (float)(drawInfo.drawPlayer.width / 2)), (int)(drawInfo.Position.Y - Main.screenPosition.Y + (float)drawInfo.drawPlayer.height - (float)drawInfo.drawPlayer.legFrame.Height + 4f)) + drawInfo.drawPlayer.legPosition + drawInfo.legVect, drawInfo.drawPlayer.legFrame, drawInfo.colorArmorBody, drawInfo.drawPlayer.legRotation, drawInfo.legVect, 1f, drawInfo.playerEffect);
+            item.shader = drawInfo.cBody;
+            drawInfo.DrawDataCache.Add(item);
+        }
+        else
+        {
+            var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLongCoats", BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, [drawInfo,0,_texture.Value, drawInfo.colorArmorBody, drawInfo.cBody, false]);
+        }
+    }
+}
+
+[AutoloadEquip(EquipType.Legs)]
+public class SixtyLegs : ModItem
+{
+    public override void SetDefaults()
+    {
+        Item.width = 18;
+        Item.height = 18;
+        Item.rare = ItemRarityID.Cyan;
+        Item.vanity = true;
+        Item.value = Item.sellPrice(0, 5);
+    }
+}
+public class SixtyLegsBuckle : PlayerDrawLayer
+{
+    private static Asset<Texture2D> _texture;
+    public override void Load()
+    {
+        _texture = ModContent.Request<Texture2D>((GetType().Namespace + ".SixtyLegs_Buckle").Replace('.', '/'));
+    }
+    public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
+    public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+    {
+        return drawInfo.drawPlayer.legs == ContentSamples.ItemsByType[ModContent.ItemType<SixtyLegs>()].legSlot;
+    }
+    protected override void Draw(ref PlayerDrawSet drawInfo)
+    {
+        if (drawInfo.drawPlayer.invis)
+            return;
+        if (!drawInfo.isSitting)
+        {
+            DrawData item = new DrawData(_texture.Value, drawInfo.legsOffset + new Vector2((int)(drawInfo.Position.X - Main.screenPosition.X - (float)(drawInfo.drawPlayer.legFrame.Width / 2) + (float)(drawInfo.drawPlayer.width / 2)), (int)(drawInfo.Position.Y - Main.screenPosition.Y + (float)drawInfo.drawPlayer.height - (float)drawInfo.drawPlayer.legFrame.Height + 4f)) + drawInfo.drawPlayer.legPosition + drawInfo.legVect, drawInfo.drawPlayer.legFrame, drawInfo.colorArmorLegs, drawInfo.drawPlayer.legRotation, drawInfo.legVect, 1f, drawInfo.playerEffect);
+            item.shader = drawInfo.cLegs;
+            drawInfo.DrawDataCache.Add(item);
+        }
+        else
+        {
+            var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLegs", BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, [drawInfo, _texture.Value, drawInfo.colorArmorLegs, drawInfo.cLegs, false]);
+        }
+    }
+}
+[AutoloadEquip(EquipType.Wings)]
+public class SixtyWings : ModItem
+{
+    public override void SetStaticDefaults()
+    {
+        ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = ArmorIDs.Wing.Sets.Stats[ArmorIDs.Wing.RedsWings];
+    }
+    public override void SetDefaults()
+    {
+        Item.width = 24;
+        Item.height = 8;
+        Item.accessory = true;
+        Item.rare = ItemRarityID.Cyan;
+        Item.value = 400000;
     }
 }

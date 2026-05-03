@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -160,64 +161,18 @@ public class JonaLegs : ModItem
 }
 public class JonaLegsLayer : PlayerDrawLayer
 {
-    private static Asset<Texture2D> _tex;
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.legs == ContentSamples.ItemsByType[ModContent.ItemType<JonaLegs>()].legSlot;
     public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Leggings);
     protected override void Draw(ref PlayerDrawSet drawInfo)
     {
         if (drawInfo.isSitting)
         {
-            DrawSittingLegs(ref drawInfo, TextureAssets.Players[0, 10].Value, drawInfo.colorLegs);
+            var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLegs", BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, [drawInfo, TextureAssets.Players[0, 10].Value, drawInfo.colorArmorLegs, drawInfo.cLegs, false]);
             return;
         }
 
         DrawData item = new DrawData(TextureAssets.Players[0, 10].Value, new Vector2((int)(drawInfo.Position.X - Main.screenPosition.X - (float)(drawInfo.drawPlayer.bodyFrame.Width / 2) + (float)(drawInfo.drawPlayer.width / 2)), (int)(drawInfo.Position.Y - Main.screenPosition.Y + (float)drawInfo.drawPlayer.height - (float)drawInfo.drawPlayer.bodyFrame.Height + 4f)) + drawInfo.drawPlayer.bodyPosition + new Vector2(drawInfo.drawPlayer.bodyFrame.Width / 2, drawInfo.drawPlayer.bodyFrame.Height / 2), drawInfo.drawPlayer.legFrame, drawInfo.colorLegs, drawInfo.drawPlayer.legRotation, drawInfo.bodyVect, 1f, drawInfo.playerEffect);
         drawInfo.DrawDataCache.Add(item);
-    }
-    private static void DrawSittingLegs(ref PlayerDrawSet drawinfo, Texture2D textureToDraw, Color matchingColor, int shaderIndex = 0, bool glowmask = false)
-    {
-        Vector2 legsOffset = drawinfo.legsOffset;
-        Vector2 vector = new Vector2((int)(drawinfo.Position.X - Main.screenPosition.X - (float)(drawinfo.drawPlayer.legFrame.Width / 2) + (float)(drawinfo.drawPlayer.width / 2)), (int)(drawinfo.Position.Y - Main.screenPosition.Y + (float)drawinfo.drawPlayer.height - (float)drawinfo.drawPlayer.legFrame.Height + 4f)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect;
-        Rectangle legFrame = drawinfo.drawPlayer.legFrame;
-        vector.Y -= 2f;
-        vector.Y += drawinfo.seatYOffset;
-        vector += legsOffset;
-        int num = 2;
-        int num2 = 42;
-        int num3 = 2;
-        int num4 = 2;
-        int num5 = 0;
-        int num6 = 0;
-        int num7 = 0;
-        bool flag = drawinfo.drawPlayer.legs == 101 || drawinfo.drawPlayer.legs == 102 || drawinfo.drawPlayer.legs == 118 || drawinfo.drawPlayer.legs == 99;
-        if (drawinfo.drawPlayer.wearsRobe && !flag)
-        {
-            num = 0;
-            num4 = 0;
-            num2 = 6;
-            vector.Y += 4f;
-            legFrame.Y = legFrame.Height * 5;
-        }
-        for (int num8 = num3; num8 >= 0; num8--)
-        {
-            Vector2 position = vector + new Vector2(num, 2f) * new Vector2(drawinfo.drawPlayer.direction, 1f);
-            Rectangle value = legFrame;
-            value.Y += num8 * 2;
-            value.Y += num2;
-            value.Height -= num2;
-            value.Height -= num8 * 2;
-            if (num8 != num3)
-                value.Height = 2;
-
-            position.X += drawinfo.drawPlayer.direction * num4 * num8 + num6 * drawinfo.drawPlayer.direction;
-            if (num8 != 0)
-                position.X += num7 * drawinfo.drawPlayer.direction;
-
-            position.Y += num2;
-            position.Y += num5;
-            DrawData item = new DrawData(textureToDraw, position, value, matchingColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
-            item.shader = shaderIndex;
-            drawinfo.DrawDataCache.Add(item);
-        }
     }
 }

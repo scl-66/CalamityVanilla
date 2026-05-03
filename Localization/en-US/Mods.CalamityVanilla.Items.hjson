@@ -439,11 +439,6 @@ JonaWings: {
 	Tooltip: "'Great for impersonating Vanillamity devs!'"
 }
 
-SixtyHead: {
-	DisplayName: Sixty's All-Seeing Eye
-	Tooltip: "'Great for impersonating Vanillamity devs!'"
-}
-
 FrostEaterBanner: {
 	DisplayName: Frost Eater Banner
 	Tooltip: ""
@@ -491,4 +486,24 @@ GraniteTomeObjectItem: {
 MarbleTomeObjectItem: {
 	DisplayName: Marble Tome Object Item
 	Tooltip: ""
+}
+
+SixtyHead: {
+	DisplayName: Sixty's All-Seeing Eye
+	Tooltip: "'Great for impersonating Vanillamity devs!'"
+}
+
+SixtyBody: {
+	DisplayName: Sixty's 100 piece suit
+	Tooltip: "'Great for impersonating Vanillamity devs!'"
+}
+
+SixtyLegs: {
+	DisplayName: Sixty's Fancypants
+	Tooltip: "'Great for impersonating Vanillamity devs!'"
+}
+
+SixtyWings: {
+	DisplayName: Sixty's Looming Topper
+	Tooltip: "'Great for impersonating Vanillamity devs!'"
 }
