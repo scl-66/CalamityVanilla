@@ -5,7 +5,6 @@ using System;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -45,7 +44,7 @@ public class SixtyLegsLongCoat : PlayerDrawLayer
     public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.ArmorLongCoat);
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
     {
-        return drawInfo.drawPlayer.legs == ContentSamples.ItemsByType[ModContent.ItemType<SixtyLegs>()].legSlot;
+        return drawInfo.drawPlayer.body == ContentSamples.ItemsByType[ModContent.ItemType<SixtyBody>()].bodySlot;
     }
     protected override void Draw(ref PlayerDrawSet drawInfo)
     {
@@ -60,7 +59,7 @@ public class SixtyLegsLongCoat : PlayerDrawLayer
         else
         {
             var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLongCoats", BindingFlags.NonPublic | BindingFlags.Static);
-            method.Invoke(null, [drawInfo,0,_texture.Value, drawInfo.colorArmorBody, drawInfo.cBody, false]);
+            method.Invoke(null, [drawInfo, 0, _texture.Value, drawInfo.colorArmorBody, drawInfo.cBody, false]);
         }
     }
 }
@@ -99,11 +98,11 @@ public class SixtyLegsBuckle : PlayerDrawLayer
             item.shader = drawInfo.cLegs;
             drawInfo.DrawDataCache.Add(item);
         }
-        else
-        {
-            var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLegs", BindingFlags.NonPublic | BindingFlags.Static);
-            method.Invoke(null, [drawInfo, _texture.Value, drawInfo.colorArmorLegs, drawInfo.cLegs, false]);
-        }
+        //else
+        //{
+        //    var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLegs", BindingFlags.NonPublic | BindingFlags.Static);
+        //    method.Invoke(null, [drawInfo, _texture.Value, drawInfo.colorArmorLegs, drawInfo.cLegs, false]);
+        //}
     }
 }
 [AutoloadEquip(EquipType.Wings)]
@@ -120,5 +119,37 @@ public class SixtyWings : ModItem
         Item.accessory = true;
         Item.rare = ItemRarityID.Cyan;
         Item.value = 400000;
+    }
+}
+public class SixtyWingsLayer : PlayerDrawLayer
+{
+    private static Asset<Texture2D> _texture;
+    public override void Load()
+    {
+        _texture = ModContent.Request<Texture2D>((GetType().Namespace + ".SixtyWings").Replace('.', '/'));
+    }
+    public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Wings);
+    public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+    {
+        return drawInfo.drawPlayer.wings == ContentSamples.ItemsByType[ModContent.ItemType<SixtyWings>()].wingSlot;
+    }
+    protected override void Draw(ref PlayerDrawSet drawInfo)
+    {
+        if (drawInfo.drawPlayer.invis)
+            return;
+
+        Vector2 drawPos = new Vector2((int)drawInfo.Center.X, (int)drawInfo.Center.Y + drawInfo.seatYOffset) - Main.screenPosition;
+        Vector2 flip = new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
+        if(drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<SixtyHead>()].headSlot)
+            drawPos += new Vector2(-10, -28) * flip;
+        else
+            drawPos += new Vector2(-8, -24) * flip;
+
+        drawPos.Y += (float)Math.Sin(Main.timeForVisualEffects * 0.01f) * flip.X * 2 - 2;
+        drawPos.X += (float)Math.Sin(Main.timeForVisualEffects * 0.009f) * flip.Y * 1 - 1;
+        drawPos.Y += drawInfo.mountOffSet / 2; // why is this needed???
+        DrawData item = new DrawData(_texture.Value, drawPos, null, drawInfo.colorArmorBody, 0, _texture.Size() / 2, 1, drawInfo.playerEffect);
+        item.shader = drawInfo.cWings;
+        drawInfo.DrawDataCache.Add(item);
     }
 }

@@ -436,7 +436,11 @@ JonaLegs: {
 
 JonaWings: {
 	DisplayName: Jona's Stylistically Inconsistent Gooey "Strawberry Jelly" Wings
-	Tooltip: "'Great for impersonating Vanillamity devs!'"
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		Allows flight and slow fall
+		'''
 }
 
 FrostEaterBanner: {
@@ -505,5 +509,9 @@ SixtyLegs: {
 
 SixtyWings: {
 	DisplayName: Sixty's Looming Topper
-	Tooltip: "'Great for impersonating Vanillamity devs!'"
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		Allows flight and slow fall
+		'''
 }
