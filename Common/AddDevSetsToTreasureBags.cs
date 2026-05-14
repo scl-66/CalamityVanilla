@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Content.Vanity.JonaDevSet;
+using CalamityVanilla.Content.Vanity.SixtyDevSet;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
@@ -28,13 +29,19 @@ public class AddDevSetsToTreasureBags : ILoadable
     {
         if (Main.rand.Next(Main.tenthAnniversaryWorld ? 8 : 16) == 0)
         {
-            switch (Main.rand.Next(1))
+            switch (Main.rand.Next(2))
             {
                 case 0:
                     self.QuickSpawnItem(source, ModContent.ItemType<JonaWig>());
                     self.QuickSpawnItem(source, ModContent.ItemType<JonaBody>());
                     self.QuickSpawnItem(source, ModContent.ItemType<JonaLegs>());
                     self.QuickSpawnItem(source, ModContent.ItemType<JonaWings>());
+                    break;
+                case 1:
+                    self.QuickSpawnItem(source, ModContent.ItemType<SixtyHead>());
+                    self.QuickSpawnItem(source, ModContent.ItemType<SixtyBody>());
+                    self.QuickSpawnItem(source, ModContent.ItemType<SixtyLegs>());
+                    self.QuickSpawnItem(source, ModContent.ItemType<SixtyWings>());
                     break;
             }
         }
