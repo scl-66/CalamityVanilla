@@ -13,3 +13,5 @@ AuthorTags: {
 	WaffTag.DisplayName: Waff
 	Math2Tag.DisplayName: math2
 }
+
+WorldGen.RockTomeMessage: Mods.CalamityVanilla.WorldGen.RockTomeMessage

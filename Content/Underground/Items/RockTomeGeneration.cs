@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -15,20 +16,32 @@ public class RockTomeGeneration : GenPass
     {
 
     }
+    static List<Point> tiles = new List<Point>();
+    const int limitDist = 160;
     private void TryToPlaceRockTomeObjects(int x, int y)
     {
         if (Main.tile[x, y + 1].TileType == TileID.Granite)
         {
-            if (Main.rand.NextBool(23))
+            foreach (var tile in tiles)
             {
-                WorldGen.PlaceTile(x, y, ModContent.TileType<GraniteTomeObject>(), true, false);
+                Point tileOffset = tile - new Point(x, y);
+                if (Main.rand.NextBool(53) && tileOffset.X * tileOffset.Y > limitDist*limitDist)
+                {
+                    WorldGen.PlaceTile(x, y, ModContent.TileType<GraniteTomeObject>(), true, false);
+                    tiles.Add(new Point(x, y));
+                }
             }
         }
         else if (Main.tile[x, y + 1].TileType == TileID.Marble)
         {
-            if (Main.rand.NextBool(23))
+            foreach (var tile in tiles)
             {
-                WorldGen.PlaceTile(x, y, ModContent.TileType<MarbleTomeObject>(), true, false);
+                Point tileOffset = tile - new Point(x, y);
+                if (Main.rand.NextBool(53) && tileOffset.X * tileOffset.Y > limitDist * limitDist)
+                {
+                    WorldGen.PlaceTile(x, y, ModContent.TileType<MarbleTomeObject>(), true, false);
+                    tiles.Add(new Point(x, y));
+                }
             }
         }
     }
