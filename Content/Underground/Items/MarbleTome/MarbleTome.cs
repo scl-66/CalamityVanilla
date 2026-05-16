@@ -1,5 +1,4 @@
-﻿using CalamityVanilla.Content.Dusts;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -8,12 +7,15 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.Underground.Items.MarbleTome;
 
 public class MarbleTome : ModItem
 {
+    public override void SetStaticDefaults()
+    {
+        ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GraniteTome.GraniteTome>();
+    }
     public override void SetDefaults()
     {
         Item.DefaultToMagicWeapon(ModContent.ProjectileType<MarbleTomePillar>(), 50, 0);

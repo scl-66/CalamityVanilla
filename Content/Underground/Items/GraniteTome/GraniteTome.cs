@@ -17,7 +17,10 @@ namespace CalamityVanilla.Content.Underground.Items.GraniteTome;
 public class GraniteTome : ModItem
 {
     public static readonly SoundStyle UseSound = new("CalamityVanilla/Assets/Sounds/ItemElectricZap");
-
+    public override void SetStaticDefaults()
+    {
+        ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<MarbleTome.MarbleTome>();
+    }
     public override void SetDefaults()
     {
         Item.width = 28;
@@ -25,8 +28,8 @@ public class GraniteTome : ModItem
         Item.damage = 4;
         Item.DamageType = DamageClass.Magic;
         Item.mana = 8;
-        Item.useTime = 16;
-        Item.useAnimation = 16;
+        Item.useTime = 18;
+        Item.useAnimation = 18;
         Item.useStyle = ItemUseStyleID.Shoot;
         Item.noMelee = true;
         Item.knockBack = 5f;
@@ -98,6 +101,7 @@ public class GraniteTomeBolt : ModProjectile
         Projectile.DamageType = DamageClass.Magic;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = -1;
+        Projectile.ignoreWater = true;
     }
 
     public override void OnSpawn(IEntitySource source)
