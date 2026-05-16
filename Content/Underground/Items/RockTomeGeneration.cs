@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.IO;
@@ -17,31 +19,37 @@ public class RockTomeGeneration : GenPass
 
     }
     static List<Point> tiles = new List<Point>();
-    const int limitDist = 160;
+    const int limitDist = 50;
     private void TryToPlaceRockTomeObjects(int x, int y)
     {
-        if (Main.tile[x, y + 1].TileType == TileID.Granite)
+        if (Main.tile[x, y + 1].TileType is TileID.Granite or TileID.GraniteBlock && !WorldGen.SolidOrSlopedTile(Main.tile[x, y]))
         {
-            foreach (var tile in tiles)
+            if (Main.rand.NextBool(30) && !tiles.Any(t => new Vector2(t.X - x, t.Y - y).LengthSquared() < limitDist * limitDist))
             {
-                Point tileOffset = tile - new Point(x, y);
-                if (Main.rand.NextBool(53) && tileOffset.X * tileOffset.Y > limitDist*limitDist)
-                {
-                    WorldGen.PlaceTile(x, y, ModContent.TileType<GraniteTomeObject>(), true, false);
-                    tiles.Add(new Point(x, y));
-                }
+                WorldGen.PlaceTile(x, y, ModContent.TileType<GraniteTomeObject>(), true, false);
+                tiles.Add(new Point(x, y));
             }
         }
-        else if (Main.tile[x, y + 1].TileType == TileID.Marble)
+        else if (Main.tile[x, y + 1].TileType is TileID.Marble or TileID.MarbleBlock && WorldGen.SolidOrSlopedTile(Main.tile[x, y + 1]))
         {
-            foreach (var tile in tiles)
+            if (Main.rand.NextBool(30) && !tiles.Any(t => new Vector2(t.X - x, t.Y - y).LengthSquared() < limitDist * limitDist))
             {
-                Point tileOffset = tile - new Point(x, y);
-                if (Main.rand.NextBool(53) && tileOffset.X * tileOffset.Y > limitDist * limitDist)
+                for (int j = -1; j < 2; j++)
                 {
-                    WorldGen.PlaceTile(x, y, ModContent.TileType<MarbleTomeObject>(), true, false);
-                    tiles.Add(new Point(x, y));
+                    for (int k = -2; k < 1; k++)
+                    {
+                        if (WorldGen.SolidOrSlopedTile(Main.tile[x + j, y + k]))
+                        {
+                            return;
+                        }
+                    }
                 }
+                for (int j = -1; j < 2; j++)
+                {
+                    WorldGen.PlaceTile(x + j, y + 1, TileID.Marble, true, true);
+                }
+                WorldGen.PlaceTile(x, y, ModContent.TileType<MarbleTomeObject>(), true, false);
+                tiles.Add(new Point(x, y));
             }
         }
     }
@@ -62,7 +70,7 @@ public class RockTomeObjectSystem : ModSystem
 {
     public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
     {
-        int index = tasks.FindIndex(GenPass => GenPass.Name.Equals("Piles"));
+        int index = tasks.FindIndex(GenPass => GenPass.Name.Equals("Traps"));
         tasks.Insert(index + 1, new RockTomeGeneration("RockTomeObjects", 100f));
     }
     public static LocalizedText RockTomeMessage { get; private set; }

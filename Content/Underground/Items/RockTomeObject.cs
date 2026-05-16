@@ -45,7 +45,7 @@ public class GraniteTomeObject : ModTile
         TileObjectData.addTile(Type);
 
         DustType = DustID.Granite;
-        AddMapEntry(new Color(200, 200, 200));
+        AddMapEntry(new Color(0, 255, 0));
         // Set other values here
     }
 }
@@ -86,7 +86,7 @@ public class MarbleTomeObject : ModTile
         TileObjectData.addTile(Type);
 
         DustType = DustID.Marble;
-        AddMapEntry(new Color(200, 200, 200));
+        AddMapEntry(new Color(0, 255, 0));
         // Set other values here
     }
 }
