@@ -494,17 +494,29 @@ MarbleTomeObjectItem: {
 
 SixtyHead: {
 	DisplayName: Sixty's All-Seeing Eye
-	Tooltip: "'Great for impersonating Vanillamity devs!'"
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		'I'll be watching you...'
+		'''
 }
 
 SixtyBody: {
 	DisplayName: Sixty's 100-Piece Suit
-	Tooltip: "'Great for impersonating Vanillamity devs!'"
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		'Look like a million bucks'
+		'''
 }
 
 SixtyLegs: {
 	DisplayName: Sixty's Fancypants
-	Tooltip: "'Great for impersonating Vanillamity devs!'"
+	Tooltip:
+		'''
+		'Great for impersonating Vanillamity devs!'
+		'Money may talk the talk, but can it walk the walk?'
+		'''
 }
 
 SixtyWings: {
@@ -512,6 +524,7 @@ SixtyWings: {
 	Tooltip:
 		'''
 		'Great for impersonating Vanillamity devs!'
+		'Spiffy and soarable! Only costs your soul!'
 		Allows flight and slow fall
 		'''
 }

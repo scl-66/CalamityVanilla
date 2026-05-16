@@ -120,6 +120,14 @@ public class SixtyWings : ModItem
         Item.rare = ItemRarityID.Cyan;
         Item.value = 400000;
     }
+    public override void UpdateEquip(Player player)
+    {
+        player.flapSound = true;
+    }
+    public override void UpdateVanity(Player player)
+    {
+        player.flapSound = true;
+    }
 }
 public class SixtyWingsLayer : PlayerDrawLayer
 {
@@ -141,12 +149,12 @@ public class SixtyWingsLayer : PlayerDrawLayer
         Vector2 drawPos = new Vector2((int)drawInfo.Center.X, (int)drawInfo.Center.Y + drawInfo.seatYOffset) - Main.screenPosition;
         Vector2 flip = new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
         if(drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<SixtyHead>()].headSlot)
-            drawPos += new Vector2(-10, -28) * flip;
+            drawPos += new Vector2(-9, -27) * flip;
         else
             drawPos += new Vector2(-8, -24) * flip;
 
-        drawPos.Y += (float)Math.Sin(Main.timeForVisualEffects * 0.01f) * flip.X * 2 - 2;
-        drawPos.X += (float)Math.Sin(Main.timeForVisualEffects * 0.009f) * flip.Y * 1 - 1;
+        drawPos.X += (float)Math.Sin(Main.timeForVisualEffects * 0.009f) * flip.X * 2 - 2;
+        drawPos.Y += (float)Math.Sin(Main.timeForVisualEffects * 0.01f) * flip.Y * 1 - 1;
         drawPos.Y += drawInfo.mountOffSet / 2; // why is this needed???
         DrawData item = new DrawData(_texture.Value, drawPos, null, drawInfo.colorArmorBody, 0, _texture.Size() / 2, 1, drawInfo.playerEffect);
         item.shader = drawInfo.cWings;
