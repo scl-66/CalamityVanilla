@@ -528,3 +528,8 @@ SixtyWings: {
 		Allows flight and slow fall
 		'''
 }
+
+TerraLongbow: {
+	DisplayName: Terra Longbow
+	Tooltip: Shoots a spread of terra bolts
+}

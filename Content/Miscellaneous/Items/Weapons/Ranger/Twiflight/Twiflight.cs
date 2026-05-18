@@ -21,8 +21,6 @@ public class Twiflight : ModItem
         Item.consumeAmmoOnFirstShotOnly = true;
         Item.damage = 20;
         Item.knockBack = 2;
-        Item.UseSound = null;
-
         Item.UseSound = SoundID.Item102;
         Item.rare = ItemRarityID.Orange;
         Item.value = Item.sellPrice(0, 4);
