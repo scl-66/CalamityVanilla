@@ -18,7 +18,7 @@ public class BouncingEyeball : ModItem
     {
         Item.DefaultToThrownWeapon(ModContent.ProjectileType<BouncingEyeballCluster>(), 30, 13, true);
         Item.noUseGraphic = true;
-        Item.damage = 12;
+        Item.damage = 16;
         Item.knockBack = 2;
         Item.rare = ItemRarityID.White;
         Item.consumable = true;
@@ -161,7 +161,7 @@ public class BouncingEyeProj : ModProjectile
         }
         else if (Projectile.ai[0] == penetrateTime)
         {
-            Projectile.damage = 16;
+            Projectile.damage = 20;
             Projectile.penetrate = 2;
         }
 

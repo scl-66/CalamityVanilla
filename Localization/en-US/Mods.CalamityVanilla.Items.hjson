@@ -531,5 +531,9 @@ SixtyWings: {
 
 TerraLongbow: {
 	DisplayName: Terra Longbow
-	Tooltip: Shoots a spread of terra bolts
+	Tooltip:
+		'''
+		Shoots a spread of terra bolts
+		25% chance to save ammo
+		'''
 }

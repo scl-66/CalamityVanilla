@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Common;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -40,38 +41,40 @@ public class MarbleTome : ModItem
         }
         if (player == Main.LocalPlayer)
         {
-            Main.LocalPlayer.FindSentryRestingSpot(type, out int WorldX, out int WorldY, out int PushUpY);
-            //check if mouse is within radius of player, if not, spawn pillar at closest point in circle to mouse
-            Vector2 pos = new Vector2(WorldX, WorldY + ContentSamples.ProjectilesByType[type].height / 2 + 16);
-            Vector2 dist = (player.Center - pos);
-            float distLen = player.Center.X - pos.X;
-            Vector2 distNorm = player.Center - dist;
+            Vector2 mousePosition = Main.MouseWorld;
+            Vector2 playerToMouse = player.position - mousePosition;
+            Vector2 pointPosition = mousePosition;
+            float dirToMouse = playerToMouse.ToRotation();
             float radius = 300f;
-            if (Math.Abs(distLen) > radius)
+            // clamp projectile spawn position to rectangle radius around player
+            if (Math.Abs(player.position.X - mousePosition.X) > radius)
             {
-                distNorm = player.Center - dist.SafeNormalize(Vector2.UnitX) * radius;
+                pointPosition.X = player.position.X + radius * (player.position.X - mousePosition.X > 0 ? -1 : 1);
             }
-            //check if mouse is inside blocks
-            Point mouse = Main.MouseWorld.ToTileCoordinates();
-            Tile tile = Main.tile[mouse.X, mouse.Y];
-            if (tile.HasUnactuatedTile)
+            if (Math.Abs(player.position.Y - mousePosition.Y) > radius)
             {
-                bool foundAir = false;
-                for (int i = mouse.Y; i > mouse.Y - 40; i--)
-                {
-                    if (!Main.tile[mouse.X, i].HasUnactuatedTile)
-                    {
-                        pos.Y = i * 16 + ContentSamples.ProjectilesByType[type].height / 2 + 32;
-                        foundAir = true;
-                        break;
-                    }
-                }
-                if (!foundAir)
-                {
-                    return false;
-                }
+                pointPosition.Y = player.position.Y + radius * (player.position.Y - mousePosition.Y > 0 ? -1 : 1);
             }
-            Projectile.NewProjectileDirect(source, new Vector2(distNorm.X, pos.Y), new Vector2(0, -25), type, (int)(damage / 1.5), knockback, player.whoAmI, -3);
+
+            int tileX = (int)pointPosition.X / 16;
+            int tileY = (int)pointPosition.Y / 16;
+
+            //if spawn position is not on a solid tile, move down until it is
+            while (!CVWorldTile.Solid(tileX, tileY, true))
+            {
+                tileY++;
+            }
+
+            //if spawn position is inside a tile, move up until it is not
+            while (CVWorldTile.Solid(tileX, tileY - 1, true))
+            {
+                tileY--;
+            }
+
+            Vector2 worldPos = new Vector2(tileX * 16 + 4, tileY * 16 + 72);
+
+            Projectile p = Projectile.NewProjectileDirect(source, worldPos, new Vector2(0, -25), type, (int)(damage / 1.5), knockback, player.whoAmI, -3);
+            //Main.NewText("position: " + p.position);
         }
         return false;
     }

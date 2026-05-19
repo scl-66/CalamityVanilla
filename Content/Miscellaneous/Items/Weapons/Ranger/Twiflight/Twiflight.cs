@@ -17,7 +17,7 @@ public class Twiflight : ModItem
 {
     public override void SetDefaults()
     {
-        Item.DefaultToBow(24, 12, true);
+        Item.DefaultToBow(30, 12, true);
         Item.consumeAmmoOnFirstShotOnly = true;
         Item.damage = 20;
         Item.knockBack = 2;
@@ -69,7 +69,7 @@ public class TwiflightFeather : ModProjectile
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.arrow = true;
         Projectile.penetrate = 3;
-        Projectile.timeLeft = 320;
+        Projectile.timeLeft = 120;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
     }

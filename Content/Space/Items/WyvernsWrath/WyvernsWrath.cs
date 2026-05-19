@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
+using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.Twiflight;
 using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Tundra.Items.Frostbolt;
 using Microsoft.Xna.Framework;
@@ -51,6 +52,15 @@ public class WyvernsWrath : ModItem
         //}
         Projectile.NewProjectile(source, position, velocity.RotatedByRandom(0.1) * Main.rand.NextFloat(1f, 1.5f), type, damage, knockback, ai1: Main.rand.Next(0, 200));
         return false;
+    }
+    public override void AddRecipes()
+    {
+        CreateRecipe().AddTile(TileID.MythrilAnvil)
+            .AddIngredient(ModContent.ItemType<FeatherDicer.FeatherDicer>())
+            .AddIngredient(ItemID.Feather, 25)
+            .AddIngredient(ItemID.SoulofFlight, 12)
+            .AddIngredient(ItemID.SoulofMight, 15)
+            .Register();
     }
 }
 
