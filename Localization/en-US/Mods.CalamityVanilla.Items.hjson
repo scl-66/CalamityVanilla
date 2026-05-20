@@ -537,3 +537,13 @@ TerraLongbow: {
 		25% chance to save ammo
 		'''
 }
+
+DarkPrismStaff: {
+	DisplayName: Dark Prism Staff
+	Tooltip: Casts a bouncing prism
+}
+
+DentataWand: {
+	DisplayName: Dentata Wand
+	Tooltip: Casts a controllable fleshling
+}

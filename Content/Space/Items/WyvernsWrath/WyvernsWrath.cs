@@ -1,8 +1,5 @@
 ﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
-using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.Twiflight;
 using CalamityVanilla.Content.Particles;
-using CalamityVanilla.Content.Tundra.Items.Frostbolt;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,7 +13,7 @@ using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-    
+
 namespace CalamityVanilla.Content.Space.Items.WyvernsWrath;
 
 public class WyvernsWrath : ModItem

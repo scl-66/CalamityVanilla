@@ -445,7 +445,7 @@ public class TerraBolt : ModProjectile
     {
         Projectile.QuickDefaults();
         Projectile.DamageType = DamageClass.Ranged;
-        Projectile.arrow = false;
+        Projectile.arrow = true;
         Projectile.penetrate = 2;
         Projectile.timeLeft = 40;
         Projectile.usesLocalNPCImmunity = true;
@@ -561,6 +561,12 @@ public class TerraBolt : ModProjectile
             Projectile.velocity = Projectile.velocity.LengthClamp(Projectile.oldVelocity.Length(), 12f);
         }
     }
+
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        Projectile.damage = (int)(Projectile.damage * 0.5f);
+    }
+
     public override bool PreDraw(ref Color lightColor)
     {
         Asset<Texture2D> tex = TextureAssets.Projectile[Type];
