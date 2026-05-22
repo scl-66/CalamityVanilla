@@ -76,7 +76,7 @@ public class WyvernsWrathFeather : ModProjectile
         Projectile.width = 14;
         Projectile.height = 14;
         Projectile.timeLeft = 340;
-        Projectile.penetrate = 2;
+        Projectile.penetrate = 3;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 10;
     }

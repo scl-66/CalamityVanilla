@@ -29,7 +29,7 @@ public class FeatherDicer : ModItem
         Item.UseSound = null;
 
         // Set damage and knockBack
-        Item.SetWeaponValues(18, 2);
+        Item.SetWeaponValues(13, 2);
 
         // Set rarity and value
         Item.SetShopValues(ItemRarityColor.Green2, 2000);

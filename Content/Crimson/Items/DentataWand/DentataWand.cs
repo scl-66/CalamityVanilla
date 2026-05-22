@@ -1,9 +1,10 @@
-﻿using Daybreak.Common.Rendering;
+﻿using CalamityVanilla.Content.Dusts;
+using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -60,7 +61,7 @@ public class Dentata : ModProjectile
     public override void SetStaticDefaults()
     {
         Main.projFrames[Projectile.type] = 5;
-        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8; // The length of old position to be recorded
+        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10; // The length of old position to be recorded
         ProjectileID.Sets.TrailingMode[Projectile.type] = 2; // The recording mode
     }
     public override void SetDefaults()
@@ -72,8 +73,11 @@ public class Dentata : ModProjectile
         DrawOriginOffsetY = -4;
     }
 
+    public float xScale = 1f;
+    public float yScale = 1f;
     public override void AI()
     {
+        Projectile.ai[1]++;
         if (++Projectile.frameCounter >= 5)
         {
             Projectile.frameCounter = 0;
@@ -83,11 +87,23 @@ public class Dentata : ModProjectile
         if (Main.rand.NextBool(2))
         {
             Vector2 dustPosition = Projectile.position + new Vector2(Main.rand.Next(-4, 5), Main.rand.Next(-4, 5));
-            Vector2 vel = Main.rand.NextVector2Circular(Projectile.width / 4, Projectile.height / 8) + new Vector2(0, 2);
+            Vector2 vel = Main.rand.NextVector2Circular(Projectile.width / 4, Projectile.height / 8) + new Vector2(0, 0.3f) + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 3;
             Dust dust = Dust.NewDustDirect(dustPosition, Projectile.width, Projectile.height, DustID.Blood, vel.X, vel.Y);
             dust.velocity.X *= 0.3f;
             dust.noGravity = false;
             dust.scale = Main.rand.NextFloat(0.85f, 1.2f);
+        }
+
+        if (Main.rand.NextBool(2))
+        {
+            Vector2 dustPosition = Projectile.position + new Vector2(Main.rand.Next(-4, 5), Main.rand.Next(-4, 5));
+            Vector2 vel = Main.rand.NextVector2Circular(Projectile.width / 4, Projectile.height / 8) * 0.2f + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 3;
+            Dust dust = Dust.NewDustDirect(dustPosition, Projectile.width, Projectile.height, ModContent.DustType<DentataFleshChunk>(), vel.X, vel.Y);
+            _ = dust.color;
+            dust.velocity *= 0.75f;
+            dust.noGravity = true;
+            dust.fadeIn = 0.8f;
+            dust.scale = Main.rand.NextFloat(0.8f, 1f);
         }
 
         // In Multi Player (MP) This code only runs on the client of the projectile's owner, this is because it relies on mouse position, which isn't the same across all clients.
@@ -98,8 +114,17 @@ public class Dentata : ModProjectile
             // If the player channels the weapon, do something. This check only works if item.channel is true for the weapon.
             if (player.channel && player.HeldItem.shoot == Type && Projectile.ai[0] == 0f && (player.Center - Projectile.Center).Length() < 500f)
             {
-                Vector2 vectorToCursor = Main.MouseWorld - Projectile.Center;
-                float distanceToCursor = vectorToCursor.Length();
+                Vector2 mousePos = Main.MouseWorld;
+                float trueDistToCursor = (Main.MouseWorld - Projectile.Center).Length();
+                Vector2 vectorToCursor = mousePos - Projectile.Center;
+                bool distCheck = trueDistToCursor < 15;
+
+                //if (distCheck)
+                //{
+                //    vectorToCursor = Projectile.oldVelocity;
+                //}
+
+                float distanceToCursor = trueDistToCursor;
 
                 // Here we can see that the speed of the projectile depends on the distance to the cursor.
                 if (distanceToCursor > maxDistance)
@@ -120,8 +145,25 @@ public class Dentata : ModProjectile
                     Projectile.netUpdate = true;
                 }
 
-                Projectile.velocity = vectorToCursor;
+                if (!distCheck)
+                { 
+                    Projectile.velocity = vectorToCursor;
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.velocity.RotatedByRandom(MathHelper.Pi / 2), 0.2f);
+                }
+                else
+                {
+                    xScale = Main.rand.NextFloat(0.9f, 1.35f);
+                    yScale = Main.rand.NextFloat(0.9f, 1.35f);
+                    maxDistance = 5;
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.velocity.RotatedByRandom(MathHelper.PiOver4) * 0.15f + Main.rand.NextVector2Circular(6, 6), 0.65f);
+                    Projectile.rotation = Utils.AngleLerp(Projectile.rotation, Projectile.velocity.ToRotation(), 0.05f);
+                }
 
+                // Set the rotation so the projectile points towards where it's going.
+                if (Projectile.velocity != Vector2.Zero && !distCheck)
+                {
+                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                }
             }
             // If the player stops channeling, do something else.
             else if (Projectile.ai[0] == 0f)
@@ -132,7 +174,7 @@ public class Dentata : ModProjectile
                 float distanceToCursor = vectorToCursor.Length();
 
                 //If the projectile was at the cursor's position, set it to move in the oposite direction from the player.
-                if (distanceToCursor == 0f)
+                if (distanceToCursor < 100)
                 {
                     vectorToCursor = Projectile.Center - player.Center;
                     distanceToCursor = vectorToCursor.Length();
@@ -152,6 +194,9 @@ public class Dentata : ModProjectile
 
             if (Projectile.ai[0] == 1f)
             {
+                Projectile.scale = 1f;
+                xScale = 1f;
+                yScale = 1f;
                 Projectile.velocity.Y += 0.5f;
                 Projectile.velocity.X *= 0.99f;
 
@@ -159,13 +204,13 @@ public class Dentata : ModProjectile
                 {
                     Projectile.velocity.Y = 16f;
                 }
-            }
-        }
 
-        // Set the rotation so the projectile points towards where it's going.
-        if (Projectile.velocity != Vector2.Zero)
-        {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                // Set the rotation so the projectile points towards where it's going.
+                if (Projectile.velocity != Vector2.Zero)
+                {
+                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                }
+            }
         }
     }
 
@@ -187,6 +232,17 @@ public class Dentata : ModProjectile
             dust.noGravity = false;
             dust.velocity *= 2f;
             dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            Vector2 dustPosition = Projectile.Center + new Vector2(Main.rand.Next(-4, 5), Main.rand.Next(-4, 5));
+            Vector2 vel = Main.rand.NextVector2Circular(Projectile.width / 4, Projectile.height / 4) - Projectile.velocity;
+            Dust dust = Dust.NewDustDirect(dustPosition, Projectile.width, Projectile.height, ModContent.DustType<DentataFleshChunk>(), vel.X, vel.Y);
+            dust.velocity *= 0.5f;
+            dust.noGravity = true;
+            dust.fadeIn = .8f;
+            dust.scale = Main.rand.NextFloat(0.3f, 0.8f);
         }
     }
 
@@ -213,14 +269,23 @@ public class Dentata : ModProjectile
         });
 
         Vector2 origin = frame.Size() / 2 + new Vector2(0, 2);
-        for (int k = Projectile.oldPos.Length - 1; k > 0; k--)
+        for (int k = 0; k < Projectile.oldPos.Length - 2; k++)
         {
-            Vector2 drawPos = (Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition);
-            Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length) * 1.15f;
-            Main.EntitySpriteDraw(tex, drawPos, frame, (color * 1f).MultiplyRGBA(Color.Cyan), Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
+            int length = 4;
+            for (int i = 0; i < 3; i++)
+            {
+                Rectangle drawFrame = tex.Frame(1, 5, 0, Math.Abs((Projectile.frame - k) % 4));
+                Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[k], Projectile.oldPos[k + 1], i / (float)length) + Projectile.Size / 2 - Main.screenPosition);
+                float drawRotation = (Utils.AngleLerp(Projectile.oldRot[k], Projectile.oldRot[k + 1], i / (float)length));
+                Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(tex, drawPos, drawFrame, (color * 1f).MultiplyRGBA(Color.Cyan), drawRotation, origin, Projectile.scale, SpriteEffects.None);
+            }
         }
         Main.spriteBatch.End();
         Main.spriteBatch.Begin(ss);
-        return true;
+
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, new Vector2(xScale, yScale) * Projectile.scale, SpriteEffects.None);
+
+        return false;
     }
 }
