@@ -13,13 +13,57 @@ HiveMindWeeper: {
 	Bestiary: These malevolent spores are summoned by the Hive, with their only goal being to rain hell on whoever their master deems a threat.
 }
 
-Perforator.DisplayName: Perforator
-
 Cryogen: {
 	DisplayName: Cryogen
 	Bestiary: An incredible feat of magical architecture, this intricate fortress of ice and steel serves to trap a lonely soul inside...
 }
 
+SeaUrchin: {
+	DisplayName: Sea Urchin
+	Bestiary: Tread carefully around the ocean floor, lest you get caught in the general direction of a tumbling urchin!
+}
+
+FrostEater: {
+	DisplayName: Frost Biter
+	Bestiary: The ancient spirits' release has rendered the beasts of the Corruption with a stronger metabolism, enabling their spread into the coldest areas of the world.
+}
+
+Rimera: {
+	DisplayName: Rimera
+	Bestiary: With the ancient spirits being freed, the Crimson's terrors remain just as bloodthirsty, enough to now persist in the frigid temperatures of the snow.
+}
+
+Priest: {
+	DisplayName: Priest
+	Bestiary: A kindly, rather paranoid old man with a staunch belief in a higher power. Alongside his fancy wares, he'll dabble in a curious blessing or two...!
+	BlessingText1: Well now, a little miracle from the lord won't do you harm! Let's see what we have...
+	BlessingText2: A blessing for you, {0}? Just a tribute for the lord, that's all it takes!
+	BlessingText3:
+		'''
+		If you're looking for some direction in your life, then
+		this belief system is for you—and I can prove it!
+		'''
+
+	TownNPCMood: {
+		Content: "'Tis a fine day to pray!"
+		NoHome: Would you perhaps have a place to stay? Maybe a town that could use the lord's wisdom?
+		FarFromHome: I shouldn't have wandered so far from town without my wards and amulets...
+		LoveSpace: I find it easier to commune with the lord with no one around.
+		DislikeCrowded: I would prefer if all of these people went to service, instead of... just lingering about near my living quarters.
+		HateCrowded: I would prefer if all of these people went to service, instead of... just lingering about near my living quarters.
+		LoveBiome: My, {BiomeName} is a very beautiful place to live in. I wouldn't be surprised if it came from the heavens itself!
+		HateBiome_Snow: After being trapped in that prison, I simply cannot stand the snow!
+		HateBiome: I absolutely detest {BiomeName}! This place is the absence of all things holy!
+		LoveNPC: I have a deep respect for {NPCName} and her commitment to purity!
+		LikeNPC: "{NPCName} must have seen some awful things... I feel pity for him."
+		DislikeNPC: That {NPCName} is a greedy, unkind man. Why bring him back when he was already punished?
+		HateNPC: I can’t even be near {NPCName} without sensing a dark, demonic presence within him! I want nothing to do with it!
+		LikeNPC_Princess: Our highness {NPCName} is pure of heart and kind to a fault.
+		Princess_LovesNPC: "{NPCName} is so earnest, and always tries to help people!"
+	}
+}
+
+Perforator.DisplayName: Perforator
 PerforatorBigWorm.DisplayName: Perforator Big Worm
 Ingestoid.DisplayName: Ingestoid
 Hemaniac.DisplayName: Hemaniac
@@ -29,18 +73,3 @@ Ingestatode.DisplayName: Ingestatode
 Malgestode.DisplayName: Malgestode
 GutOfCthulhu.DisplayName: Gut Of Cthulhu
 GutOfCthulhuEye.DisplayName: Gut Of Cthulhu Eye
-
-SeaUrchin: {
-	DisplayName: Sea Urchin
-	Bestiary: Tread carefully around the ocean floor, lest you get caught in the general direction of a tumbling urchin!
-}
-
-FrostEater: {
-	DisplayName: Frost Biter
-	Bestiary: The ancient spirits’ release has rendered the beasts of the Corruption with a stronger metabolism, enabling their spread into the coldest areas of the world.
-}
-
-Rimera: {
-	DisplayName: Rimera
-	Bestiary: With the ancient spirits being freed, the Crimson’s terrors remain just as bloodthirsty, enough to now persist in the frigid temperatures of the snow.
-}

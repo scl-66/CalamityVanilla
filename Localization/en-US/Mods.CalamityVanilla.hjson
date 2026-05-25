@@ -2,6 +2,7 @@ Emotes: {
 	CryogenEmote.Command: cryogen
 	GutofCthulhuEmote.Command: gutofcthulhu
 	HiveMindEmote.Command: hivemind
+	PriestEmote.Command: priestemote
 }
 
 Commands.RevokeAchievement.Description: Revokes the requested achievement

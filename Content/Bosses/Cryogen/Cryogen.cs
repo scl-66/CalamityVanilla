@@ -4,6 +4,7 @@ using CalamityVanilla.Content.Bosses.Cryogen.Drops.HoarfrostBow;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.Icebreaker;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.MagicChisel;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.TheSnowman;
+using CalamityVanilla.Content.NPCs.TownNPCs;
 using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Vanity.BossMasks;
 using Microsoft.Xna.Framework;
@@ -139,6 +140,10 @@ public partial class Cryogen : ModNPC
     }
     public override void OnKill()
     {
+        if (!BossDownedSystem.DownedCryogen && Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<Priest>());
+        }
         BossDownedSystem.DownedCryogen = true;
         if (Main.netMode == NetmodeID.Server)
             NetMessage.SendData(MessageID.WorldData);

@@ -1,0 +1,32 @@
+#This is used to display the NPC's dialogues.
+Priest: {
+	DayChat1: It feels like everyone's committing sins left and right these days.
+	DayChat2: I'm no pillar of judgement, but the lord certainly is. And he thinks these townsfolk could be doing much better!
+	DayChat3: Peace be with you, {0}. Have you come to seek my counsel?
+	DayChat4: The lord could offer you great blessings if you simply learned how to embrace them. For a hero like yourself, that comes in handy!
+	DayChat5: Ah, sorry, I was just reading one of my scriptures. How may I assist you?
+	NightChat1: Service today was very pleasant. Only a few people arrived, but at least they stayed for the food!
+	NightChat2: I'm not worried about nightmares. I have the lord watch over me while I sleep.
+	NightChat3: A good night's sleep is always important. I wake up extra early, just to pray!
+	HomelessChat1: I best be taking my leave now. I have a trek of self-realization I must follow!
+	HomelessChat2: It has been a while since I've been in a town. Do people still read illuminated manuscripts?
+	HomelessChat3: The outside life is not the life for me, I'm afraid. I would much prefer a church, or mosque... or perhaps a synagogue!
+	WindyChat1: These gales are ringing my steeple's beautiful bells! O, what a symphony!
+	WindyChat2: I saw something flying away earlier, and now I think it was my other robe...
+	RainChat1: When it rains, they say it is the lord's tears.
+	RainChat2: Dear lord, please make this rain go away. Amen.
+	StormChat1: "'TIS THE GREAT FLOODING!! WHY... WHY ISN'T ANYONE FEARING THE WRATH OF GOD?!"
+	StormChat2: The ark is almost ready, but no one's getting on! Has every person here lost their mind?!
+	PartyChat1: Splendid, this party is just like mass! Remember to save your cupcakes until after prayers, everyone!
+	PartyChat2: Well, maybe I can let a little loose just this once–no, no, I mustn't.
+	GraveyardChat1: Best be careful around these grounds. Even the slightest disruption could anger the spirits who rest here...
+	GraveyardChat2: ...and so we pray for the fallen, may they seek peace as they walk into their eternal slumber...
+	BloodMoonChat1: Hark! What sinister creatures the night has brought... May you strike them down with your fervorish hand!
+	BloodMoonChat2: Are these red skies a divine act of punishment!? Lord have mercy...
+	BloodMoonChat3: Here, take this dagger. Clearly the lord hasn't gotten a good sacrifice in a while.
+	MartianChat1: I don't suppose those space folk would be interested in adopting our religion?
+	MartianChat2: Those martians came from the heavens, but they certainly aren't angels. I'm not sure what to make of this.
+	PainterChat: That {0} gentleman is just who I need for my mural!
+	TaxCollectorChat: '''{0} called my religion a "ploy just to steal money", the nerve!'''
+	CyborgChat: Yes, I believe even a machine like {0} is capable of sin.
+}

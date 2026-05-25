@@ -9,11 +9,11 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Emotes;
 
-public class CryogenEmote : ModEmoteBubble
+public class PriestEmote : ModEmoteBubble
 {
     public override void SetStaticDefaults()
     {
-        AddToCategory(EmoteID.Category.Dangers);
+        AddToCategory(EmoteID.Category.Town);
     }
     public override bool IsUnlocked()
     {
