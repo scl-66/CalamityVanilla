@@ -1,30 +1,19 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content;
-using CalamityVanilla.Common.Personalities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+using CalamityVanilla.Common.Blessings;
+using CalamityVanilla.Common.UI;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.ItemDropRules;
+using Terraria.GameContent.Events;
 using Terraria.GameContent.Personalities;
 using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.Utilities;
-using Daybreak.Common.Features.NPCs;
-using Terraria.GameContent.Events;
 
-namespace CalamityVanilla.Content.NPCs.TownNPCs;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
 // [AutoloadHead] and NPC.townNPC are extremely important and absolutely both necessary for any Town NPC to work at all.
 [AutoloadHead]
@@ -133,24 +122,6 @@ public class Priest : ModNPC
         ]);
     }
 
-    // The PreDraw hook is useful for drawing things before our sprite is drawn or running code before the sprite is drawn
-    // Returning false will allow you to manually draw your NPC
-    //public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-    //{
-    //    // This code slowly rotates the NPC in the bestiary
-    //    // (simply checking NPC.IsABestiaryIconDummy and incrementing NPC.Rotation won't work here as it gets overridden by drawModifiers.Rotation each tick)
-    //    if (NPCID.Sets.NPCBestiaryDrawOffset.TryGetValue(Type, out NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers))
-    //    {
-    //        drawModifiers.Rotation += 0.001f;
-
-    //        // Replace the existing NPCBestiaryDrawModifiers with our new one with an adjusted rotation
-    //        NPCID.Sets.NPCBestiaryDrawOffset.Remove(Type);
-    //        NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-    //    }
-
-    //    return true;
-    //}
-
     public override void HitEffect(NPC.HitInfo hit)
     {
         int num = NPC.life > 0 ? 1 : 5;
@@ -186,15 +157,6 @@ public class Priest : ModNPC
             //Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(0, 34), NPC.velocity, legGore);
         }
     }
-
-    //public override void OnSpawn(IEntitySource source)
-    //{
-    //    if (source is EntitySource_SpawnNPC)
-    //    {
-    //        // A TownNPC is "unlocked" once it successfully spawns into the world.
-    //        TownNPCRespawnSystem.unlockedExamplePersonSpawn = true;
-    //    }
-    //}
 
     public override bool CanTownNPCSpawn(int numTownNPCs)
     { // Requirements for the town NPC to spawn.
@@ -349,7 +311,7 @@ public class Priest : ModNPC
         {
             shop = ShopName; // Name of the shop tab we want to open.
         } 
-        else
+        else // clicked Blessing button
         {
             switch (Main.rand.Next(1,4))
             {
@@ -362,6 +324,9 @@ public class Priest : ModNPC
                 default: Main.npcChatText = BlessingText1.Value;
                     break;
             }
+
+            CVTownNPCUI.ShowPriestUI(NPC);
+
             return;
         }
     }
@@ -371,7 +336,7 @@ public class Priest : ModNPC
     {
         var npcShop = new NPCShop(Type, ShopName)
             .Add<Corruption.Items.DarkPrismStaff.DarkPrismStaff>()
-            .Add(new Item(ModContent.ItemType<Content.Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
+            .Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
             .Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
             //.Add<Items.Consumables.ExampleHealingPotion>(new Condition("Mods.ExampleMod.Conditions.PlayerHasLifeforceBuff", () => Main.LocalPlayer.HasBuff(BuffID.Lifeforce)))
             //.Add<Items.Weapons.ExampleSword>(Condition.MoonPhasesQuarter0)

@@ -57,3 +57,18 @@ FrostShieldBuff: {
 	DisplayName: Frost Shield Buff
 	Description: Mods.CalamityVanilla.Buffs.FrostShieldBuff.Description
 }
+
+FrictionlessBlessingBuff: {
+	DisplayName: Unshackled
+	Description: Blocks have no friction
+}
+
+MolemanBlessingBuff: {
+	DisplayName: Moleman
+	Description: Increased vision, mining, and movement speed underground, but blinded on the surface
+}
+
+NoWingsBlessingBuff: {
+	DisplayName: Stone Feathers
+	Description: Movement speed increased and flight disabled while wearing wings
+}

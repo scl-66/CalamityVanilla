@@ -1,0 +1,40 @@
+Base: {
+	DisplayName: Blessing Template
+	Description: This is a blessing! It has a description.
+	Stats:
+		'''
+		[c/32FF82:+ Stats]
+		[c/E11919:- Downside]
+		'''
+}
+
+Frictionless: {
+	DisplayName: Unshackled
+	Description: "Now that the breaks are off, the world is your\nice rink. Just be careful not to slip...!"
+	Stats: "[c/32FF82:Blocks have no friction]"
+}
+
+Moleman: {
+	DisplayName: Moleman
+	Description: "Like the lowly mole, the underground has become your sanctuary!\nYour arms and legs have adapted to the damp caves, but in turn\nyou've become blind as a bat on the surface."
+	Stats:
+		'''
+		[c/32FF82:While underground:]
+		[c/32FF82:+25% Mining speed]
+		[c/32FF82:+15% Movement speed]
+		[c/32FF82:+75% Acceleration]
+		[c/E11919:Blinded on surface]
+		'''
+}
+
+NoWings: {
+	DisplayName: Stone Feathers
+	Description: "The wings that once carried you have failed, rendering you\nhopelessly grounded... you’ll just have to be quicker on\nyour feet instead!"
+	Stats:
+		'''
+		[c/32FF82:While wearing wings:]
+		[c/32FF82:+100% player acceleration/ deacceleration]
+		[c/32FF82:+20% maximum movement speed]
+		[c/E11919:No flight time]
+		'''
+}
