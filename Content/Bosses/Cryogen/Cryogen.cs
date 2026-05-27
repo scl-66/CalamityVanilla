@@ -27,11 +27,12 @@ namespace CalamityVanilla.Content.Bosses.Cryogen;
 [AutoloadBossHead]
 public partial class Cryogen : ModNPC
 {
-    public byte phase = 0;
-
-    private static float _phase2HealthMultiplier = 0.6f;
 
     const bool ForTheWorthy = false;
+    private bool IsInPhase2()
+    {
+        return NPC.life <= (float)NPC.lifeMax * 0.5f;
+    }
     public Player target
     { get { return Main.player[NPC.target]; } }
 
@@ -81,9 +82,13 @@ public partial class Cryogen : ModNPC
     }
     public override void FindFrame(int frameHeight)
     {
-        if (phase >= 10)
+        if(_currentAttack > 19)
         {
             NPC.frame.Y = frameHeight;
+            if (BossDownedSystem.DownedCryogen)
+            {
+                NPC.frame.Y += frameHeight;
+            }
         }
     }
     public override bool? CanFallThroughPlatforms()
@@ -157,7 +162,6 @@ public partial class Cryogen : ModNPC
         NPC.damage = 70;
         NPC.aiStyle = -1;
         NPC.noGravity = true;
-        phase = 0;
         Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Cryogen");
         NPC.Size = new Vector2(120);
         NPC.noTileCollide = true;
@@ -174,16 +178,6 @@ public partial class Cryogen : ModNPC
             new FlavorTextBestiaryInfoElement($"Mods.CalamityVanilla.NPCs.Cryogen.Bestiary")
         });
     }
-    public override bool PreAI()
-    {
-        NPC.localAI[0]--;
-        if (NPC.localAI[0] > 0)
-        {
-            NPC.position -= NPC.velocity;
-        }
-        NPC.rotation += (NPC.velocity * new Vector2(0.01f, 0.005f)).Length() * NPC.direction;
-        return NPC.localAI[0] <= 0;
-    }
     public static Color[] AuroraColors = [Color.GreenYellow, Color.MediumSpringGreen, Color.Magenta, Color.MediumSlateBlue, Color.DodgerBlue];
     public static Color GetAuroraColor(int Time)
     {
@@ -191,127 +185,5 @@ public partial class Cryogen : ModNPC
         int index = (int)((Time / fadeTime) % AuroraColors.Length);
         int nextIndex = (index + 1) % AuroraColors.Length;
         return Color.Lerp(AuroraColors[index], AuroraColors[nextIndex], (Time % fadeTime) / (float)fadeTime);
-    }
-
-    private static void SpawnCryoBlockLaserParticle(ParticleOrchestraSettings settings, Color color)
-    {
-        int num = 30;
-        PrettySparkleParticle prettySparkleParticle = VanillaParticles.RequestPrettySparkleParticle();
-        Vector2 movementVector = settings.MovementVector;
-        prettySparkleParticle.ColorTint = color;
-        prettySparkleParticle.LocalPosition = settings.PositionInWorld;
-        prettySparkleParticle.Rotation = movementVector.ToRotation();
-        prettySparkleParticle.Scale = new Vector2(6f, 1f);
-        prettySparkleParticle.FadeInNormalizedTime = 5E-06f;
-        prettySparkleParticle.FadeOutNormalizedTime = 1f;
-        prettySparkleParticle.TimeToLive = num;
-        prettySparkleParticle.FadeOutEnd = num;
-        prettySparkleParticle.FadeInEnd = num / 2;
-        prettySparkleParticle.FadeOutStart = num / 2;
-        prettySparkleParticle.AdditiveAmount = 0.5f;
-        prettySparkleParticle.Velocity = settings.MovementVector + Main.rand.NextVector2Circular(2, 2);
-        prettySparkleParticle.LocalPosition -= prettySparkleParticle.Velocity * 4f;
-        prettySparkleParticle.DrawVerticalAxis = false;
-        Main.ParticleSystem_World_OverPlayers.Add(prettySparkleParticle);
-    }
-    private void SpawnBigIceBlock(Point center, int halfwidth, int halfheight)
-    {
-        Vector2 centerInWorld = center.ToWorldCoordinates();
-        for (int i = 0; i < centerInWorld.Distance(NPC.Center) - 40; i += 20)
-        {
-            ParticleOrchestraSettings settings = new ParticleOrchestraSettings() with { PositionInWorld = NPC.Center + NPC.Center.DirectionTo(centerInWorld) * i, MovementVector = NPC.Center.DirectionTo(centerInWorld) * 5 };
-            SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f, 0.2f, 1f, 0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), MathF.Sin(i * 0.05f)));
-            if (Main.rand.NextBool(3))
-            {
-                Dust d = Dust.NewDustPerfect(settings.PositionInWorld, DustID.Frost, settings.MovementVector.RotatedByRandom(0.3f) * 3);
-                d.fadeIn = 1.3f;
-                d.noGravity = true;
-            }
-        }
-        for (int i = 0; i < 20; i++)
-        {
-            Dust d = Dust.NewDustPerfect(centerInWorld, DustID.Frost, Main.rand.NextVector2Circular(halfwidth, halfheight) * 2);
-            d.noGravity = Main.rand.NextBool();
-
-            ParticleOrchestraSettings settings = new ParticleOrchestraSettings() with { PositionInWorld = centerInWorld, MovementVector = Main.rand.NextVector2Circular(16, 16) };
-            SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f, 0.2f, 1f, 0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), Main.rand.NextFloat()));
-            settings = new ParticleOrchestraSettings() with { PositionInWorld = NPC.Center, MovementVector = Main.rand.NextVector2Circular(8, 8) + NPC.Center.DirectionTo(centerInWorld) * 5 };
-            SpawnCryoBlockLaserParticle(settings, Color.Lerp(new Color(0f, 0.2f, 1f, 0.1f), new Color(0.2f, 0.5f, 1f, 0.1f), Main.rand.NextFloat()));
-        }
-
-        if (Main.netMode == NetmodeID.MultiplayerClient)
-            return;
-        for (int x = -halfwidth; x <= halfwidth; x++)
-        {
-            for (int y = -halfheight; y <= halfheight; y++)
-            {
-                if (!Main.rand.NextBool(16))
-                {
-                    WorldGen.PlaceTile(center.X + x, center.Y + y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer);
-                    CryogenIceBlockSystem.CryogenIceBlocks.Add(new Point(center.X + x, center.Y + y));
-                    NetMessage.SendTileSquare(-1, center.X + x, center.Y + y);
-                }
-            }
-        }
-    }
-    public override void SendExtraAI(BinaryWriter writer)
-    {
-        writer.Write(phase);
-        writer.Write((int)NPC.localAI[0]);
-    }
-    public override void ReceiveExtraAI(BinaryReader reader)
-    {
-        phase = reader.ReadByte();
-        NPC.localAI[0] = reader.ReadInt32();
-    }
-    public override void AI()
-    {
-        _snowOverlayOpacity *= 0.96f;
-        NPC.direction = NPC.velocity.X == 0 ? 1 : Math.Sign(NPC.velocity.X);
-        Lighting.AddLight(NPC.Center, new Vector3(0.8f, 1f, 1f));
-        if (Main.rand.NextBool(10))
-        {
-            Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Snow);
-            d.scale = 0.8f;
-            d.velocity += NPC.velocity;
-        }
-
-        if (NPC.localAI[3] == 1)
-        {
-            NPC.velocity.Y -= 0.1f;
-            NPC.velocity.X *= 0.98f;
-            return;
-        }
-
-        if (!NPC.HasValidTarget)
-        {
-            NPC.TargetClosest();
-            if (!NPC.HasValidTarget)
-            {
-                NPC.localAI[3] = 1;
-                return;
-            }
-        }
-        switch (phase)
-        {
-            case 0:
-                if (NPC.life < NPC.lifeMax * _phase2HealthMultiplier)
-                    PhaseTransition_0();
-                else
-                    ShootIceBlocks_0();
-                break;
-            case 1:
-                DashAndChase_1();
-                break;
-            case 2:
-                Snowflakes_2();
-                break;
-            case 3:
-                Statues_3();
-                break;
-            case 4:
-                SlamAttack_4();
-                break;
-        }
     }
 }
