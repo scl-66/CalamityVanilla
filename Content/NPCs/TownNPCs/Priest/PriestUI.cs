@@ -13,6 +13,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
+using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
@@ -32,7 +33,7 @@ public class PriestUIState : UIState
     }
     private UIText text; // Init later
     private UIPanel panel; // Init later
-    private UIList list;
+    private SlowerUIList list;
     private UIScrollbar scrollbar;
     private ActivateButton activate;
     private ActivateButton deactivate;
@@ -46,9 +47,9 @@ public class PriestUIState : UIState
         panel.Top.Set(30, 0.5f);
         Append(panel);
 
-        list = new UIList
+        list = new SlowerUIList(0.5f)
         {
-            Width = StyleDimension.Fill,
+            Width = StyleDimension.Fill
         };
         list.Height.Set(10, 0.82f);
         list.Top.Set(-17, 0.25f);
@@ -60,7 +61,7 @@ public class PriestUIState : UIState
             VAlign = 0.5f
         };
         scrollbar.Height.Set(0, 1);
-        scrollbar._viewSize = 0.5f;
+        scrollbar._dragYOffset = 2;
         panel.Append(scrollbar);
 
         list.SetScrollbar(scrollbar);
@@ -576,3 +577,13 @@ public class UITribute : UIElement
 //    }
 //}
 
+public sealed class SlowerUIList(float speedMod) : UIList
+{
+    public override void ScrollWheel(UIScrollWheelEvent evt)
+    {
+        if (_scrollbar != null)
+        {
+            _scrollbar.ViewPosition -= evt.ScrollWheelValue * speedMod;
+        }
+    }
+}

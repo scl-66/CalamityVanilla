@@ -3,8 +3,8 @@ Base: {
 	Description: This is a blessing! It has a description.
 	Stats:
 		'''
-		[c/8cf58c:+ Stats]
-		[c/de6666:- Downside]
+		[c/78be78:+ Stats]
+		[c/be7878:- Downside]
 		'''
 }
 
@@ -15,7 +15,7 @@ Frictionless: {
 		Now that the brakes are off, the world is your
 		ice rink. Just be careful not to slip...!
 		'''
-	Stats: "[c/8cf58c:Blocks have no friction]"
+	Stats: "[c/78be78:Blocks have no friction]"
 }
 
 Moleman: {
@@ -28,11 +28,11 @@ Moleman: {
 		'''
 	Stats:
 		'''
-		[c/8cf58c:While underground:]
-		[c/8cf58c:+25% Mining speed]
-		[c/8cf58c:+15% Movement speed]
-		[c/8cf58c:+75% Acceleration]
-		[c/de6666:Blinded on surface]
+		[c/78be78:While underground:]
+		[c/78be78:+25% mining speed]
+		[c/78be78:+15% movement speed]
+		[c/78be78:+75% acceleration]
+		[c/be7878:Blinded on surface]
 		'''
 }
 
@@ -46,10 +46,10 @@ NoWings: {
 		'''
 	Stats:
 		'''
-		[c/8cf58c:While wearing wings:]
-		[c/8cf58c:+100% player acceleration]
-		[c/8cf58c:+20% maximum movement speed]
-		[c/de6666:No flight time]
+		[c/78be78:While wearing wings:]
+		[c/78be78:+100% acceleration]
+		[c/78be78:+20% maximum movement speed]
+		[c/be7878:No flight time]
 		'''
 }
 
@@ -63,8 +63,8 @@ Greedy: {
 		'''
 	Stats:
 		'''
-		[c/8cf58c:x3 Enemy and boss loot]
-		[c/de6666:Getting hurt kills you]
+		[c/78be78:x3 enemy and boss loot]
+		[c/be7878:Getting hurt kills you]
 		'''
 }
 
@@ -75,19 +75,20 @@ SpawnrateUp: {
 		Your amplified energies cause the world’s creatures to 
 		seek you out. Friends and foes alike gather around you!
 		'''
-	Stats: "[c/8cf58c:Spawn rates are tripled]"
+	Stats: "[c/78be78:Spawn rates are tripled]"
 }
 
 Adrenaline: {
 	DisplayName: Adrenaline
-	Description: '''
-	Your heart is racing! Your abilities heighten in the heat of 
-	battle, but that fighting spirit is prone to petering out.
-	'''
+	Description:
+		'''
+		Your heart is racing! Your abilities heighten in the heat of 
+		battle, but that fighting spirit is prone to petering out.
+		'''
 	Stats:
 		'''
-		[c/8cf58c:While an enemy is within 15 tiles of you:]
-		[c/8cf58c:+25% damage, +8 defense]
-		[c/de6666:-25% damage, -8 defense otherwise]
+		[c/78be78:While an enemy is within 15 tiles of you:]
+		[c/78be78:+25% damage, +8 defense]
+		[c/be7878:-25% damage, -8 defense otherwise]
 		'''
 }

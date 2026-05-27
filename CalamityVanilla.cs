@@ -1,6 +1,7 @@
 using Daybreak.Common.Features.Authorship;
 using Daybreak.Common.Features.ModPanel;
 using System;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla;

@@ -155,18 +155,16 @@ public sealed class FrictionlessBlessingPlayer : BlessingPlayer
         }
         if (Active)
         {
-            if (tilesBelow)
-            {
-                //Player.slippy2 = true;
-                Player.runSlowdown = 0;
-                Player.runAcceleration *= 0.6f;
-            }
-            else
-            {
-                //Player.slippy2 = true;
-                Player.runSlowdown = 0.1f;
-                Player.runAcceleration *= 0.6f;
-            }
+            Player.runAcceleration *= 0.6f;
+            Player.runSlowdown = tilesBelow ? 0 : 0.1f;
+        }
+    }
+
+    public override void FrameEffects()
+    {
+        if (Active)
+        {
+            Player.slippy2 = true;
         }
     }
 }
