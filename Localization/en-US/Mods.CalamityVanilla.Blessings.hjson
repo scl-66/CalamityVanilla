@@ -3,38 +3,77 @@ Base: {
 	Description: This is a blessing! It has a description.
 	Stats:
 		'''
-		[c/32FF82:+ Stats]
-		[c/E11919:- Downside]
+		[c/8cf58c:+ Stats]
+		[c/de6666:- Downside]
 		'''
 }
 
 Frictionless: {
 	DisplayName: Unshackled
-	Description: "Now that the breaks are off, the world is your\nice rink. Just be careful not to slip...!"
-	Stats: "[c/32FF82:Blocks have no friction]"
+	Description:
+		'''
+		Now that the breaks are off, the world is your
+		ice rink. Just be careful not to slip...!
+		'''
+	Stats: "[c/8cf58c:Blocks have no friction]"
 }
 
 Moleman: {
 	DisplayName: Moleman
-	Description: "Like the lowly mole, the underground has become your sanctuary!\nYour arms and legs have adapted to the damp caves, but in turn\nyou've become blind as a bat on the surface."
+	Description:
+		'''
+		Like the lowly mole, the underground has become your sanctuary!
+		Your arms and legs have adapted to the damp caves, but in turn
+		you've become blind as a bat on the surface.
+		'''
 	Stats:
 		'''
-		[c/32FF82:While underground:]
-		[c/32FF82:+25% Mining speed]
-		[c/32FF82:+15% Movement speed]
-		[c/32FF82:+75% Acceleration]
-		[c/E11919:Blinded on surface]
+		[c/8cf58c:While underground:]
+		[c/8cf58c:+25% Mining speed]
+		[c/8cf58c:+15% Movement speed]
+		[c/8cf58c:+75% Acceleration]
+		[c/de6666:Blinded on surface]
 		'''
 }
 
 NoWings: {
 	DisplayName: Stone Feathers
-	Description: "The wings that once carried you have failed, rendering you\nhopelessly grounded... you’ll just have to be quicker on\nyour feet instead!"
+	Description:
+		'''
+		The wings that once carried you have failed, rendering you
+		hopelessly grounded... you’ll just have to be quicker on
+		your feet instead!
+		'''
 	Stats:
 		'''
-		[c/32FF82:While wearing wings:]
-		[c/32FF82:+100% player acceleration/ deacceleration]
-		[c/32FF82:+20% maximum movement speed]
-		[c/E11919:No flight time]
+		[c/8cf58c:While wearing wings:]
+		[c/8cf58c:+100% player acceleration]
+		[c/8cf58c:+20% maximum movement speed]
+		[c/de6666:No flight time]
 		'''
+}
+
+Greedy: {
+	DisplayName: Risky Reward
+	Description:
+		'''
+		Greed consumes you, as you pry every last drop from your 
+		opponent’s grasp. But in your plunder, you’ve left yourself 
+		completely defenseless!
+		'''
+	Stats:
+		'''
+		[c/8cf58c:x3 Enemy and boss loot]
+		[c/de6666:Getting hurt kills you]
+		'''
+}
+
+SpawnrateUp: {
+	DisplayName: Congregation
+	Description:
+		'''
+		Your amplified energies cause the world’s creatures to 
+		seek you out. Friends and foes alike gather around you!
+		'''
+	Stats: "[c/8cf58c:Spawn rates are tripled]"
 }

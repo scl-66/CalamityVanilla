@@ -1,18 +1,14 @@
 ﻿using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
+using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.GameContent;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static Terraria.Localization.NetworkText;
 
 namespace CalamityVanilla.Common.Blessings;
 
@@ -21,57 +17,89 @@ public class BlessingSystem : ModSystem
     public static PriestBlessing Frictionless { get; private set; }
     public static PriestBlessing Moleman { get; private set; }
     public static PriestBlessing NoWings { get; private set; }
+    public static PriestBlessing Greedy { get; private set; }
+    public static PriestBlessing SpawnrateUp { get; private set; }
     public static void InitializeBlessings()
     {
-        Frictionless = new PriestBlessing(ModContent.GetInstance<FrictionlessBlessingPlayer>(), "Frictionless", [
-            new Tribute(ItemID.IceBlock, 5)
-            ]);
-        Moleman = new PriestBlessing(ModContent.GetInstance<MolemanBlessingPlayer>(), "Moleman", [
-            new Tribute(ItemID.Torch, 50)
-            ]);
-        Moleman = new PriestBlessing(ModContent.GetInstance<NoWingsBlessingPlayer>(), "NoWings", [
-            new Tribute(ItemID.SoulofFlight, 1)
-            ]);
+        Frictionless = new PriestBlessing<FrictionlessBlessingPlayer>("Frictionless", new Tribute(ItemID.IceBlock, 5));
+        Moleman = new PriestBlessing<MolemanBlessingPlayer>("Moleman", new Tribute(ItemID.Torch, 50));
+        NoWings = new PriestBlessing<NoWingsBlessingPlayer>("NoWings", new Tribute(ItemID.SoulofFlight, 1));
+        Greedy = new PriestBlessing<GreedyBlessingPlayer>("Greedy", new Tribute(ItemID.GoldDust, 3));
+        SpawnrateUp = new PriestBlessing<SpawnrateUpBlessingPlayer>("SpawnrateUp", new Tribute(ItemID.Ectoplasm, 1));
     }
     public override void PostSetupContent()
     {
         InitializeBlessings();
     }
 }
-public record struct Tribute(int ItemType, int Stack, int Money = 0);
+public record struct Tribute(int ItemType, int Stack);
 
-public sealed class PriestBlessing
+public abstract class PriestBlessing
 {
-    public Asset<Texture2D> Icon { get; }
-    public LocalizedText DisplayName { get; }
-    public LocalizedText Description { get; }
-    public LocalizedText Stats { get; }
-    public BlessingPlayer BlessedPlayer { get; }
-    public Tribute[] TributeList { get; }
-        
-    public PriestBlessing(BlessingPlayer player, string name, Tribute[] tributes)
+    public Asset<Texture2D> Icon { get; protected set; }
+    public LocalizedText DisplayName { get; protected set; }
+    public LocalizedText Description { get; protected set; }
+    public LocalizedText Stats { get; protected set; }
+    //public Tribute[] TributeList { get; protected set; }
+    public Tribute Tribute { get; protected set; }
+    public abstract bool Enable(Player player);
+    public abstract bool CheckEnable(Player player);
+    public abstract void Disable(Player player);
+    public abstract bool GetState(Player player);
+}
+
+public sealed class PriestBlessing<T> : PriestBlessing where T : BlessingPlayer
+{
+    public PriestBlessing(string name, Tribute tribute)
     {
         DisplayName = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.DisplayName");
         Description = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.Description");
         Stats = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.Stats");
         Icon = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/{name}Icon");
 
-        BlessedPlayer = player;
-        player.Blessing = this;
-        TributeList = tributes;
+        Tribute = tribute;
 
         PriestUIState.AddBlessing(this);
     }
 
-    public void Toggle()
+    public override bool GetState(Player player)
     {
-        BlessedPlayer.Active = !BlessedPlayer.Active;
+        //return player.GetModPlayer<T>()?.Active ?? false;
+        if (player.TryGetModPlayer<T>(out var modPlayer))
+        {
+            return modPlayer.Active;
+        }
+        return false;
+    }
+
+    public override bool CheckEnable(Player player)
+    {
+        if (player.CountItem(Tribute.ItemType, Tribute.Stack) < Tribute.Stack)
+        {
+            return false;
+        }
+        return true;
+    }
+    public override bool Enable(Player player)
+    {
+        if (!CheckEnable(player))
+            return false;
+
+        for (int i = 0; i < Tribute.Stack; i++)
+        {
+            player.ConsumeItem(Tribute.ItemType);
+        }
+        player.GetModPlayer<T>().Active = true;
+        return true;
+    }
+    public override void Disable(Player player)
+    {
+        player.GetModPlayer<T>().Active &= false;
     }
 }
 
 public abstract class BlessingPlayer : ModPlayer
 {
-    public PriestBlessing Blessing { get; set; }
     public bool Active { get; set; }
 
     public abstract int BuffType { get; }
@@ -99,7 +127,8 @@ public class BlessingBuff<T> : ModBuff where T : BlessingPlayer
         if (player.GetModPlayer<T>().Active)
         {
             player.buffTime[buffIndex] = 5;
-        } else
+        }
+        else
         {
             player.ClearBuff(Type);
         }
@@ -149,7 +178,7 @@ public sealed class MolemanBlessingPlayer : BlessingPlayer
         int playerX = Player.Center.ToTileCoordinates().X;
         int playerY = Player.Center.ToTileCoordinates().Y;
         bool onSurface = playerY - 1 < Main.worldSurface;
-        
+
         // tile wall check
         int tileCheckAmt = 8;
         if (onSurface && Active)
@@ -200,10 +229,10 @@ public sealed class MolemanBlessingPlayer : BlessingPlayer
     {
         if (!isGettingMoled && Active)
         {
-            Player.runAcceleration *= 1.75f;
+            Player.runAcceleration *= 1.25f;
             if (!Player.mount.Active)
             {
-                Player.maxRunSpeed *= 1.55f;
+                Player.maxRunSpeed *= 1.25f;
             }
         }
     }
@@ -214,9 +243,43 @@ public sealed class NoWingsBlessingPlayer : BlessingPlayer
     public override int BuffType => ModContent.BuffType<NoWingsBlessingBuff>();
     public override void PostUpdateRunSpeeds()
     {
-        if (Active)
+        if (Active && Player.equippedWings != null)
         {
-            Player.velocity.Y *= 1.2f;
+            Player.wingTime = 0;
+            Player.wingTimeMax = 0;
+            Player.wingsLogic = 0;
+            Player.rocketTime = 0;
+            Player.rocketTimeMax = 0;
+            Player.runAcceleration *= 2.0f;
+            if (!Player.mount.Active)
+            {
+                Player.maxRunSpeed *= 2.0f;
+            }
         }
+    }
+}
+
+public sealed class GreedyBlessingBuff : BlessingBuff<GreedyBlessingPlayer> { }
+public sealed class GreedyBlessingPlayer : BlessingPlayer
+{
+    public override int BuffType => ModContent.BuffType<GreedyBlessingBuff>();
+    public override void OnHurt(Player.HurtInfo info)
+    {
+        LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
+        info.DamageSource.TryGetCausingEntity(out Entity entity);
+        PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
+        Player.KillMe(damageSource, 9999, 0);
+    }
+}
+public sealed class SpawnrateUpBlessingBuff : BlessingBuff<SpawnrateUpBlessingPlayer> { }
+public sealed class SpawnrateUpBlessingPlayer : BlessingPlayer
+{
+    public override int BuffType => ModContent.BuffType<SpawnrateUpBlessingBuff>();
+    public override void OnHurt(Player.HurtInfo info)
+    {
+        LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
+        info.DamageSource.TryGetCausingEntity(out Entity entity);
+        PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
+        Player.KillMe(damageSource, 9999, 0);
     }
 }

@@ -12,6 +12,7 @@ public class CVTownNPCUI : ModSystem
 {
     private static UserInterface _NPCPanelInterface;
     public static PriestUIState PriestUI;
+    public static bool PriestUIOpen => _NPCPanelInterface.CurrentState == PriestUI;
 
     public static void ShowPriestUI(NPC npc)
     {
@@ -20,6 +21,7 @@ public class CVTownNPCUI : ModSystem
         _NPCPanelInterface?.SetState(PriestUI);
         PriestUI.Open(npc);
     }
+
     public static void ClosePanel()
     {
         _NPCPanelInterface?.SetState(null);

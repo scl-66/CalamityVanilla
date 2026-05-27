@@ -299,10 +299,17 @@ public class Priest : ModNPC
         return chosenChat;
     }
 
+    public bool blessingTabOpen;
     public override void SetChatButtons(ref string button, ref string button2)
     { // What the chat buttons are when you open up the chat UI
         button = Language.GetTextValue("LegacyInterface.28"); // This is the key to the word "Shop"
-        button2 = "Blessing";
+        if (!CVTownNPCUI.PriestUIOpen)
+        {
+            button2 = "Blessing";
+        } else
+        {
+            button2 = "Close Blessing";
+        }
     }
 
     public override void OnChatButtonClicked(bool firstButton, ref string shop)
@@ -310,24 +317,36 @@ public class Priest : ModNPC
         if (firstButton)
         {
             shop = ShopName; // Name of the shop tab we want to open.
+            CVTownNPCUI.ClosePanel();
         } 
         else // clicked Blessing button
         {
-            switch (Main.rand.Next(1,4))
+            if (!CVTownNPCUI.PriestUIOpen)
             {
-                case 1: Main.npcChatText = BlessingText1.Value;
-                    break;
-                case 2: Main.npcChatText = BlessingText2.Format(Main.LocalPlayer.name);
-                    break;
-                case 3: Main.npcChatText = BlessingText3.Value;
-                    break;
-                default: Main.npcChatText = BlessingText1.Value;
-                    break;
+                switch (Main.rand.Next(1, 4))
+                {
+                    case 1:
+                        Main.npcChatText = BlessingText1.Value;
+                        break;
+                    case 2:
+                        Main.npcChatText = BlessingText2.Format(Main.LocalPlayer.name);
+                        break;
+                    case 3:
+                        Main.npcChatText = BlessingText3.Value;
+                        break;
+                    default:
+                        Main.npcChatText = BlessingText1.Value;
+                        break;
+                }
+
+                CVTownNPCUI.ShowPriestUI(NPC);
+
+                return;
             }
-
-            CVTownNPCUI.ShowPriestUI(NPC);
-
-            return;
+            else
+            {
+                CVTownNPCUI.ClosePanel();
+            }
         }
     }
 

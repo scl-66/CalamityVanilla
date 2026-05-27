@@ -10,7 +10,11 @@ Priest: {
 	NightChat3: A good night's sleep is always important. I wake up extra early, just to pray!
 	HomelessChat1: I best be taking my leave now. I have a trek of self-realization I must follow!
 	HomelessChat2: It has been a while since I've been in a town. Do people still read illuminated manuscripts?
-	HomelessChat3: The outside life is not the life for me, I'm afraid. I would much prefer a church, or mosque... or perhaps a synagogue!
+	HomelessChat3:
+		'''
+		The outside life is not the life for me, I'm afraid. I would
+		much prefer a church, or mosque... or perhaps a synagogue!
+		'''
 	WindyChat1: These gales are ringing my steeple's beautiful bells! O, what a symphony!
 	WindyChat2: I saw something flying away earlier, and now I think it was my other robe...
 	RainChat1: When it rains, they say it is the lord's tears.

@@ -72,3 +72,13 @@ NoWingsBlessingBuff: {
 	DisplayName: Stone Feathers
 	Description: Movement speed increased and flight disabled while wearing wings
 }
+
+GreedyBlessingBuff: {
+	DisplayName: Risky Reward
+	Description: Enemy loot is tripled, but any damage will kill you!
+}
+
+SpawnrateUpBlessingBuff: {
+	DisplayName: Congregation
+	Description: Spawn rates are tripled
+}
