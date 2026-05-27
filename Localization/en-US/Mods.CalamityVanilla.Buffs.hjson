@@ -82,3 +82,8 @@ SpawnrateUpBlessingBuff: {
 	DisplayName: Congregation
 	Description: Spawn rates are tripled
 }
+
+AdrenalineBlessingBuff: {
+	DisplayName: Adrenaline
+	Description: Damage and defense increased when close to enemies and vise versa
+}

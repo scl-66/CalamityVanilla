@@ -18,13 +18,15 @@ public class BlessingSystem : ModSystem
     public static PriestBlessing Moleman { get; private set; }
     public static PriestBlessing NoWings { get; private set; }
     public static PriestBlessing Greedy { get; private set; }
+    public static PriestBlessing Adrenaline { get; private set; }
     public static PriestBlessing SpawnrateUp { get; private set; }
     public static void InitializeBlessings()
     {
         Frictionless = new PriestBlessing<FrictionlessBlessingPlayer>("Frictionless", new Tribute(ItemID.IceBlock, 5));
         Moleman = new PriestBlessing<MolemanBlessingPlayer>("Moleman", new Tribute(ItemID.Torch, 50));
-        NoWings = new PriestBlessing<NoWingsBlessingPlayer>("NoWings", new Tribute(ItemID.SoulofFlight, 1));
+        NoWings = new PriestBlessing<NoWingsBlessingPlayer>("NoWings", new Tribute(ItemID.SoulofFlight, 2));
         Greedy = new PriestBlessing<GreedyBlessingPlayer>("Greedy", new Tribute(ItemID.GoldDust, 3));
+        Adrenaline = new PriestBlessing<AdrenalineBlessingPlayer>("Adrenaline", new Tribute(ItemID.LifeFruit, 1));
         SpawnrateUp = new PriestBlessing<SpawnrateUpBlessingPlayer>("SpawnrateUp", new Tribute(ItemID.Ectoplasm, 1));
     }
     public override void PostSetupContent()
@@ -263,6 +265,18 @@ public sealed class GreedyBlessingBuff : BlessingBuff<GreedyBlessingPlayer> { }
 public sealed class GreedyBlessingPlayer : BlessingPlayer
 {
     public override int BuffType => ModContent.BuffType<GreedyBlessingBuff>();
+    public override void OnHurt(Player.HurtInfo info)
+    {
+        LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
+        info.DamageSource.TryGetCausingEntity(out Entity entity);
+        PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
+        Player.KillMe(damageSource, 9999, 0);
+    }
+}
+public sealed class AdrenalineBlessingBuff : BlessingBuff<AdrenalineBlessingPlayer> { }
+public sealed class AdrenalineBlessingPlayer : BlessingPlayer
+{
+    public override int BuffType => ModContent.BuffType<AdrenalineBlessingBuff>();
     public override void OnHurt(Player.HurtInfo info)
     {
         LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");

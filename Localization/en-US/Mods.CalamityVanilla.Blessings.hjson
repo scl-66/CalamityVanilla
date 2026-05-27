@@ -12,7 +12,7 @@ Frictionless: {
 	DisplayName: Unshackled
 	Description:
 		'''
-		Now that the breaks are off, the world is your
+		Now that the brakes are off, the world is your
 		ice rink. Just be careful not to slip...!
 		'''
 	Stats: "[c/8cf58c:Blocks have no friction]"
@@ -76,4 +76,18 @@ SpawnrateUp: {
 		seek you out. Friends and foes alike gather around you!
 		'''
 	Stats: "[c/8cf58c:Spawn rates are tripled]"
+}
+
+Adrenaline: {
+	DisplayName: Adrenaline
+	Description: '''
+	Your heart is racing! Your abilities heighten in the heat of 
+	battle, but that fighting spirit is prone to petering out.
+	'''
+	Stats:
+		'''
+		[c/8cf58c:While an enemy is within 15 tiles of you:]
+		[c/8cf58c:+25% damage, +8 defense]
+		[c/de6666:-25% damage, -8 defense otherwise]
+		'''
 }
