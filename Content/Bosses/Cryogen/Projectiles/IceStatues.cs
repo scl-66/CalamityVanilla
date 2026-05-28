@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Bosses.Cryogen;
+namespace CalamityVanilla.Content.Bosses.Cryogen.Projectiles;
 
 public class IceStatues : ModProjectile
 {

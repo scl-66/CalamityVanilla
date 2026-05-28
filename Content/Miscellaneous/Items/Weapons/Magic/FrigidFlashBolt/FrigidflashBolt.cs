@@ -222,6 +222,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
             p.ColorTint = Color.White;
             float time = Main.rand.NextFloat(25,45);
             p.SetTypeInfo(time);
+            Main.instance.LoadProjectile(ProjectileID.NorthPoleSnowflake);
             p.SetBasicInfo(TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake], TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake].Frame(1, 3, 0, Main.rand.Next(3)), Main.rand.NextVector2Circular(6,6),Projectile.Center);
             p.FadeInNormalizedTime = 0.2f;
             p.FadeOutNormalizedTime = 0.5f;
