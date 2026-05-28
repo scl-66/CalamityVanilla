@@ -1,9 +1,10 @@
 ﻿using CalamityVanilla.Common.Blessings;
 using CalamityVanilla.Common.UI;
-using CalamityVanilla.Content.Particles;
+using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -12,9 +13,7 @@ using Terraria.Graphics.Renderers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.UI;
 using Terraria.UI;
-using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
@@ -34,12 +33,15 @@ public class PriestUIState : UIState
     }
     private UIText text; // Init later
     private string textValue;
+    private UIText statsText; // Init later
+    private string statsTextValue;
     private UIPanel panel; // Init later
     private SlowerUIList list;
     private UIScrollbar scrollbar;
     private ActivateButton activate;
     private ActivateButton deactivate;
     private UIPanel brightPanel;
+    public static float gradientTimer = 0f;
 
     public override void OnInitialize()
     {
@@ -56,7 +58,7 @@ public class PriestUIState : UIState
             Width = StyleDimension.Fill
         };
         list.Height.Set(10, 0.45f);
-        list.Top.Set(35, 0f);
+        list.Top.Set(30, 0f);
         panel.Append(list);
 
         scrollbar = new UIScrollbar
@@ -103,16 +105,27 @@ public class PriestUIState : UIState
         brightPanel._barSize = 16;
         panel.Append(brightPanel);
 
-        text = new UIText(textValue != null ? textValue : "", 0.8f);
-        text.Width.Set(10, 1f);
+        text = new UIText(textValue = "", 1f);
+        text.Width.Set(0, 0.48f);
         text.Height.Set(10, 0f);
         text.Top.Set(-5, 0f);
-        text.HAlign = 0.3f;
+        text.HAlign = 0f;
         text.VAlign = 0f;
-        text.TextOriginX = 0;
+        text.TextOriginX = 0.65f;
         text.TextOriginY = 0;
         text.IsWrapped = true;
         brightPanel.Append(text);
+
+        statsText = new UIText(statsTextValue = "", 1f);
+        statsText.Width.Set(0, 0.5f);
+        statsText.Height.Set(10, 0f);
+        statsText.Top.Set(-5, 0f);
+        statsText.HAlign = 1.0f;
+        statsText.VAlign = 0f;
+        statsText.TextOriginX = 0.5f;
+        statsText.TextOriginY = 0;
+        statsText.IsWrapped = false;
+        brightPanel.Append(statsText);
 
         partSprite = Main.Assets.Request<Texture2D>("Images/UI/Creative/Research_Spark", AssetRequestMode.ImmediateLoad);
 
@@ -233,10 +246,7 @@ public class PriestUIState : UIState
         base.DrawSelf(spriteBatch); // This ensures the Draw call is propagated to the children(s)
 
         // If this code is in the panel or container element, check it directly
-        if (ContainsPoint(Main.MouseScreen))
-        {
-            Main.LocalPlayer.mouseInterface = true;
-        }
+
         // Otherwise, we can check a child element instead
         if (panel.ContainsPoint(Main.MouseScreen))
         {
@@ -246,6 +256,7 @@ public class PriestUIState : UIState
 
     public override void Update(GameTime gameTime)
     {
+        gradientTimer += 0.01f;
         if (!InRangeOfNPC())
         {
             CVTownNPCUI.ClosePanel();
@@ -270,11 +281,13 @@ public class PriestUIState : UIState
             if (_button.IsMouseHovering)
             {
                 text.SetText(_button.toolTip);
+                statsText.SetText(_button.statsToolTip);
                 anyHover = true;
             } 
             if (!anyHover)
             {
                 text.SetText("");
+                statsText.SetText("");
             }
         }
         base.Update(gameTime);
@@ -393,8 +406,13 @@ public class BlessingButton : UIElement
     private object _stat;
     private UIPanel _uiPanel;
     private UIPanel _uiInnerPanel;
+    private UIElement _uiPanelGradient;
+    private Color gradientColor;
     private UIText _uiText;
+    private UIElement image;
+    private UIElement arrow;
     public string toolTip;
+    public string statsToolTip;
     public bool toggle;
     public bool activated;
     public int timer;
@@ -405,8 +423,6 @@ public class BlessingButton : UIElement
         set => _text = _desc = _stat = value;
     }
 
-    private UIElement image;
-    private UIElement arrow;
     public PriestBlessing blessing;
 
     public SoundStyle? HoverSound = SoundID.MenuTick;
@@ -414,12 +430,21 @@ public class BlessingButton : UIElement
     public static Asset<Texture2D> bgTexture;
     public static Asset<Texture2D> bgInnerTexture;
     public static Asset<Texture2D> borderTexture;
+    public static Texture2D gradient;
+    public static float siner;
+    public Asset<Effect> dyeShader;
 
     public BlessingButton(PriestBlessing blessingObj) : base()
     {
         bgTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonPanel", AssetRequestMode.ImmediateLoad);
         bgInnerTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonPanelHighlight", AssetRequestMode.ImmediateLoad);
         borderTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonPanelBorder", AssetRequestMode.ImmediateLoad);
+        gradient = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonGradient", AssetRequestMode.ImmediateLoad);
+
+        //if (Main.netMode != NetmodeID.Server)
+        //{
+        //    dyeShader = ModContent.Request<Effect>("Effects/MyDyes");
+        //}
 
         base.Width.Set(0, 1f);
         base.Height.Set(50, 0);
@@ -429,7 +454,8 @@ public class BlessingButton : UIElement
         _stat = blessingObj.Stats.Value?.ToString() ?? string.Empty;
         blessing = blessingObj;
 
-        toolTip = _desc.ToString() + "\n" + _stat.ToString();
+        toolTip = _desc.ToString();
+        statsToolTip = _stat.ToString();
         
         _uiPanel = new UIPanel
         {
@@ -459,6 +485,14 @@ public class BlessingButton : UIElement
         _uiInnerPanel.IgnoresMouseInteraction = true;
         _uiPanel.Append(_uiInnerPanel);
 
+        _uiPanelGradient = new UIElement
+        {
+            HAlign = 0.5f,
+            VAlign = 0.72f
+        };
+        _uiPanelGradient.OnDraw += DrawGradient;
+        _uiPanel.Append(_uiPanelGradient);
+
         _uiText = new UIText("");
         _uiText.VAlign = 0.5f;
         _uiText.Left.Set(15, 0.08f);
@@ -487,14 +521,48 @@ public class BlessingButton : UIElement
         arrow.OnDraw += DrawArrow;
         Append(arrow);
     }
-    protected override void DrawSelf(SpriteBatch spriteBatch)
+
+    private void DrawGradient(UIElement affectedElement)
     {
-        base.DrawSelf(spriteBatch);
-        //if (_uiPanel.IsMouseHovering)
-        //{
-        //    UICommon.TooltipMouseText(_desc.ToString() + "\n" + _stat.ToString());
-        //}
+        Main.spriteBatch.Draw(gradient, affectedElement.GetDimensions().Center(), null, gradientColor, 0, gradient.Size() / 2f, new Vector2(_uiPanel.GetInnerDimensions().Width/40.2f, 0.55f + siner/4), SpriteEffects.None, 0);
     }
+
+    //protected override void DrawChildren(SpriteBatch spriteBatch)
+    //{
+    //    Assets.Shaders.UI.SlightListFade.Asset.Wait();
+
+    //    using var rtLease = ScreenspaceTargetPool.Shared.Rent(
+    //        Main.instance.GraphicsDevice,
+    //        RenderTargetDescriptor.DefaultPreserveContents
+    //    );
+
+    //    spriteBatch.End(out var ss);
+
+    //    using (rtLease.Scope(preserveContents: true, clearColor: Color.Transparent))
+    //    {
+    //        spriteBatch.Begin(ss);
+    //        base.DrawChildren(spriteBatch);
+    //        spriteBatch.End();
+    //    }
+
+    //    spriteBatch.Begin(ss with { SortMode = SpriteSortMode.Immediate, RasterizerState = RasterizerState.CullNone, TransformMatrix = Matrix.Identity });
+
+    //    var dims = this.Dimensions;
+
+    //    var position = dims.TopLeft().Transform(ss.TransformMatrix);
+    //    var size = dims.BottomRight().Transform(ss.TransformMatrix) - position;
+
+    //    var fadeShader = Assets.Shaders.UI.SlightListFade.CreateFadeShader();
+    //    fadeShader.Parameters.uPanelDimensions = new Vector4(position.X, position.Y, size.X, size.Y);
+    //    fadeShader.Parameters.uScreenSize = new Vector2(rtLease.Target.Width, rtLease.Target.Height);
+    //    fadeShader.Apply();
+
+    //    var rect = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+
+    //    spriteBatch.Draw(rtLease.Target, rect, rect, Color.White);
+    //    spriteBatch.Restart(ss);
+    //}
+
     private void DrawIcon(UIElement affectedElement)
     {
         Texture2D tex = blessing.Icon.Value;
@@ -521,22 +589,31 @@ public class BlessingButton : UIElement
             timer--;
         }
 
+        siner = Utils.Remap((float)Math.Sin(PriestUIState.gradientTimer * 2f) / 2, -0.6f, 0.6f, 0, 1);
+        //Main.NewText(siner);
+        Color oscillateColor = Color.Lerp(Color.LimeGreen, Main.OurFavoriteColor, siner);
+        _uiPanelGradient.VAlign = 0.72f - siner / 10f;
+
         if (!activated)
         {
             Color Back_BaseColor = Color.Lerp(Colors.InventoryDefaultColor, Color.DarkRed, timer / 10f);
             Color BaseColor = Color.Lerp(new Color(0, 0, 0, 0), new Color(102, 37, 37), timer / 10f);
             Color ToggledBaseColor = Color.Lerp(new Color(60, 61, 97), Color.IndianRed, timer / 10f);
+            Color GradientColor = Color.Lerp(new Color(0, 0, 0, 0), Color.Red, timer / 10f);
 
             _uiPanel.BackgroundColor = Back_BaseColor;
             if (_uiPanel.IsMouseHovering)
             {
                 _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor * 1.5f : BaseColor;
                 _uiPanel.BorderColor = Main.OurFavoriteColor;
+                gradientColor = GradientColor * 1.5f;
             }
             else
             {
                 _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor : BaseColor;
+                //_uiPanel.BorderColor = toggle ? new Color(120, 122, 184) : Color.Black;
                 _uiPanel.BorderColor = Color.Black;
+                gradientColor = GradientColor;
             }
         }
         else
@@ -544,17 +621,20 @@ public class BlessingButton : UIElement
             Color Back_BaseColor = Color.Lerp(new Color(50, 150, 84), Color.Gold, timer / 10f);
             Color BaseColor = Color.Lerp(new Color(0, 0, 0, 0), Main.OurFavoriteColor, timer / 10f);
             Color ToggledBaseColor = Color.Lerp(new Color(45, 110, 56), Main.OurFavoriteColor, timer / 10f);
+            Color GradientColor = Color.Lerp(oscillateColor, Main.OurFavoriteColor, timer / 10f);
 
             _uiPanel.BackgroundColor = Back_BaseColor;
             if (_uiPanel.IsMouseHovering)
             {
                 _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor * 2f : BaseColor;
                 _uiPanel.BorderColor = Main.OurFavoriteColor;
+                gradientColor = Main.OurFavoriteColor * 1.5f;
             }
             else
             {
                 _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor : BaseColor;
-                _uiPanel.BorderColor = Color.MediumSeaGreen;
+                _uiPanel.BorderColor = toggle ? Color.MediumSeaGreen : Color.Black;
+                gradientColor = GradientColor;
             }
         }
         _uiInnerPanel.BackgroundColor *= 2f;

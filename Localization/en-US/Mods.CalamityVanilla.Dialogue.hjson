@@ -7,7 +7,11 @@ Priest: {
 	DayChat5: Ah, sorry, I was just reading one of my scriptures. How may I assist you?
 	NightChat1: Service today was very pleasant. Only a few people arrived, but at least they stayed for the food!
 	NightChat2: I'm not worried about nightmares. I have the lord watch over me while I sleep.
-	NightChat3: A good night's sleep is always important. I wake up extra early, just to pray!
+	NightChat3:
+		'''
+		A good night's sleep is always important. I wake up extra
+		early, just to pray!
+		'''
 	HomelessChat1: I best be taking my leave now. I have a trek of self-realization I must follow!
 	HomelessChat2: It has been a while since I've been in a town. Do people still read illuminated manuscripts?
 	HomelessChat3:

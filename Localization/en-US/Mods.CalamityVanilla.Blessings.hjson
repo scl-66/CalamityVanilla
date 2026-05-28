@@ -16,7 +16,7 @@ Frictionless: {
 
 Moleman: {
 	DisplayName: Moleman
-	Description: Like the lowly mole, the underground has become your sanctuary! Your arms and legs have adapted to the damp caves, but in turn you've become blind as a bat on the surface.
+	Description: Like the lowly mole, the caves have become your sanctuary! Your arms and legs will adapt to the damp caves, but in turn you'll become blind as a bat on the surface.
 	Stats:
 		'''
 		[c/78be78:While underground:]
@@ -33,7 +33,7 @@ NoWings: {
 		'''
 		[c/78be78:While wearing wings:]
 		[c/78be78:+100% acceleration]
-		[c/78be78:+20% maximum movement speed]
+		[c/78be78:+20% max movement speed]
 		[c/be7878:No flight time]
 		'''
 }

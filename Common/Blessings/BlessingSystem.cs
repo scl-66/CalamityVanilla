@@ -289,10 +289,13 @@ public sealed class GreedyBlessingPlayer : BlessingPlayer
     public override int BuffType => ModContent.BuffType<GreedyBlessingBuff>();
     public override void OnHurt(Player.HurtInfo info)
     {
-        LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
-        info.DamageSource.TryGetCausingEntity(out Entity entity);
-        PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
-        Player.KillMe(damageSource, 9999, 0);
+        if (Active)
+        {
+            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
+            info.DamageSource.TryGetCausingEntity(out Entity entity);
+            PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
+            Player.KillMe(damageSource, 9999, 0);
+        }
     }
 }
 public sealed class AdrenalineBlessingBuff : BlessingBuff<AdrenalineBlessingPlayer> { }
@@ -301,10 +304,13 @@ public sealed class AdrenalineBlessingPlayer : BlessingPlayer
     public override int BuffType => ModContent.BuffType<AdrenalineBlessingBuff>();
     public override void OnHurt(Player.HurtInfo info)
     {
-        LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
-        info.DamageSource.TryGetCausingEntity(out Entity entity);
-        PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
-        Player.KillMe(damageSource, 9999, 0);
+        if (Active)
+        {
+            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
+            info.DamageSource.TryGetCausingEntity(out Entity entity);
+            PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
+            Player.KillMe(damageSource, 9999, 0);
+        }
     }
 }
 public sealed class SpawnrateUpBlessingBuff : BlessingBuff<SpawnrateUpBlessingPlayer> { }
@@ -313,9 +319,12 @@ public sealed class SpawnrateUpBlessingPlayer : BlessingPlayer
     public override int BuffType => ModContent.BuffType<SpawnrateUpBlessingBuff>();
     public override void OnHurt(Player.HurtInfo info)
     {
-        LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
-        info.DamageSource.TryGetCausingEntity(out Entity entity);
-        PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
-        Player.KillMe(damageSource, 9999, 0);
+        if (Active)
+        {
+            LocalizedText DeathText = Language.GetText($"Mods.CalamityVanilla.DeathMessage.GreedyDeath{Main.rand.Next(1, 16)}");
+            info.DamageSource.TryGetCausingEntity(out Entity entity);
+            PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(DeathText.ToNetworkText(Player.name, Main.npc[entity.whoAmI].GivenOrTypeName));
+            Player.KillMe(damageSource, 9999, 0);
+        }
     }
 }

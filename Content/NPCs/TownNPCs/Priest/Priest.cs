@@ -1,5 +1,4 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Common.Blessings;
 using CalamityVanilla.Common.UI;
 using System.Collections.Generic;
 using Terraria;
@@ -231,69 +230,71 @@ public class Priest : ModNPC
         {
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.TaxCollectorChat", Main.npc[cyborg].GivenName));
         }
-        // These are things that the NPC has a chance of telling you when you talk to it.
-        chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat1"));
-        chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat2"));
-        chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat3", Main.LocalPlayer.name));
-        chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat4"));
-        chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat5"), 0.5);
-        
-        if (!Main.dayTime){
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.NightChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.NightChat2"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.NightChat3"));
-        }
-
-        if (Main.IsItAHappyWindyDay)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.WindyChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.WindyChat2"));
-        }
-
-        if (Main.raining)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.RainChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.RainChat2"));
-        }
-
-        if (Main.IsItStorming)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.StormChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.StormChat2"));
-        }
-
-        if (Main.bloodMoon)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.BloodMoonChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.BloodMoonChat2"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.BloodMoonChat3"));
-        }
-
-        if (NPC.downedMartians)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.MartianChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.MartianChat2"));
-        }
-
-        if (Main.LocalPlayer.ZoneGraveyard)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.GraveyardChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.GraveyardChat2"));
-        }
-
-        if (BirthdayParty.PartyIsUp)
-        {
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.PartyChat1"));
-            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.PartyChat2"));
-        }
 
         if (NPC.homeless)
         {
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.HomelessChat1"));
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.HomelessChat2"));
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.HomelessChat3"));
-        }
+        } else
+        {
+            // These are things that the NPC has a chance of telling you when you talk to it.
+            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat1"));
+            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat2"));
+            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat3", Main.LocalPlayer.name));
+            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat4"));
+            chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat5"), 0.5);
 
+            if (!Main.dayTime)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.NightChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.NightChat2"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.NightChat3"));
+            }
+
+            if (Main.IsItAHappyWindyDay)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.WindyChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.WindyChat2"));
+            }
+
+            if (Main.raining)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.RainChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.RainChat2"));
+            }
+
+            if (Main.IsItStorming)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.StormChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.StormChat2"));
+            }
+
+            if (Main.bloodMoon)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.BloodMoonChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.BloodMoonChat2"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.BloodMoonChat3"));
+            }
+
+            if (NPC.downedMartians)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.MartianChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.MartianChat2"));
+            }
+
+            if (Main.LocalPlayer.ZoneGraveyard)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.GraveyardChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.GraveyardChat2"));
+            }
+
+            if (BirthdayParty.PartyIsUp)
+            {
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.PartyChat1"));
+                chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.PartyChat2"));
+            }
+        }
         string chosenChat = chat; // chat is implicitly cast to a string. This is where the random choice is made.
 
         return chosenChat;
@@ -354,9 +355,9 @@ public class Priest : ModNPC
     public override void AddShops()
     {
         var npcShop = new NPCShop(Type, ShopName)
-            .Add<Corruption.Items.DarkPrismStaff.DarkPrismStaff>()
-            .Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
-            .Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
+            .Add<Items.PriestWafer>();
+            //.Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
+            //.Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
             //.Add<Items.Consumables.ExampleHealingPotion>(new Condition("Mods.ExampleMod.Conditions.PlayerHasLifeforceBuff", () => Main.LocalPlayer.HasBuff(BuffID.Lifeforce)))
             //.Add<Items.Weapons.ExampleSword>(Condition.MoonPhasesQuarter0)
             ////.Add<ExampleGun>(Condition.MoonPhasesQuarter1)
