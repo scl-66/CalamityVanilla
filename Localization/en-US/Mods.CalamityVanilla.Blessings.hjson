@@ -10,27 +10,17 @@ Base: {
 
 Frictionless: {
 	DisplayName: Unshackled
-	Description:
-		'''
-		Now that the brakes are off, the world is your
-		ice rink. Just be careful not to slip...!
-		'''
+	Description: Now that the brakes are off, the world is your ice rink. Just be careful not to slip...!
 	Stats: "[c/78be78:Blocks have no friction]"
 }
 
 Moleman: {
 	DisplayName: Moleman
-	Description:
-		'''
-		Like the lowly mole, the underground has become your sanctuary!
-		Your arms and legs have adapted to the damp caves, but in turn
-		you've become blind as a bat on the surface.
-		'''
+	Description: Like the lowly mole, the underground has become your sanctuary! Your arms and legs have adapted to the damp caves, but in turn you've become blind as a bat on the surface.
 	Stats:
 		'''
 		[c/78be78:While underground:]
 		[c/78be78:+25% mining speed]
-		[c/78be78:+15% movement speed]
 		[c/78be78:+75% acceleration]
 		[c/be7878:Blinded on surface]
 		'''
@@ -38,12 +28,7 @@ Moleman: {
 
 NoWings: {
 	DisplayName: Stone Feathers
-	Description:
-		'''
-		The wings that once carried you have failed, rendering you
-		hopelessly grounded... you’ll just have to be quicker on
-		your feet instead!
-		'''
+	Description: The wings that once carried you have failed, rendering you hopelessly grounded... you’ll just have to be quicker on your feet instead!
 	Stats:
 		'''
 		[c/78be78:While wearing wings:]
@@ -55,12 +40,7 @@ NoWings: {
 
 Greedy: {
 	DisplayName: Risky Reward
-	Description:
-		'''
-		Greed consumes you, as you pry every last drop from your 
-		opponent’s grasp. But in your plunder, you’ve left yourself 
-		completely defenseless!
-		'''
+	Description: Greed consumes you, as you pry every last drop from your opponent’s grasp. But in your plunder, you’ve left yourself completely defenseless!
 	Stats:
 		'''
 		[c/78be78:x3 enemy and boss loot]
@@ -70,21 +50,13 @@ Greedy: {
 
 SpawnrateUp: {
 	DisplayName: Congregation
-	Description:
-		'''
-		Your amplified energies cause the world’s creatures to 
-		seek you out. Friends and foes alike gather around you!
-		'''
+	Description: Your amplified energies cause the world’s creatures to seek you out. Friends and foes alike gather around you!
 	Stats: "[c/78be78:Spawn rates are tripled]"
 }
 
 Adrenaline: {
 	DisplayName: Adrenaline
-	Description:
-		'''
-		Your heart is racing! Your abilities heighten in the heat of 
-		battle, but that fighting spirit is prone to petering out.
-		'''
+	Description: Your heart is racing! Your abilities heighten in the heat of battle, but that fighting spirit is prone to petering out.
 	Stats:
 		'''
 		[c/78be78:While an enemy is within 15 tiles of you:]

@@ -157,6 +157,30 @@ public sealed class FrictionlessBlessingPlayer : BlessingPlayer
         {
             Player.runAcceleration *= 0.6f;
             Player.runSlowdown = tilesBelow ? 0 : 0.1f;
+            if (tilesBelow)
+            {
+                float velLength = Player.velocity.Length();
+                if (velLength > 3)
+                {
+                    int num = (int)Utils.Remap(velLength, 0, 10, 15, 2, true);
+                    float velX = Math.Clamp(Math.Abs(Player.velocity.X / 15), 0.3f, 10f) * Player.velocity.SafeNormalize(Vector2.UnitX).X - 0.1f;
+                    int i = 1;
+                    if (Math.Abs(velLength) > 7)
+                    {
+                        i = (int)Utils.Remap(velLength, 7, 10, 1, 2);
+                    }
+                    for (int j = 0; j < i; j++)
+                    {
+                        if (Main.rand.NextBool(num))
+                        {
+                            Dust d = Dust.NewDustDirect(Player.position + new Vector2(0, 30), Player.width, Player.width, DustID.Ice, velX/2, -Main.rand.NextFloat(1f, 2f));
+                            d.scale = Main.rand.NextFloat(0.5f, 1.2f);
+                            d.velocity *= 0.5f;
+                            d.noGravity = false;
+                        }
+                    }
+                }
+            }
         }
     }
 
