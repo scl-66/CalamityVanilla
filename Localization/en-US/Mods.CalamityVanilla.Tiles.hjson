@@ -2,3 +2,18 @@ SinisterRoot.MapEntry: Sinister Root
 IceSculptures.MapEntry: Ice Sculpture
 SoulBottleSpiteTile.MapEntry: Soul of Spite in a Bottle
 SoulBottleWhiteTile.MapEntry: Soul of White in a Bottle
+ChessPieceTile.MapEntry: Chess Piece
+BlackChessPieceTile.MapEntry: Black Chess Piece Tile
+WhiteChessPieceTile.MapEntry: White Chess Piece Tile
+BlackBishopTile.MapEntry: Black Bishop Tile
+BlackKingTile.MapEntry: Black King Tile
+BlackKnightTile.MapEntry: Black Knight Tile
+BlackPawnTile.MapEntry: Black Pawn Tile
+BlackQueenTile.MapEntry: Black Queen Tile
+BlackRookTile.MapEntry: Black Rook Tile
+WhiteBishopTile.MapEntry: White Bishop Tile
+WhiteKingTile.MapEntry: White King Tile
+WhiteKnightTile.MapEntry: White Knight Tile
+WhitePawnTile.MapEntry: White Pawn Tile
+WhiteQueenTile.MapEntry: White Queen Tile
+WhiteRookTile.MapEntry: White Rook Tile
