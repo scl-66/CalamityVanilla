@@ -49,6 +49,8 @@ public class DarkPrismStaff : ModItem
 
 public class DarkPrism : ModProjectile
 {
+    private static SoundStyle _impact = new SoundStyle(CalamityVanilla.AssetPath + "Sounds/DarkPrismImpact", 3) { pitchVariance = 0.4f, pitch = -0.2f };
+    private static SoundStyle _death = new SoundStyle(CalamityVanilla.AssetPath + "Sounds/DarkPrismBreak", 2) { pitchVariance = 0.4f, volume = 0.6f, pitch = -0.3f };
     public override void SetStaticDefaults()
     {
         Main.projFrames[Type] = 5;
@@ -97,13 +99,22 @@ public class DarkPrism : ModProjectile
         }
         Projectile.rotation += 0.1f * Projectile.direction * Utils.Remap(Projectile.velocity.Length(), 0.1f, startSpeed, 0.75f, 5f);
 
+        //if (Main.rand.NextBool(5))
+        //{
+        //    var dustType = Main.rand.NextBool() ? DustID.Shadowflame : DustID.ShadowbeamStaff;
+        //    Vector2 vel = Main.rand.NextVector2Circular(Projectile.width / 7, Projectile.height / 7);
+        //    Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame, vel.X, vel.Y);
+        //    d.scale = Main.rand.NextFloat(0.8f, 1.5f);
+        //    d.noGravity = true;
+        //}
         if (Main.rand.NextBool(5))
         {
-            var dustType = Main.rand.NextBool() ? DustID.Shadowflame : DustID.ShadowbeamStaff;
-            Vector2 vel = Main.rand.NextVector2Circular(Projectile.width / 7, Projectile.height / 7);
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame, vel.X, vel.Y);
-            d.scale = Main.rand.NextFloat(0.8f, 1.5f);
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FireworksRGB);
+            d.color = new Color(80, 0, 150) * Utils.Remap(Projectile.velocity.Length(),0,3,0,1);
+            d.velocity = Projectile.velocity;
             d.noGravity = true;
+            d.scale /= 2;
+            d.noLight = d.noLightEmittence = true;
         }
     }
     public override bool OnTileCollide(Vector2 oldVelocity)
@@ -114,7 +125,7 @@ public class DarkPrism : ModProjectile
             Projectile.Kill();
         }
 
-        SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+        SoundEngine.PlaySound(_impact, Projectile.position);
         // If the projectile hits the left or right side of the tile, reverse the X velocity
         if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
         {
@@ -131,7 +142,7 @@ public class DarkPrism : ModProjectile
         {
             Vector2 vector = Projectile.rotation.ToRotationVector2();
             Vector2 vel = oldVelocity.RotatedBy((float)Math.PI * Main.rand.NextFloatDirection() * 0.05f).RotatedByRandom(MathHelper.PiOver2).RotatedBy(MathHelper.Pi) * 0.45f * Main.rand.NextFloat();
-            Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.FireworksRGB, vel, 0, new Color(60, 0, 150), 0.7f);
+            Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.FireworksRGB, vel, 0, new Color(80, 0, 150), 0.7f);
             dust.noGravity = true;
             dust.noLight = (dust.noLightEmittence = true);
             dust.scale = Main.rand.NextFloat(0.7f, 1f);
@@ -148,63 +159,65 @@ public class DarkPrism : ModProjectile
         Projectile.penetrate = -1;
 
         int explosionArea = 30;
-        Vector2 oldSize = Projectile.Size;
-        // Resize the projectile hitbox to be bigger.
-        Projectile.position = Projectile.Center;
-        Projectile.Size += new Vector2(explosionArea);
-        Projectile.Center = Projectile.position;
+        Projectile.Resize(explosionArea, explosionArea);
 
         Projectile.tileCollide = false;
-        Projectile.velocity *= 0.01f;
         // Damage enemies inside the hitbox area
         Projectile.Damage();
-        Projectile.scale = 0.01f;
 
-        //Resize the hitbox to its original size
-        Projectile.position = Projectile.Center;
-        Projectile.Size = new Vector2(10);
-        Projectile.Center = Projectile.position;
+        SoundEngine.PlaySound(_death, Projectile.position);
 
-        //SoundEngine.PlaySound(SoundID.Item4, Projectile.position);
-        SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
-
-        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-        sparkle.LocalPosition = Projectile.Center;
-        sparkle.Scale = new Vector2(2f, 1f);
-        sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f);
-        sparkle.DrawVerticalAxis = true;
-        sparkle.ColorTint = Main.rand.NextBool() ? new Color(106, 0, 255) : new Color(153, 0, 255);
-        sparkle.FadeInEnd = 5;
-        sparkle.FadeOutStart = 8;
-        sparkle.FadeOutEnd = 20;
-        Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-
-        for (int i = 0; i < 30; i++)
+        //for (int i = 0; i < 30; i++)
+        //{
+        //    var dustType = Main.rand.NextBool() ? DustID.Shadowflame : DustID.FireworksRGB;
+        //    Vector2 vector = Projectile.rotation.ToRotationVector2();
+        //    Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, vector.RotatedBy((float)Math.PI * 2f * Main.rand.NextFloatDirection() * 0.02f).RotatedByRandom(MathHelper.TwoPi) * 4f * Main.rand.NextFloat(), 0, dustType == DustID.FireworksRGB ? new Color(60, 0, 150) : Color.White, 0.7f);
+        //    dust.noGravity = true;
+        //    dust.noLight = (dust.noLightEmittence = false);
+        //    if (dustType == DustID.Shadowflame)
+        //    {
+        //        dust.scale = Main.rand.NextFloat(0.9f, 2.05f);
+        //    } else
+        //    {
+        //        dust.scale = Main.rand.NextFloat(0.75f, 1.25f);
+        //    }
+        //}
+        for(int i = 0; i < 5; i++)
         {
-            var dustType = Main.rand.NextBool() ? DustID.Shadowflame : DustID.FireworksRGB;
-            Vector2 vector = Projectile.rotation.ToRotationVector2();
-            Dust dust = Dust.NewDustPerfect(Projectile.Center, dustType, vector.RotatedBy((float)Math.PI * 2f * Main.rand.NextFloatDirection() * 0.02f).RotatedByRandom(MathHelper.TwoPi) * 4f * Main.rand.NextFloat(), 0, dustType == DustID.FireworksRGB ? new Color(60, 0, 150) : Color.White, 0.7f);
-            dust.noGravity = true;
-            dust.noLight = (dust.noLightEmittence = false);
-            if (dustType == DustID.Shadowflame)
+            var p = VanillaParticles.RequestFadingParticle();
+            p.SetBasicInfo(TextureAssets.Extra[ExtrasID.ThePerfectGlow], null, new Vector2(0,Main.rand.NextFloat(1.5f,3f)).RotatedBy((i * MathHelper.TwoPi / 5f) + Main.rand.NextFloat(-1f,1f)), Projectile.Center);
+            p.SetTypeInfo(30);
+            p.AccelerationPerFrame = -p.Velocity / 30f;
+            p.Scale = new Vector2(0.25f,0.5f) * Main.rand.NextFloat(1,2);
+            p.ScaleVelocity = -p.Scale / new Vector2(30,60);
+            p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
+            p.ColorTint = Color.Black;
+            p.FadeInNormalizedTime = 0.15f;
+            p.FadeOutNormalizedTime = 0.5f;
+            Main.ParticleSystem_World_BehindPlayers.Add(p);
+            for(int y = 0; y < 6; y++)
             {
-                dust.scale = Main.rand.NextFloat(0.9f, 2.05f);
-            } else
-            {
-                dust.scale = Main.rand.NextFloat(0.75f, 1.25f);
+                Dust d = Dust.NewDustPerfect(p.LocalPosition, DustID.Stone, p.Velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(3));
+                d.noGravity = true;
+                d.color = Color.Black;
+
             }
+        }
+        for(int i = 0; i < 5; i++)
+        {
+            Dust d2 = Dust.NewDustPerfect(Projectile.Center, DustID.FireworksRGB, Main.rand.NextVector2Square(-2,2));
+            d2.noGravity = true;
+            d2.color = new Color(80, 0, 150);
+            d2.noLight = d2.noLightEmittence = true;
         }
     }
 
     public override bool PreDraw(ref Color lightColor)
     {
-        Texture2D tex = TextureAssets.Projectile[Type].Value;
-        Rectangle frame = tex.Frame(1, 5, 0, Projectile.frame);
-        Texture2D tex2 = TextureAssets.Extra[ExtrasID.SharpTears].Value;
-        Rectangle frame2 = tex2.Frame();
-        if (Main._multiplyBlendState == null)
+        Main.spriteBatch.End(out var ss);
+        Main.spriteBatch.Begin(ss with
         {
-            Main._multiplyBlendState = new BlendState
+            BlendState = new() 
             {
                 ColorBlendFunction = BlendFunction.ReverseSubtract,
                 ColorDestinationBlend = Blend.One,
@@ -212,37 +225,31 @@ public class DarkPrism : ModProjectile
                 AlphaBlendFunction = BlendFunction.ReverseSubtract,
                 AlphaDestinationBlend = Blend.One,
                 AlphaSourceBlend = Blend.SourceAlpha
-            };
-        }
-        Main.spriteBatch.End(out var ss);
-        Main.spriteBatch.Begin(ss with
-        {
-            BlendState = Main._multiplyBlendState
+            }
         });
 
+        Texture2D tex = TextureAssets.Projectile[Type].Value;
+        Rectangle frame = tex.Frame(1, 5, 0, Projectile.frame);
         Vector2 origin = frame.Size() / 2 + new Vector2(0, 2);
-        float squash = MathF.Sin(Projectile.ai[0] / 10) / 13f + 0.5f;
 
-        Vector2 trailOrigin = new(tex.Width * 0.5f, Projectile.height * 0.5f);
         for (int k = Projectile.oldPos.Length - 1; k > 0; k--)
         {
+            float percent = 1f - (k / (float)Projectile.oldPos.Length);
             Vector2 drawPos = (Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition);
-            Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-            Main.EntitySpriteDraw(tex, drawPos, frame, (color * 0.8f).MultiplyRGBA(Color.Lerp(Color.Cyan, Color.Green, squash)), Projectile.rotation, trailOrigin, Projectile.scale, SpriteEffects.None);
+            Main.EntitySpriteDraw(tex, drawPos, frame, Color.Lerp(Color.White,Color.Cyan,percent) * percent * Utils.Remap(Projectile.velocity.Length(),0,3,0,1), Projectile.oldRot[k], origin, Projectile.scale - (1f - percent), SpriteEffects.None);
         }
 
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
-
-        Main.spriteBatch.End(out var ss2);
-        Main.spriteBatch.Begin(ss2 with
-        {
-            BlendState = BlendState.Additive
-        });
-
-        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.Indigo * 0.85f, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
-
         Main.spriteBatch.End();
         Main.spriteBatch.Begin(ss);
+        Color c = Color.Purple with { A = 0 } * Utils.Remap((float)Math.Sin(Main.timeForVisualEffects * 0.1f), -1, 1, 0, 0.75f);
+        if(Projectile.timeLeft < 20)
+        {
+            float percent = Projectile.timeLeft / 20f;
+            c = Color.Lerp(Color.Black,c, percent);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c * (1f - percent) * 0.5f, Projectile.rotation, origin, Projectile.scale * (1f + (1f - percent) * 0.5f), SpriteEffects.None);
+        }
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, c, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
         return false;
     }
 }

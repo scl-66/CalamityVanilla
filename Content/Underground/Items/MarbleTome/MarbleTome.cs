@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common;
+using CalamityVanilla.Common.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -80,7 +81,7 @@ public class MarbleTome : ModItem
     }
 }
 
-public class MarbleTomePillar : ModProjectile
+public class MarbleTomePillar : ModProjectile, ISyncedOnHitEffect
 {
     public override void SetStaticDefaults()
     {
@@ -146,20 +147,6 @@ public class MarbleTomePillar : ModProjectile
     {
         behindNPCsAndTiles.Add(index);
     }
-
-    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-    {
-        SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.8f });
-        int rand = Main.rand.Next(2, 6);
-        for (int i = 0; i < rand; i++)
-        {
-            Dust d = Dust.NewDustDirect(Projectile.Hitbox.ClosestPointInRect(target.position), Projectile.width, Projectile.height, DustID.Marble);
-            d.velocity = Main.rand.NextVector2Circular(1, 1);
-            d.scale = Main.rand.NextFloat(0.5f, 1);
-            //d.noGravity = !Main.rand.NextBool(3);
-        }
-    }
-
     public override void OnKill(int timeLeft)
     {
         SoundEngine.PlaySound(SoundID.NPCDeath43, Projectile.position);
@@ -176,6 +163,19 @@ public class MarbleTomePillar : ModProjectile
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Marble);
             d.velocity = Main.rand.NextVector2Circular(6, 6);
             d.scale = Main.rand.NextFloat(0.5f, 1.5f);
+            //d.noGravity = !Main.rand.NextBool(3);
+        }
+    }
+
+    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    {
+        SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.8f });
+        int rand = Main.rand.Next(2, 6);
+        for (int i = 0; i < rand; i++)
+        {
+            Dust d = Dust.NewDustPerfect(Projectile.Hitbox.ClosestPointInRect(target.position) + Main.rand.NextVector2Square(-8, 8), DustID.Marble);
+            d.velocity = Main.rand.NextVector2Circular(1, 1);
+            d.scale = Main.rand.NextFloat(0.5f, 1);
             //d.noGravity = !Main.rand.NextBool(3);
         }
     }

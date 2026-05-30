@@ -8,6 +8,7 @@ namespace CalamityVanilla;
 
 public partial class CalamityVanilla : Mod, IHasCustomAuthorMessage
 {
+    public const string AssetPath = "CalamityVanilla/Assets/";
     public string GetAuthorText()
     {
         return AuthorText.GetAuthorTooltip(this, headerText: null);

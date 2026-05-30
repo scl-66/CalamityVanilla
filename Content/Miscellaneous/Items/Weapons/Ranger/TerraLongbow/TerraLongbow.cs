@@ -1,10 +1,9 @@
-﻿using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Common.Interfaces;
+using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Linq;
-using System.Transactions;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -70,7 +69,7 @@ public class TerraLongbowHeld : ModProjectile
     public int ShootCount = 0;
     public override void SetStaticDefaults()
     {
-        Main.projFrames[Type] = 4;
+        Main.projFrames[Type] = 8;
     }
     public override void SetDefaults()
     {
@@ -81,9 +80,9 @@ public class TerraLongbowHeld : ModProjectile
         Projectile.tileCollide = false;
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.ignoreWater = true;
-
+        Projectile.hide = true;
         // Adjust the drawing to change how it appears when held
-        DrawOffsetX = -15;
+        DrawOffsetX = -34;
         DrawOriginOffsetY = -25;
     }
     public override bool? CanDamage() => false;
@@ -284,8 +283,7 @@ public class TerraLongbowHeld : ModProjectile
             ShootTimer = 0f;
         }
         #endregion
-
-        Vector2 playerCenter = player.RotatedRelativePoint(player.MountedCenter);
+        Vector2 playerCenter = player.RotatedRelativePoint(player.MountedCenter) + new Vector2(0,-player.gfxOffY);
         Vector2 toMouse = Vector2.Normalize(Main.MouseWorld - playerCenter);
         float holdoutDist = TerraLongbow.HoldoutDistance * Projectile.scale;
         Vector2 holdoutOffset = holdoutDist * toMouse;
@@ -308,18 +306,6 @@ public class TerraLongbowHeld : ModProjectile
                 //shoot projectiles
                 if (ammoConsumed)
                 {
-                    PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-                    sparkle.LocalPosition = Projectile.Center + holdoutOffset/2;
-                    sparkle.Velocity = player.velocity;
-                    sparkle.Scale = new Vector2(1.5f, 0.8f);
-                    sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f);
-                    sparkle.DrawVerticalAxis = true;
-                    sparkle.ColorTint = Main.rand.NextBool() ? new Color(177, 255, 75) : new Color(255, 211, 47);
-                    sparkle.FadeInEnd = 5;
-                    sparkle.FadeOutStart = 5;
-                    sparkle.FadeOutEnd = 20;
-                    Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-
                     float baseSpeed = 35f;
                     var source = player.GetSource_ItemUse_WithPotentialAmmo(heldItem, usedAmmoItemId);
                     Vector2 velocity = Vector2.Normalize(Projectile.velocity) * baseSpeed;
@@ -368,21 +354,17 @@ public class TerraLongbowHeld : ModProjectile
                     }
                     ShootCount++;
                 }
-            } else {
+            } 
+            else 
                 Projectile.Kill();
-            }
         }
         #endregion
 
         #region frame animation
-        if (++Projectile.frameCounter == 6)
+        if (Projectile.frame < Main.projFrames[Type] - 1 && ++Projectile.frameCounter >= 3)
         {
-            ++Projectile.frame;
+            Projectile.frame++;
             Projectile.frameCounter = 0;
-            if (Projectile.frame >= Main.projFrames[Type])
-            {
-                Projectile.frame = 0;
-            }
         }
         #endregion
 
@@ -391,7 +373,7 @@ public class TerraLongbowHeld : ModProjectile
         {
             SoundEngine.PlaySound(SoundID.Item102, Projectile.position);
             SoundEngine.PlaySound(SoundID.Item109 with { Volume = 0.7f }, Projectile.position);
-
+            Projectile.frame = 0;
             for (int i = 0; i < 20; i++)
             {
                 float projRotation = Projectile.rotation - (Projectile.direction == 1 ? 0 : MathHelper.Pi);
@@ -400,7 +382,7 @@ public class TerraLongbowHeld : ModProjectile
                 float rand = Main.rand.NextFloat(0.5f, 1f);
                 Vector2 speed = rotatedArc * 8f * rand + player.velocity;
                 Dust d = Dust.NewDustDirect(Projectile.position, 8, 8, DustID.Terra, speed.X, speed.Y);
-                d.noGravity = true;
+                d.noGravity = !Main.rand.NextBool(3);
                 //d.velocity *= 0.85f;
                 d.scale = rand + 0.25f + Main.rand.NextFloat(-0.15f, 0.15f);
             }
@@ -429,12 +411,13 @@ public class TerraLongbowHeld : ModProjectile
 
     public override Color? GetAlpha(Color lightColor)
     {
-        return Color.White;
+        return Color.White with { A = 200};
     }
 }
 
-public class TerraBolt : ModProjectile
+public class TerraBolt : ModProjectile, ISyncedOnHitEffect
 {
+    private static SoundStyle _impact = new SoundStyle(CalamityVanilla.AssetPath + "Sounds/TerrabowImpact", 5) { pitchVariance = 0.5f, pitch = -0.3f, MaxInstances = 16, volume = 0.5f };
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -447,64 +430,12 @@ public class TerraBolt : ModProjectile
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.arrow = true;
         Projectile.penetrate = 2;
-        Projectile.timeLeft = 40;
+        Projectile.timeLeft = 50;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
     }
-    public override void OnKill(int timeLeft)
-    {
-        //for (int i = 0; i < 15; i++)
-        //{
-        //    Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
-        //    d.velocity *= 2.3f;
-        //    d.noGravity = true;
-        //    if (Projectile.ai[0] == 0)
-        //        d.color = Color.Lerp(new Color(0, 255, 255), new Color(128, 0, 200), Main.rand.NextFloat());
-        //    else
-        //        d.color = Color.Lerp(new Color(255, 160, 0), new Color(128, 0, 160), Main.rand.NextFloat());
-        //    d.color.A = 0;
-        //}
-
-        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-        sparkle.LocalPosition = Projectile.Center;
-        sparkle.Scale = new Vector2(4f, 1.3f);
-        sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f);
-        sparkle.DrawVerticalAxis = true;
-        sparkle.ColorTint = Main.rand.NextBool() ? new Color(177, 255, 75) : new Color(255, 211, 47);
-        sparkle.FadeInEnd = 5;
-        sparkle.FadeOutStart = 5;
-        sparkle.FadeOutEnd = 20;
-        Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-        for (int i = 0; i < 5; i++)
-        {
-            Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Terra, new Vector2(0, Main.rand.NextFloat(-5, 5)).RotatedBy(sparkle.Rotation + Main.rand.NextFloat(-0.3f, 0.3f)));
-            d.noGravity = true;
-            d.scale = Main.rand.NextFloat(0.8f, 1.2f);
-            //d.color = sparkle.ColorTint;
-            d.fadeIn = Main.rand.NextFloat(1.5f);
-            Dust d2 = Dust.NewDustPerfect(Projectile.Center, DustID.Terra, new Vector2(Main.rand.NextFloat(-7, 7), 0).RotatedBy(sparkle.Rotation + Main.rand.NextFloat(-0.3f, 0.3f)));
-            d2.scale = Main.rand.NextFloat(0.8f, 1.2f);
-            d2.noGravity = true;
-            //d2.color = sparkle.ColorTint;
-            d2.fadeIn = Main.rand.NextFloat(1.5f);
-        }
-    }
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
-        if (Main.rand.NextBool(3))
-        {
-            PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-            sparkle.LocalPosition = Projectile.Center;
-            sparkle.Scale = new Vector2(1.5f, 0.8f);
-            sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f);
-            sparkle.DrawVerticalAxis = true;
-            sparkle.ColorTint = Main.rand.NextBool() ? new Color(177, 255, 75) : new Color(255, 211, 47);
-            sparkle.FadeInEnd = 5;
-            sparkle.FadeOutStart = 5;
-            sparkle.FadeOutEnd = 20;
-            Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-        }
-
         int target = Projectile.FindTargetWithLineOfSight(500);
 
         if (target == -1)
@@ -519,7 +450,7 @@ public class TerraBolt : ModProjectile
             Projectile.velocity = Projectile.DirectionTo(Main.npc[target].Center).RotatedByRandom(0.1f) * oldVelocity.Length();
         }
 
-        SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+        SoundEngine.PlaySound(_impact, Projectile.position);
 
         Projectile.damage = (int)(Projectile.damage * 0.95f);
 
@@ -533,7 +464,7 @@ public class TerraBolt : ModProjectile
     public override void AI()
     {
         Projectile.frameCounter++;
-        if (Projectile.frameCounter > 4)
+        if (Projectile.frameCounter > 2)
         {
             Projectile.frame++;
             Projectile.frameCounter = 0;
@@ -544,13 +475,20 @@ public class TerraBolt : ModProjectile
         }
         Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
 
-        if (Main.rand.NextBool(4))
+        if (Main.rand.NextBool(8))
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
+            //Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
+            //d.velocity *= 0.3f;
+            //d.velocity += Projectile.velocity * 0.2f;
+            //d.noGravity = true;
+            //d.color = Color.Lerp(new Color(50, 90, 200), new Color(50, 200, 30), Main.rand.NextFloat());
+            //d.color.A = 0;
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Terra);
             d.velocity *= 0.3f;
-            d.noGravity = true;
-            d.color = Color.Lerp(new Color(50, 90, 200), new Color(50, 200, 30), Main.rand.NextFloat());
-            d.color.A = 0;
+            d.velocity += Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.2f);
+            d.noGravity = !Main.rand.NextBool(8);
+            d.scale = 0.25f;
+            d.fadeIn = 0.7f;
         }
 
         int target = Projectile.FindTargetWithLineOfSight(400);
@@ -560,24 +498,89 @@ public class TerraBolt : ModProjectile
             Projectile.velocity += Projectile.DirectionTo(Main.npc[target].Center) * 1f;
             Projectile.velocity = Projectile.velocity.LengthClamp(Projectile.oldVelocity.Length(), 12f);
         }
+        if(Projectile.timeLeft < 20)
+        {
+            Projectile.Opacity -= 0.025f;
+            Projectile.velocity *= 0.9f;
+        }
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
         Projectile.damage = (int)(Projectile.damage * 0.5f);
     }
-
+    public override void OnKill(int timeLeft)
+    {
+        SoundEngine.PlaySound(_impact, Projectile.position);
+        for (int i = 0; i < 15; i++)
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,DustID.Terra);
+            d.velocity += Projectile.velocity * 0.1f;
+            d.noGravity = true;
+        }
+    }
     public override bool PreDraw(ref Color lightColor)
     {
         Asset<Texture2D> tex = TextureAssets.Projectile[Type];
         Rectangle frame = tex.Frame(1, 4, 0, Projectile.frame);
+        float glowOpacity = MathF.Pow(Projectile.Opacity, 4);
         for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
         {
             float multiply = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Type];
-            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2]/3), multiply * multiply) * multiply, Projectile.oldRot[i], frame.Size() / 2, 1f + multiply * 0.2f, SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2]/3), multiply * multiply) * multiply * glowOpacity, Projectile.oldRot[i], frame.Size() / 2, 1f + multiply * 0.2f, SpriteEffects.FlipVertically);
         }
 
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, new Color(1f, 1f, 1f, 1f), Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.FlipVertically);
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, new Color(1f, 1f, 1f, 1f) * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.FlipVertically);
+
+        Asset<Texture2D> glow = TextureAssets.Extra[ExtrasID.ThePerfectGlow];
+        Vector2 velocityNormal = Vector2.Normalize(Projectile.velocity);
+        Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(0.2f, 0.85f, 0.4f, 0.5f) * glowOpacity, Projectile.rotation, glow.Size() / 2, new Vector2(0.4f,1f), SpriteEffects.FlipVertically);
+        Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(1f, 1f, 1f, 0f) * 0.5f * glowOpacity, Projectile.rotation, glow.Size() / 2, new Vector2(0.2f, 0.8f), SpriteEffects.FlipVertically);
+
+        float sin = Utils.Remap((float)Math.Sin(Main.timeForVisualEffects * 0.5f), -1, 1, 0, 1);
+
+        Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(0.2f, 0.85f, 0.4f, 0.5f) * glowOpacity, Projectile.rotation + MathHelper.PiOver2, glow.Size() / 2, new Vector2(0.4f, 0.7f * sin), SpriteEffects.FlipVertically);
+        Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(1f, 1f, 1f, 0f) * 0.5f * glowOpacity, Projectile.rotation + MathHelper.PiOver2, glow.Size() / 2, new Vector2(0.2f, 0.5f * sin), SpriteEffects.FlipVertically);
         return false;
+    }
+
+    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    {
+        for (int i = -1; i < 2; i += 2)
+        {
+            var p = VanillaParticles.RequestPrettySparkleParticle();
+            p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
+            p.LocalPosition = Projectile.Center;
+            p.Rotation = Projectile.velocity.ToRotation();
+            p.Scale = new Vector2(3, 0.5f);
+            p.FadeInNormalizedTime = 5E-06f;
+            p.FadeOutNormalizedTime = 0.95f;
+            p.TimeToLive = 30;
+            p.AdditiveAmount = 0.35f;
+            p.DrawVerticalAxis = false;
+            p.Velocity = Projectile.velocity * 0.05f * (i + 0.25f);
+            Main.ParticleSystem_World_OverPlayers.Add(p);
+
+            var p2 = VanillaParticles.RequestPrettySparkleParticle();
+            p2.ColorTint = p.ColorTint;
+            p2.LocalPosition = p.LocalPosition;
+            p2.Rotation = p.Rotation + MathHelper.PiOver2;
+            p2.Scale = new Vector2(3, 0.2f);
+            p2.FadeInNormalizedTime = p.FadeInNormalizedTime;
+            p2.FadeOutNormalizedTime = p.FadeOutNormalizedTime;
+            p2.TimeToLive = p.TimeToLive;
+            p2.AdditiveAmount = p.AdditiveAmount;
+            p2.DrawVerticalAxis = false;
+            p2.Velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2) * 0.02f * i;
+            Main.ParticleSystem_World_OverPlayers.Add(p2);
+
+            for (int y = 0; y < 2; y++)
+            {
+                Dust d = Dust.NewDustPerfect(p.LocalPosition, DustID.Terra, p.Velocity.RotatedByRandom(1) * Main.rand.NextFloat(4));
+                d.noGravity = true;
+                Dust d2 = Dust.NewDustPerfect(p2.LocalPosition, DustID.Terra, p2.Velocity.RotatedByRandom(1) * Main.rand.NextFloat(4));
+                d2.noGravity = true;
+            }
+        }
     }
 }
