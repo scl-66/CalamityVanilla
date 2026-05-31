@@ -417,7 +417,7 @@ public class TerraLongbowHeld : ModProjectile
 
 public class TerraBolt : ModProjectile, ISyncedOnHitEffect
 {
-    private static SoundStyle _impact = new SoundStyle(CalamityVanilla.AssetPath + "Sounds/TerrabowImpact", 5) { pitchVariance = 0.5f, pitch = -0.3f, MaxInstances = 16, volume = 0.5f };
+    //private static SoundStyle _impact = new SoundStyle(CalamityVanilla.AssetPath + "Sounds/TerrabowImpact", 5) { pitchVariance = 0.5f, pitch = -0.3f, MaxInstances = 16, volume = 0.5f };
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -450,7 +450,8 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
             Projectile.velocity = Projectile.DirectionTo(Main.npc[target].Center).RotatedByRandom(0.1f) * oldVelocity.Length();
         }
 
-        SoundEngine.PlaySound(_impact, Projectile.position);
+        //SoundEngine.PlaySound(_impact, Projectile.position);
+        SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
 
         Projectile.damage = (int)(Projectile.damage * 0.95f);
 
@@ -511,7 +512,7 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(_impact, Projectile.position);
+        //SoundEngine.PlaySound(_impact, Projectile.position);
         for (int i = 0; i < 15; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,DustID.Terra);
@@ -523,7 +524,7 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
     {
         Asset<Texture2D> tex = TextureAssets.Projectile[Type];
         Rectangle frame = tex.Frame(1, 4, 0, Projectile.frame);
-        float glowOpacity = MathF.Pow(Projectile.Opacity, 4);
+        float glowOpacity = MathF.Pow(Projectile.Opacity, 8);
         for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
         {
             float multiply = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Type];
