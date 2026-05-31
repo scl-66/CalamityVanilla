@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common;
+using CalamityVanilla.Content;
 using CalamityVanilla.Common.UI;
 using System.Collections.Generic;
 using Terraria;
@@ -355,7 +356,22 @@ public class Priest : ModNPC
     public override void AddShops()
     {
         var npcShop = new NPCShop(Type, ShopName)
-            .Add<Items.PriestWafer>();
+            .Add<Items.PriestWafer>()
+            .Add<Items.FruitPunchBowl>()
+            .Add<Items.CheckerBlock.CheckerBlock>()
+            .Add(Mod.Find<ModItem>("WhitePawn").Type)
+            .Add(Mod.Find<ModItem>("WhiteRook").Type)
+            .Add(Mod.Find<ModItem>("WhiteKnight").Type)
+            .Add(Mod.Find<ModItem>("WhiteBishop").Type)
+            .Add(Mod.Find<ModItem>("WhiteQueen").Type)
+            .Add(Mod.Find<ModItem>("WhiteKing").Type)
+            .Add(Mod.Find<ModItem>("BlackPawn").Type)
+            .Add(Mod.Find<ModItem>("BlackRook").Type)
+            .Add(Mod.Find<ModItem>("BlackKnight").Type)
+            .Add(Mod.Find<ModItem>("BlackBishop").Type)
+            .Add(Mod.Find<ModItem>("BlackQueen").Type)
+            .Add(Mod.Find<ModItem>("BlackKing").Type)
+            ;
             //.Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
             //.Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
             //.Add<Items.Consumables.ExampleHealingPotion>(new Condition("Mods.ExampleMod.Conditions.PlayerHasLifeforceBuff", () => Main.LocalPlayer.HasBuff(BuffID.Lifeforce)))

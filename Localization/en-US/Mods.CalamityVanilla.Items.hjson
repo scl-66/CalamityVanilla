@@ -557,3 +557,78 @@ PriestWafer: {
 		‘Once you pope, you can't stope!’
 		'''
 }
+
+CheckerBlock: {
+	DisplayName: Checker Block
+	Tooltip: ""
+}
+
+InvertedCheckerBlock: {
+	DisplayName: Inverted Checker Block
+	Tooltip: ""
+}
+
+BlackBishop: {
+	DisplayName: Black Bishop
+	Tooltip: "'Black to move'"
+}
+
+BlackKing: {
+	DisplayName: Black King
+	Tooltip: "'Black to move'"
+}
+
+BlackKnight: {
+	DisplayName: Black Knight
+	Tooltip: "'Black to move'"
+}
+
+BlackPawn: {
+	DisplayName: Black Pawn
+	Tooltip: "'Black to move'"
+}
+
+BlackQueen: {
+	DisplayName: Black Queen
+	Tooltip: "'Black to move'"
+}
+
+BlackRook: {
+	DisplayName: Black Rook
+	Tooltip: "'Black to move'"
+}
+
+WhiteBishop: {
+	DisplayName: White Bishop
+	Tooltip: "'White to move'"
+}
+
+WhiteKing: {
+	DisplayName: White King
+	Tooltip: "'White to move'"
+}
+
+WhiteKnight: {
+	DisplayName: White Knight
+	Tooltip: "'White to move'"
+}
+
+WhitePawn: {
+	DisplayName: White Pawn
+	Tooltip: "'White to move'"
+}
+
+WhiteQueen: {
+	DisplayName: White Queen
+	Tooltip: "'White to move'"
+}
+
+WhiteRook: {
+	DisplayName: White Rook
+	Tooltip: "'White to move'"
+}
+
+FruitPunchBowl: {
+	DisplayName: Fruit Punch Bowl
+	Tooltip: ""
+}

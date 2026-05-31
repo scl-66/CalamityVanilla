@@ -16,3 +16,14 @@ AuthorTags: {
 }
 
 WorldGen.RockTomeMessage: Mods.CalamityVanilla.WorldGen.RockTomeMessage
+
+ChessPiece: {
+	White: White
+	Black: Black
+	Pawn: Pawn
+	Rook: Rook
+	Knight: Knight
+	Bishop: Bishop
+	Queen: Queen
+	King: King
+}

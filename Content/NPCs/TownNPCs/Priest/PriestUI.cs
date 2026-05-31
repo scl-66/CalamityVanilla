@@ -105,26 +105,18 @@ public class PriestUIState : UIState
         brightPanel._barSize = 16;
         panel.Append(brightPanel);
 
-        text = new UIText(textValue = "", 1f);
-        text.Width.Set(0, 0.48f);
-        text.Height.Set(10, 0f);
-        text.Top.Set(-5, 0f);
-        text.HAlign = 0f;
-        text.VAlign = 0f;
-        text.TextOriginX = 0.65f;
-        text.TextOriginY = 0;
+
+        text = new UIText(textValue = "", 0.95f);
+        text.Width.Set(-20, 0.5f);
+        text.Left.Set(2, 0f);
         text.IsWrapped = true;
         brightPanel.Append(text);
 
-        statsText = new UIText(statsTextValue = "", 1f);
-        statsText.Width.Set(0, 0.5f);
-        statsText.Height.Set(10, 0f);
-        statsText.Top.Set(-5, 0f);
-        statsText.HAlign = 1.0f;
-        statsText.VAlign = 0f;
-        statsText.TextOriginX = 0.5f;
-        statsText.TextOriginY = 0;
-        statsText.IsWrapped = false;
+
+        statsText = new UIText(statsTextValue = "", 0.95f);
+        statsText.Width.Set(30, 0.6f);
+        statsText.Left.Set(0, 0.42f);
+        statsText.IsWrapped = true;
         brightPanel.Append(statsText);
 
         partSprite = Main.Assets.Request<Texture2D>("Images/UI/Creative/Research_Spark", AssetRequestMode.ImmediateLoad);
@@ -566,7 +558,7 @@ public class BlessingButton : UIElement
     private void DrawIcon(UIElement affectedElement)
     {
         Texture2D tex = blessing.Icon.Value;
-        Rectangle frame = tex.Frame(1, 2, 0, activated ? 0 : 1);
+        Rectangle frame = tex.Frame(1, 2, 0, 1);
         Main.spriteBatch.Draw(tex, affectedElement.GetDimensions().Center(), frame, Color.White, 0, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
     }
     private void DrawArrow(UIElement affectedElement)
@@ -598,13 +590,13 @@ public class BlessingButton : UIElement
         {
             Color Back_BaseColor = Color.Lerp(Colors.InventoryDefaultColor, Color.DarkRed, timer / 10f);
             Color BaseColor = Color.Lerp(new Color(0, 0, 0, 0), new Color(102, 37, 37), timer / 10f);
-            Color ToggledBaseColor = Color.Lerp(new Color(60, 61, 97), Color.IndianRed, timer / 10f);
+            Color ToggledBaseColor = Color.Lerp(new Color(50, 51, 87), Color.IndianRed, timer / 10f);
             Color GradientColor = Color.Lerp(new Color(0, 0, 0, 0), Color.Red, timer / 10f);
 
             _uiPanel.BackgroundColor = Back_BaseColor;
             if (_uiPanel.IsMouseHovering)
             {
-                _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor * 1.5f : BaseColor;
+                _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor * 1.25f : BaseColor;
                 _uiPanel.BorderColor = Main.OurFavoriteColor;
                 gradientColor = GradientColor * 1.5f;
             }
@@ -626,7 +618,7 @@ public class BlessingButton : UIElement
             _uiPanel.BackgroundColor = Back_BaseColor;
             if (_uiPanel.IsMouseHovering)
             {
-                _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor * 2f : BaseColor;
+                _uiInnerPanel.BackgroundColor = toggle ? ToggledBaseColor * 1.5f : BaseColor;
                 _uiPanel.BorderColor = Main.OurFavoriteColor;
                 gradientColor = Main.OurFavoriteColor * 1.5f;
             }

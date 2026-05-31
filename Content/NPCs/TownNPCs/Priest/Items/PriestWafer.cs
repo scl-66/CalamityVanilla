@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Daybreak.Common.Features.Hooks.GlobalItemHooks;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
 
@@ -33,7 +34,14 @@ public class PriestWafer : ModItem
         // This code matches the ApplePie code.
 
         // DefaultToFood sets all of the food related item defaults such as the buff type, buff duration, use sound, and animation time.
-        Item.DefaultToFood(22, 22, 2, -1); // 57600 is 16 minutes: 16 * 60 * 60
+        Item.UseSound = SoundID.Item2;
+        Item.useStyle = ItemUseStyleID.EatFood;
+        Item.useTurn = true;
+        Item.useAnimation = (Item.useTime = 17);
+        Item.maxStack = Item.CommonMaxStack;
+        Item.consumable = true;
+        Item.width = 26;
+        Item.height = 26;
         Item.value = Item.buyPrice(0, 0, 5);
         Item.rare = ItemRarityID.LightRed;
     }
