@@ -358,6 +358,7 @@ public class Priest : ModNPC
         var npcShop = new NPCShop(Type, ShopName)
             .Add<Items.PriestWafer>()
             .Add<Items.FruitPunchBowl>()
+            .Add<Items.CruetBottle>()
             .Add<Items.CheckerBlock.CheckerBlock>()
             .Add(Mod.Find<ModItem>("WhitePawn").Type)
             .Add(Mod.Find<ModItem>("WhiteRook").Type)

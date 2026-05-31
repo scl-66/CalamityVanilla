@@ -630,5 +630,20 @@ WhiteRook: {
 
 FruitPunchBowl: {
 	DisplayName: Fruit Punch Bowl
-	Tooltip: ""
+	Tooltip:
+		'''
+		<right> with a potion to fill
+		The potion can be retrieved by using <right> with an empty bottle
+		Otherwise, using <right> will drink the potion
+		'''
+}
+
+CruetBottle: {
+	DisplayName: Cruet Bottle
+	Tooltip:
+		'''
+		<right> with a potion to fill
+		The potion can be retrieved by using <right> with an empty bottle
+		Otherwise, using <right> will drink the potion
+		'''
 }

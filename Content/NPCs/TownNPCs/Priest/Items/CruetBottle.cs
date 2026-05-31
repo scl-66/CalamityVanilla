@@ -1,6 +1,7 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Content.Dusts;
 using Daybreak.Common.Rendering;
+using log4net.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -19,7 +20,7 @@ using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
 
-public class FruitPunchBowlEntity : ModTileEntity
+public class CruetBottleEntity : ModTileEntity
 {
     public int potionType;
     public bool filled;
@@ -29,7 +30,7 @@ public class FruitPunchBowlEntity : ModTileEntity
     {
         Tile tile = Main.tile[x, y];
         //The MyTile class is shown later
-        return tile.HasTile && tile.TileType == ModContent.TileType<FruitPunchBowlTile>();
+        return tile.HasTile && tile.TileType == ModContent.TileType<CruetBottleTile>();
     }
 
     public override void Update()
@@ -48,7 +49,7 @@ public class FruitPunchBowlEntity : ModTileEntity
         }
     }
 }
-public class FruitPunchBowlTile : ModTile
+public class CruetBottleTile : ModTile
 {
     public bool heldItemIsPotionable;
 
@@ -56,24 +57,24 @@ public class FruitPunchBowlTile : ModTile
     {
         HitSound = SoundID.Shatter;
         DustType = DustID.Glass;
-        AddMapEntry(new Color(219, 226, 225), Language.GetText("Mods.CalamityVanilla.Items.FruitPunchBowl.DisplayName"));
+        AddMapEntry(new Color(219, 226, 225), Language.GetText("Mods.CalamityVanilla.Items.CruetBottle.DisplayName"));
         Main.tileFrameImportant[Type] = true;
         Main.tileNoAttach[Type] = true;
         Main.tileObsidianKill[Type] = true;
-        TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
-        TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.Table, TileObjectData.Style2x1.Width, 0);
-        TileObjectData.newTile.HookPostPlaceMyPlayer = ModContent.GetInstance<FruitPunchBowlEntity>().Generic_HookPostPlaceMyPlayer;
+        TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
+        TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.Table, TileObjectData.Style1x2.Width, 0);
+        TileObjectData.newTile.HookPostPlaceMyPlayer = ModContent.GetInstance<CruetBottleEntity>().Generic_HookPostPlaceMyPlayer;
         TileObjectData.addTile(Type);
     }
 
     public override void KillMultiTile(int i, int j, int frameX, int frameY)
     {
-        ModContent.GetInstance<FruitPunchBowlEntity>().Kill(i, j);
+        ModContent.GetInstance<CruetBottleEntity>().Kill(i, j);
     }
 
     public override void MouseOver(int i, int j)
     {
-        if (TileEntity.TryGet(i, j, out FruitPunchBowlEntity entity))
+        if (TileEntity.TryGet(i, j, out CruetBottleEntity entity))
         {
             Player player = Main.LocalPlayer;
             Item item = player.HeldItem;
@@ -100,7 +101,7 @@ public class FruitPunchBowlTile : ModTile
 
     public override bool RightClick(int i, int j)
     {
-        if (TileEntity.TryGet(i, j, out FruitPunchBowlEntity entity))
+        if (TileEntity.TryGet(i, j, out CruetBottleEntity entity))
         {
             Player player = Main.LocalPlayer;
             Item item = player.HeldItem;
@@ -183,9 +184,9 @@ public class FruitPunchBowlTile : ModTile
 
     public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
     {
-        if (TileEntity.TryGet(i, j, out FruitPunchBowlEntity entity) && entity.filled)
+        if (TileEntity.TryGet(i, j, out CruetBottleEntity entity) && entity.filled)
         {
-            var tex = ModContent.Request<Texture2D>("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/FruitPunchBowlTile_Juice").Value;
+            var tex = ModContent.Request<Texture2D>("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CruetBottleTile_Juice").Value;
             if (entity.juiceColor == null)
             {
                 entity.juiceColor = Color.White;
@@ -211,11 +212,11 @@ public class FruitPunchBowlTile : ModTile
     }
 }
 
-public class FruitPunchBowl : ModItem
+public class CruetBottle : ModItem
 {
     public override void SetDefaults()
     {
-        Item.DefaultToPlaceableTile(ModContent.TileType<FruitPunchBowlTile>());
+        Item.DefaultToPlaceableTile(ModContent.TileType<CruetBottleTile>());
         Item.value = Item.buyPrice(0, 0, 15, 0);
     }
 }
