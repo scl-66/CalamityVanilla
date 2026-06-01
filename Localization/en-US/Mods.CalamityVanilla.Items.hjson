@@ -647,3 +647,8 @@ CruetBottle: {
 		Otherwise, using <right> will drink the potion
 		'''
 }
+
+BlacklightScepter: {
+	DisplayName: Blacklight Scepter
+	Tooltip: "Shoots fluorescent energy"
+}
