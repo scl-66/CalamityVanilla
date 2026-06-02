@@ -51,10 +51,10 @@ public class BlacklightScepter : ModItem
         int rand = Main.rand.Next(0, 2);
         for (int i = -1; i < rand; i++)
         {
-            float randomWidth = MathHelper.Pi / 55;
-            float spread = MathHelper.Pi / 25;
+            float randomWidth = MathHelper.Pi / 48;
+            float spread = MathHelper.Pi / 32;
             float randRotation = Main.rand.NextFloat(-randomWidth, randomWidth);
-            float randVel = 0.75f + Main.rand.NextFloat(-randomWidth, randomWidth) * 1.5f;
+            float randVel = 0.85f + Main.rand.NextFloat(-randomWidth, randomWidth);
             int randType = Main.rand.Next(0, 3);
             if (rand == 2)
             {
@@ -65,7 +65,7 @@ public class BlacklightScepter : ModItem
                 randRotation += MathHelper.Pi/16 * -player.direction;
                 velocity *= 1.5f;
             }
-            Projectile.NewProjectile(source, position + new Vector2(35, 0).RotatedBy(position.DirectionTo(Main.MouseWorld).ToRotation()), velocity.RotatedBy(randRotation) * randVel, type, (int)(damage / 1.5f), knockback, player.whoAmI, randType, 0, Item.shootSpeed);
+            Projectile.NewProjectile(source, position + new Vector2(35, 0).RotatedBy(position.DirectionTo(Main.MouseWorld).ToRotation()), (velocity.RotatedBy(randRotation) * randVel).LengthClamp(19), type, damage, knockback, player.whoAmI, randType, 0, Item.shootSpeed);
         }
         return false;
     }
@@ -144,6 +144,7 @@ public class BlacklightEnergy : ModProjectile
 
     public override void AI()
     {
+
         float mult = Utils.Remap(Projectile.velocity.Length(), 0, 20, 0.5f, 3f);
         Projectile.scale = 1 + (MathF.Sin(Projectile.timeLeft * 0.45f) * mult/10);
         Projectile.rotation = Projectile.velocity.ToRotation();
@@ -191,6 +192,7 @@ public class BlacklightEnergy : ModProjectile
         SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
         if (Projectile.ai[0] == 1)
         {
+            Projectile.damage = (int)(Projectile.damage * 0.8f);
             Projectile.penetrate--;
             if (Projectile.penetrate <= 0)
             {
@@ -218,7 +220,7 @@ public class BlacklightEnergy : ModProjectile
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        base.OnHitNPC(target, hit, damageDone);
+        Projectile.damage = (int)(Projectile.damage * 0.8f);
     }
 
     public override void OnKill(int timeLeft)
@@ -304,7 +306,7 @@ public class BlacklightEnergy : ModProjectile
             {
                 float percent = 1f - (k / (float)Projectile.oldPos.Length);
                 Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[k], Projectile.oldPos[k + 1], i / (float)length) - Main.screenPosition);
-                Main.EntitySpriteDraw(glowTex.Value, drawPos + Projectile.Size / 2, null, col * Projectile.Opacity * (1f - k / (float)length), Projectile.oldRot[k] + MathHelper.PiOver2, glowTex.Size() / 2, new Vector2(0.5f, (length - k) / 5), SpriteEffects.None);
+                Main.EntitySpriteDraw(glowTex.Value, drawPos + Projectile.Size / 2, null, col * Projectile.Opacity * (1f - k / (float)length), Projectile.oldRot[k] + MathHelper.PiOver2, glowTex.Size() / 2, new Vector2(0.5f, 1), SpriteEffects.None);
             }
         }
         Main.EntitySpriteDraw(glowTex.Value, Projectile.Center - Main.screenPosition, null, col * Projectile.Opacity * 2f, Projectile.rotation + MathHelper.PiOver2, glowTex.Size() / 2, 0.65f * Projectile.scale, SpriteEffects.None);

@@ -650,5 +650,5 @@ CruetBottle: {
 
 BlacklightScepter: {
 	DisplayName: Blacklight Scepter
-	Tooltip: "Shoots fluorescent energy"
+	Tooltip: Shoots fluorescent energy
 }
