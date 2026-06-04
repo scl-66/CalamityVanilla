@@ -3,6 +3,7 @@ using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -66,6 +67,7 @@ public class DarkPrism : ModProjectile
         Projectile.penetrate = 2;
         Projectile.tileCollide = true;
         Projectile.alpha = 30;
+        Projectile.hide = true;
     }
 
     public float startSpeed;
@@ -185,13 +187,13 @@ public class DarkPrism : ModProjectile
         for(int i = 0; i < 5; i++)
         {
             var p = VanillaParticles.RequestFadingParticle();
-            p.SetBasicInfo(TextureAssets.Extra[ExtrasID.ThePerfectGlow], null, new Vector2(0,Main.rand.NextFloat(1.5f,3f)).RotatedBy((i * MathHelper.TwoPi / 5f) + Main.rand.NextFloat(-1f,1f)), Projectile.Center);
+            p.SetBasicInfo(TextureAssets.Extra[ExtrasID.ThePerfectGlow], null, new Vector2(0,Main.rand.NextFloat(1.5f,3f)).RotatedBy((i * MathHelper.TwoPi / 5f) + Main.rand.NextFloat(-0.2f * MathHelper.Pi, 0.2f * MathHelper.Pi)), Projectile.Center);
             p.SetTypeInfo(30);
             p.AccelerationPerFrame = -p.Velocity / 30f;
             p.Scale = new Vector2(0.25f,0.5f) * Main.rand.NextFloat(1,2);
             p.ScaleVelocity = -p.Scale / new Vector2(30,60);
             p.Rotation = p.Velocity.ToRotation() + MathHelper.PiOver2;
-            p.ColorTint = Color.Black;
+            p.ColorTint = Color.Lerp(Color.Black,Color.Purple,Main.rand.NextFloat(0.5f));
             p.FadeInNormalizedTime = 0.15f;
             p.FadeOutNormalizedTime = 0.5f;
             Main.ParticleSystem_World_BehindPlayers.Add(p);
@@ -211,7 +213,10 @@ public class DarkPrism : ModProjectile
             d2.noLight = d2.noLightEmittence = true;
         }
     }
-
+    public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+    {
+        behindProjectiles.Add(index);
+    }
     public override bool PreDraw(ref Color lightColor)
     {
         Main.spriteBatch.End(out var ss);

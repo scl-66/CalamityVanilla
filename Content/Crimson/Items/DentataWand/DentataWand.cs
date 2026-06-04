@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.Enums;
 using Terraria.GameContent;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -61,11 +63,12 @@ public class Dentata : ModProjectile
     public override void SetStaticDefaults()
     {
         Main.projFrames[Projectile.type] = 5;
-        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10; // The length of old position to be recorded
-        ProjectileID.Sets.TrailingMode[Projectile.type] = 2; // The recording mode
+        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+        ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
     }
     public override void SetDefaults()
     {
+        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
         Projectile.QuickDefaults(false, 20);
         Projectile.DamageType = DamageClass.Magic;
         Projectile.tileCollide = true;
@@ -250,42 +253,69 @@ public class Dentata : ModProjectile
     {
         Texture2D tex = TextureAssets.Projectile[Type].Value;
         Rectangle frame = tex.Frame(1, 5, 0, Projectile.frame);
-        if (Main._multiplyBlendState == null)
-        {
-            Main._multiplyBlendState = new BlendState
-            {
-                ColorBlendFunction = BlendFunction.ReverseSubtract,
-                ColorDestinationBlend = Blend.One,
-                ColorSourceBlend = Blend.SourceColor,
-                AlphaBlendFunction = BlendFunction.ReverseSubtract,
-                AlphaDestinationBlend = Blend.One,
-                AlphaSourceBlend = Blend.SourceColor
-            };
-        }
-        Main.spriteBatch.End(out var ss);
-        Main.spriteBatch.Begin(ss with
-        {
-            BlendState = Main._multiplyBlendState
-        });
-
         Vector2 origin = frame.Size() / 2 + new Vector2(0, 2);
-        for (int k = 0; k < Projectile.oldPos.Length - 2; k++)
-        {
-            int length = 4;
-            for (int i = 0; i < 3; i++)
-            {
-                Rectangle drawFrame = tex.Frame(1, 5, 0, Math.Abs((Projectile.frame - k) % 4));
-                Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[k], Projectile.oldPos[k + 1], i / (float)length) + Projectile.Size / 2 - Main.screenPosition);
-                float drawRotation = (Utils.AngleLerp(Projectile.oldRot[k], Projectile.oldRot[k + 1], i / (float)length));
-                Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-                Main.EntitySpriteDraw(tex, drawPos, drawFrame, (color * 1f).MultiplyRGBA(Color.Cyan), drawRotation, origin, Projectile.scale, SpriteEffects.None);
-            }
-        }
-        Main.spriteBatch.End();
-        Main.spriteBatch.Begin(ss);
+        //if (Main._multiplyBlendState == null)
+        //{
+        //    Main._multiplyBlendState = new BlendState
+        //    {
+        //        ColorBlendFunction = BlendFunction.ReverseSubtract,
+        //        ColorDestinationBlend = Blend.One,
+        //        ColorSourceBlend = Blend.SourceColor,
+        //        AlphaBlendFunction = BlendFunction.ReverseSubtract,
+        //        AlphaDestinationBlend = Blend.One,
+        //        AlphaSourceBlend = Blend.SourceColor
+        //    };
+        //}
+        //Main.spriteBatch.End(out var ss);
+        //Main.spriteBatch.Begin(ss with
+        //{
+        //    BlendState = Main._multiplyBlendState
+        //});
+
+        //for (int k = 0; k < Projectile.oldPos.Length - 2; k++)
+        //{
+        //    int length = 4;
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        Rectangle drawFrame = tex.Frame(1, 5, 0, Math.Abs((Projectile.frame - k) % 4));
+        //        Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[k], Projectile.oldPos[k + 1], i / (float)length) + Projectile.Size / 2 - Main.screenPosition);
+        //        float drawRotation = (Utils.AngleLerp(Projectile.oldRot[k], Projectile.oldRot[k + 1], i / (float)length));
+        //        Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+        //        Main.EntitySpriteDraw(tex, drawPos, drawFrame, (color * 1f).MultiplyRGBA(Color.Cyan), drawRotation, origin, Projectile.scale, SpriteEffects.None);
+        //    }
+        //}
+        //Main.spriteBatch.End();
+        //Main.spriteBatch.Begin(ss);
+
+        MiscShaderData miscShaderData = GameShaders.Misc["Dentata"];
+        miscShaderData.UseSaturation(-2);
+        miscShaderData.UseOpacity(Projectile.Opacity);
+        miscShaderData.Apply();
+        _vertexStrip.PrepareStripWithProceduralPadding(Projectile.oldPos, Projectile.oldRot, StripColors, StripWidth, -Main.screenPosition + Projectile.Size / 2f);
+        _vertexStrip.DrawTrail();
+        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
 
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, new Vector2(xScale, yScale) * Projectile.scale, SpriteEffects.None);
 
         return false;
+    }
+    private static VertexStrip _vertexStrip = new VertexStrip();
+    private Color StripColors(float progressOnStrip)
+    {
+        if (progressOnStrip is float.NaN)
+            return Color.Transparent;
+        return new Color(Lighting.GetSubLight(Projectile.oldPos[(int)Utils.Remap(progressOnStrip, 0, 1, 0, Projectile.oldPos.Length - 1)] + Projectile.Size / 2));
+    }
+    private static float StripWidth(float progressOnStrip)
+    {
+        return 14 - (progressOnStrip * 14);
+    }
+    public override void Load()
+    {
+        MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
+        shader.UseImage2(ModContent.Request<Texture2D>(Texture + "Erosion"));
+        shader.UseImage1(ModContent.Request<Texture2D>(Texture + "Shape"));
+        shader.UseImage0(ModContent.Request<Texture2D>(Texture + "Gradient"));
+        GameShaders.Misc.Add("Dentata", shader);
     }
 }

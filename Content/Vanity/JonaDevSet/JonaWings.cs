@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -30,6 +31,7 @@ public class JonaWings : ModItem
                 d.color = new Color(166, 25, 67);
                 d.velocity = player.velocity * 0.4f;
                 d.position = player.RotatedRelativePoint(d.position);
+                d.shader = GameShaders.Armor.GetSecondaryShader(player.cWings, player);
             }
 
             if (player.velocity.Y == 0)

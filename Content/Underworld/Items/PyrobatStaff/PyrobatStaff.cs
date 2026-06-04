@@ -5,8 +5,8 @@ using ReLogic.Utilities;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -17,8 +17,6 @@ namespace CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
 // Staffs use mana and shoot a specific projectile instead of using ammo. Item.DefaultToStaff takes care of that.
 public class PyrobatStaff : ModItem
 {
-    public const int HoldoutDistance = 20;
-
     public override void SetStaticDefaults()
     {
         Item.staff[Type] = true; // This makes the useStyle animate as a staff instead of as a gun.
@@ -32,9 +30,8 @@ public class PyrobatStaff : ModItem
         Item.mana = 25;
         Item.width = 48;
         Item.height = 48;
-        Item.useTime = 60;
-        Item.useAnimation = 60;
-        //Item.UseSound = SoundID.Item95;
+        Item.useTime = 25;
+        Item.useAnimation = 25;
         Item.SetWeaponValues(85, 8);
         Item.SetShopValues(ItemRarityColor.LightRed4, 60000);
         Item.noUseGraphic = true;
@@ -42,41 +39,25 @@ public class PyrobatStaff : ModItem
         Item.DamageType = DamageClass.Magic;
         Item.shoot = ModContent.ProjectileType<PyrobatStaffHeldProjectile>();
         Item.useStyle = ItemUseStyleID.Shoot;
+        Item.channel = true;
     }
-
-    public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+    public override bool CanUseItem(Player player)
     {
-        // Since this item will attempt to shoot an ammo item, we need to set it back to the actual held projectile here.
-        type = ModContent.ProjectileType<PyrobatStaffHeldProjectile>();
-
-        // The velocity value provided is not correct, so we need to calculate a new velocity since velocity for held projectiles is actually the holdout offset.
-        velocity = velocity.SafeNormalize(Vector2.Zero) * HoldoutDistance;
-
-        Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer);
-        return false;
-    }
-
-    public override void UseAnimation(Player player)
-    {
-        base.UseAnimation(player);
-    }
-
-    public override void UseStyle(Player player, Rectangle heldItemFrame)
-    {
-        base.UseStyle(player, heldItemFrame);
+        return player.ownedProjectileCounts[Item.shoot] == 0;
     }
 }
 
 public class PyrobatStaffHeldProjectile : ModProjectile
 {
+    private static Asset<Texture2D> _glow;
     public ref float ShootTimer => ref Projectile.ai[0];
     public int ShootCount = 0;
 
     SlotId hissSound;
-    SoundStyle hissSoundStyle = new SoundStyle("Terraria/Sounds/Custom/dd2_sky_dragons_fury_circle_", stackalloc (int, float)[] { (0, 1f), (1, 1f), (2, 1f) });
-
+    const int FULL_CHARGE_TIME = 60;
     public override void SetStaticDefaults()
     {
+        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Type] = 2;
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
     }
@@ -84,144 +65,239 @@ public class PyrobatStaffHeldProjectile : ModProjectile
     public override void SetDefaults()
     {
         Projectile.timeLeft = 60;
-        Projectile.width = 48;
-        Projectile.height = 48;
+        Projectile.width = 8;
+        Projectile.height = 8;
         Projectile.friendly = true;
         Projectile.penetrate = -1;
         Projectile.tileCollide = false;
-        //Projectile.hide = true;
+        Projectile.hide = true;
         Projectile.DamageType = DamageClass.Magic;
         Projectile.ignoreWater = true;
-
-        // Adjust the drawing to change how it appears when held
-        //DrawOffsetX = -17;
     }
-
-    // Held projectiles should set this to false otherwise they will deal contact damage.
     public override bool? CanDamage() => false;
 
     public override void AI()
     {
-        //Lighting.AddLight(Projectile.Center, 1f, 0.55f, 0.25f);
-
-        Projectile.frame = 0; // set frame to full
-
-        // See ExampleDrillProjectile.cs for comments on code common to held projectiles. The comments in this file will focus on the unique aspects of this projectile.
+        SoundStyle hissSoundStyle = new SoundStyle("Terraria/Sounds/Custom/sizzle") with { IsLooped = true };
         Player player = Main.player[Projectile.owner];
-        Vector2 playerCenter = player.RotatedRelativePoint(player.MountedCenter);
-
-        // HoldTimer counts how long the weapon has been used. It helps control how fast the weapon animates and shoots arrows.
-        ShootTimer += 1f;
-        int useTime = Projectile.timeLeft;
-
-        if (ShootTimer < 2) // rotate towards mouse with clamping
+        player.heldProj = Projectile.whoAmI;
+        if (player.channel || Projectile.ai[0] < 10)
         {
-            // Check if the sound is already playing...
-            if (!SoundEngine.TryGetActiveSound(hissSound, out var activeSound))
-            {
-                // if it isn't, play the sound and remember the SlotId
-                hissSound = SoundEngine.PlaySound(hissSoundStyle);
-            }
 
-            DrawOriginOffsetX = (player.direction == 1) ? -10 : 10;
-            DrawOriginOffsetY = -10;
-            //Projectile.rotation = MathHelper.Clamp((Main.MouseWorld - player.Center).ToRotation(), -20, 0) + ((player.direction == 1) ? MathHelper.PiOver4 : 3 * MathHelper.PiOver4) + (((Main.MouseWorld - player.Center).ToRotation() > 0 && player.direction == -1) ? MathHelper.Pi : 0);
-            Projectile.direction = player.direction;
-            Projectile.spriteDirection = Projectile.direction;
-        }
-
-        if (ShootTimer < 40)
-        {
             if (Main.rand.NextBool(3))
             {
-                Vector2 pos = player.Center + new Vector2(35, (player.direction == 1) ? -5 : 5).RotatedBy(Projectile.rotation).RotatedBy(-MathHelper.PiOver4).RotatedBy((player.direction == -1) ? -MathHelper.PiOver2 : 0);
-                Dust d = Dust.NewDustDirect(pos, 5, 5, DustID.Smoke);
+                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Square(-8, 8), DustID.Smoke);
+                d.noGravity = true;
+                d.velocity.Y -= 2;
                 d.velocity.X *= 0.2f;
-                d.velocity.Y *= 0.5f;
-                d.velocity.Y -= 0.4f;
-                d.alpha = 128;
-            }
-        }
-
-        else if (ShootTimer == 40)
-        {
-            if (SoundEngine.TryGetActiveSound(hissSound, out ActiveSound? snd))
-            {
-                snd.Stop();
-            }
-
-            for (int i = 0; i < 20; i++)
-            {
-                Vector2 pos = player.position + new Vector2(30, (player.direction == 1) ? 10 : -10).RotatedBy(Projectile.rotation).RotatedBy(-MathHelper.PiOver4).RotatedBy((player.direction == -1) ? -MathHelper.PiOver2 : 0);
-                Dust d = Dust.NewDustDirect(pos, 20, 20, DustID.Torch);
-                d.velocity *= Main.rand.NextFloat(0.3f, 2.5f);
-                d.scale = Main.rand.NextFloat(0.5f, 1.6f);
-            }
-
-            for (int i = 0; i < 20; i++)
-            {
-                Vector2 pos = player.position + new Vector2(30, (player.direction == 1) ? 10 : -10).RotatedBy(Projectile.rotation).RotatedBy(-MathHelper.PiOver4).RotatedBy((player.direction == -1) ? -MathHelper.PiOver2 : 0);
-                Dust d = Dust.NewDustDirect(pos, 30, 30, DustID.Smoke);
-                d.velocity *= Main.rand.NextFloat(1f, 2.5f);
+                d.scale = Main.rand.NextFloat(0.5f, 1f);
                 d.alpha = 128;
             }
 
-            // SPAWN BATS
-            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.75f }, Projectile.position);
+            if (!hissSound.IsValid || !hissSound.IsActive)
+            {
+                hissSound = SoundEngine.PlaySound(hissSoundStyle, Projectile.Center);
+            }
+            if (SoundEngine.TryGetActiveSound(hissSound, out var result))
+            {
+                result.Position = player.Center;
+                result.Pitch = Utils.Remap(Projectile.ai[0], 0, FULL_CHARGE_TIME, -2, 0);
+                result.Volume = Utils.Remap(Projectile.ai[0], 0, FULL_CHARGE_TIME, 0.5f, 1);
+            }
+            Projectile.ai[0]++;
 
-            if (Main.rand.NextBool(5))
+            if (Projectile.ai[0] == FULL_CHARGE_TIME)
             {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), new Vector2(Projectile.Center.X + (20 * player.direction), Projectile.position.Y + 10), new Vector2(5f * player.direction, 0f), ModContent.ProjectileType<Pyrobat2>(), Projectile.damage, Projectile.knockBack);
+                for (int i = 0; i < 10; i++)
+                {
+                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch);
+                    d.noGravity = true;
+                    d.scale = 2;
+                    d.velocity *= 3;
+                }
+                SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot, player.position);
             }
-            else
-            {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), new Vector2(Projectile.Center.X + (20 * player.direction), Projectile.position.Y + 10), new Vector2(5f * player.direction, 0f), ModContent.ProjectileType<Pyrobat>(), Projectile.damage, Projectile.knockBack);
-            }
+
+            Projectile.timeLeft = 25;
+            player.SetDummyItemTime(Projectile.timeLeft);
+            Projectile.spriteDirection = Math.Sign(Main.MouseWorld.X - player.Top.X);
         }
-        else if (ShootTimer >= 40) // set frame to empty
+        else
         {
             Projectile.frame = 1;
+            Projectile.ai[1]++;
+            Vector2 shootDirection = player.Center.DirectionTo(Main.MouseWorld);
+            if (Projectile.ai[1] == 1)
+            {
+                if (SoundEngine.TryGetActiveSound(hissSound, out var result))
+                {
+                    result.Stop();
+                }
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, player.position);
+                if (Projectile.ai[0] >= FULL_CHARGE_TIME)
+                {
+                    //shootDirection = Vector2.UnitX.RotatedBy(Utils.AngleLerp(shootDirection.ToRotation(),player.direction == 1? 0 : MathHelper.Pi, 0.65f));
+                    //Vector2 shootDirection = Utils.rotateTowards(player.Center,new Vector2(player.direction,0),Main.MouseWorld,MathHelper.TwoPi);
+                    for (int i = 0; i < 15; i++)
+                    {
+                        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch);
+                        d.noGravity = true;
+                        d.scale = 2;
+                        d.velocity *= 2;
+                        d.velocity += shootDirection.RotatedByRandom(1) * Main.rand.NextFloat(15);
+                    }
+                    if (Main.myPlayer == Projectile.owner)
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(player.direction * 5, shootDirection.Y * 5), ModContent.ProjectileType<Pyrobat>(), Projectile.damage, Projectile.knockBack);
+                }
+            }
+            float chargePercent = Projectile.ai[0] / FULL_CHARGE_TIME;
+            if (Projectile.ai[0] < FULL_CHARGE_TIME && (Projectile.ai[1] == 1 || (Projectile.ai[1] == 6 && chargePercent > 0.33f) || (Projectile.ai[1] == 13 && chargePercent > 0.66f)))
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch);
+                    d.noGravity = true;
+                    d.scale = 2;
+                    d.velocity *= 2;
+                    d.velocity += shootDirection * Main.rand.NextFloat(3);
+                }
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, player.position);
+                if (Main.myPlayer == Projectile.owner)
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, shootDirection.RotatedByRandom(0.2f) * Main.rand.NextFloat(6, 8), ModContent.ProjectileType<PyrobatSmall>(), Projectile.damage / 5, Projectile.knockBack);
+            }
         }
-        else if (ShootTimer >= useTime)
-        {
-            ShootTimer = 0f;
-        }
-
-        //player.ChangeDir(Projectile.direction);
-        player.heldProj = Projectile.whoAmI;
-        player.SetDummyItemTime(2);
-        Projectile.Center = playerCenter + new Vector2(20 * player.direction, 5);
-        //Main.NewText(MathHelper.ToDegrees(Projectile.rotation));
+        player.direction = Projectile.spriteDirection;
+        Projectile.Center = player.RotatedRelativePoint(player.MountedCenter + new Vector2(25 * player.direction, -16)).Floor();
     }
-
-    public override void PostDraw(Color lightColor)
+    public override bool PreDraw(ref Color lightColor)
     {
-        Texture2D texture = ModContent.Request<Texture2D>(this.Texture + "_Glow", AssetRequestMode.ImmediateLoad).Value;
-        Main.spriteBatch.Draw
-        (
-            texture,
-            new Vector2
-            (
-                Projectile.position.X - Main.screenPosition.X + Projectile.width * 0.5f,
-                Projectile.position.Y - Main.screenPosition.Y + Projectile.height + texture.Height * 0.5f - (texture.Height / 2) - 8f
-            ),
-            Utils.Frame(texture, 1, Main.projFrames[Projectile.type], 0, Projectile.frame),
-            Color.White,
-            Projectile.rotation,
-            texture.Size() * 0.5f,
-            Projectile.scale,
-            (Main.player[Projectile.owner].direction == 1) ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
-            0f
-        );
+        Texture2D tex = TextureAssets.Projectile[Type].Value;
+        Vector2 origin = new Vector2(33, 15);
+        if (Projectile.spriteDirection == -1)
+        {
+            origin.X -= 18;
+        }
+        Rectangle frame = tex.Frame(1, 2, 0, Projectile.frame);
+        SpriteEffects effect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, effect);
+        if (Projectile.frame == 1)
+            return false;
+
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, effect);
+        float percent = Utils.Remap(Projectile.ai[0], 0, FULL_CHARGE_TIME, 0, 1);
+
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 0 } * percent, Projectile.rotation, origin, Projectile.scale + MathF.Pow(1f - percent, 2) * 2, effect);
+
+        if (Projectile.ai[0] < FULL_CHARGE_TIME)
+            return false;
+        float sin = Utils.Remap((float)Math.Sin(Main.timeForVisualEffects * 0.1f), -1, 1, 0.25f, 0.5f);
+        ulong seed4 = Main.TileFrameSeed;
+        for (int i = 0; i < 4; i++)
+        {
+            Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2, 3), Utils.RandomInt(ref seed4, -2, 3));
+            Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition + new Vector2(0, 2).RotatedBy(i * MathHelper.PiOver2) + rand, frame, Color.White with { A = 0 } * percent * sin, Projectile.rotation, origin, Projectile.scale, effect);
+        }
+        return false;
     }
 }
-
-public class Pyrobat : ModProjectile
+public class PyrobatSmall : ModProjectile
 {
-    public float startY;
+    private static Asset<Texture2D> _glow;
     public override void SetStaticDefaults()
     {
+        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
+        Main.projFrames[Projectile.type] = 5;
+    }
+    public override void SetDefaults()
+    {
+        Projectile.QuickDefaults(false, 16);
+    }
+    public override void AI()
+    {
+        Projectile.spriteDirection = Projectile.direction;
+        Projectile.rotation = Projectile.velocity.ToRotation();
+        if (Projectile.spriteDirection == -1)
+            Projectile.rotation += MathHelper.Pi;
+        Projectile.frameCounter++;
+        if (Projectile.frameCounter > 3)
+        {
+            Projectile.frameCounter = 0;
+            Projectile.frame++;
+            if (Projectile.frame > 4)
+                Projectile.frame = 0;
+        }
+
+        if (Main.rand.NextBool(4))
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
+            d.noGravity = true;
+            d.velocity += Projectile.velocity;
+            d.scale = Main.rand.NextFloat(1f, 1.5f);
+        }
+
+        if (Main.rand.NextBool(2))
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Smoke);
+            d.noGravity = true;
+            d.velocity *= 0.9f;
+            d.scale = Main.rand.NextFloat(0.5f, 1f);
+            d.alpha = 128;
+        }
+    }
+    public override void OnKill(int timeLeft)
+    {
+        SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+        for (int i = 0; i < 15; i++)
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
+            d.noGravity = true;
+            d.velocity += Projectile.velocity * Main.rand.NextFloat(0.75f);
+            d.scale = Main.rand.NextFloat(1.5f, 2);
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.MeteorHead);
+            d.noGravity = Main.rand.NextBool();
+            d.velocity += Projectile.velocity * Main.rand.NextFloat(0.75f);
+        }
+    }
+    public override bool PreDraw(ref Color lightColor)
+    {
+        Texture2D tex = TextureAssets.Projectile[Type].Value;
+        Rectangle frame = tex.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
+        SpriteEffects effect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 128 }, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        ulong seed4 = Main.TileFrameSeed;
+        for (int i = 0; i < 5; i++)
+        {
+            Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2 + (i * -2), 3 + (i * 2)), Utils.RandomInt(ref seed4, -2 + (i * -2), 3 + (i * 2)));
+            //Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition - Projectile.velocity * i, frame, Color.White with { A = 0 } * ((1f - (i / 5f)) * 0.5f), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+            Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition - Projectile.velocity * i + rand, frame, Color.Lerp(Color.White, Color.Red, i / 5f) with { A = 64 } * (1f - (i / 5f)), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        }
+
+        return false;
+    }
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        if(Main.rand.NextBool(2))
+            target.AddBuff(BuffID.OnFire3, 60 * 2);
+        else if (Main.rand.NextBool(4))
+        {
+            target.AddBuff(BuffID.OnFire3, 60 * 6);
+        }
+    }
+}
+public class Pyrobat : ModProjectile
+{
+    private static Asset<Texture2D> _glow;
+    public override void SetStaticDefaults()
+    {
+        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Projectile.type] = 6;
+        ProjectileID.Sets.TrailCacheLength[Type] = 5;
+        ProjectileID.Sets.TrailingMode[Type] = 0;
     }
     public override void SetDefaults()
     {
@@ -233,14 +309,11 @@ public class Pyrobat : ModProjectile
         Projectile.timeLeft = 60 * 4;
         DrawOffsetX = -25;
         DrawOriginOffsetY = -20;
-
     }
-
-    public override void OnSpawn(IEntitySource source)
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        startY = Projectile.position.Y;
+        target.AddBuff(BuffID.OnFire3, 60 * 6);
     }
-
     public override void OnKill(int timeLeft)
     {
         SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Projectile.position);
@@ -260,6 +333,13 @@ public class Pyrobat : ModProjectile
             d.noGravity = true;
             d.alpha = 128;
         }
+        for (int i = 0; i < 15; i++)
+        {
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height / 2, DustID.MeteorHead);
+            d.noGravity = Main.rand.NextBool();
+            d.velocity *= Main.rand.NextFloat(1, 2.5f);
+            d.velocity.Y -= 2;
+        }
     }
     public override void AI()
     {
@@ -267,9 +347,25 @@ public class Pyrobat : ModProjectile
 
         if (Projectile.timeLeft > 14)
         {
-            Projectile.ai[0]++;
-            Projectile.position.Y = startY - Math.Abs((float)Math.Cos(Projectile.ai[0] / 6.25f) * 15f);
+            Projectile.ai[0]--;
+            float gravity = 0.3f;
+            int timeBetweenBounces = 24;
+            Projectile.velocity.Y += gravity;
 
+            if (Projectile.velocity.Y < gravity * -timeBetweenBounces / 2)
+            {
+                Projectile.velocity.Y += 0.2f;
+            }
+            else if (Projectile.velocity.Y > gravity * timeBetweenBounces / 2)
+            {
+                Projectile.velocity.Y -= 0.2f;
+            }
+
+            if (Projectile.ai[0] == -timeBetweenBounces / 2)
+            {
+                Projectile.ai[0] = timeBetweenBounces / 2;
+                Projectile.velocity.Y += gravity * -timeBetweenBounces;
+            }
             if (++Projectile.frameCounter >= 5)
             {
                 Projectile.frameCounter = 0;
@@ -279,7 +375,8 @@ public class Pyrobat : ModProjectile
         else if (Projectile.timeLeft >= 7)
         {
             Projectile.frame = 4;
-            Projectile.velocity *= 0.9f;
+            Projectile.velocity.X *= 0.9f;
+            Projectile.velocity.Y = 0;
             //Projectile.velocity.Y = 0f;
         }
         else if (Projectile.timeLeft < 7)
@@ -290,20 +387,22 @@ public class Pyrobat : ModProjectile
         if (Projectile.ai[1]-- <= 0)
         {
             SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.75f }, Projectile.position);
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, ModContent.ProjectileType<PyrobatFlame>(), Projectile.damage / 2, Projectile.knockBack);
+            if(Main.netMode != NetmodeID.MultiplayerClient)
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * new Vector2(Main.rand.NextFloat(-0.7f,0.2f),0.2f), ModContent.ProjectileType<PyrobatFlame>(), Projectile.damage / 2, Projectile.knockBack);
             Projectile.ai[1] = Main.rand.Next(15, 40);
         }
 
         if (Main.rand.NextBool(4))
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, (int)(Projectile.width * 2f), (int)(Projectile.height * 2f), DustID.Torch);
+            Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(0,8) + Main.rand.NextVector2Circular(16,16), DustID.Torch);
             d.noGravity = true;
             d.scale = Main.rand.NextFloat(1f, 1.5f);
+            d.velocity.X += Projectile.velocity.X;
         }
 
         if (Main.rand.NextBool(2))
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, (int)(Projectile.width * 2f), (int)(Projectile.height * 2f), DustID.Smoke);
+            Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 8) + Main.rand.NextVector2Circular(16, 16), DustID.Smoke);
             d.noGravity = true;
             d.velocity *= 0.9f;
             d.scale = Main.rand.NextFloat(0.5f, 1f);
@@ -313,29 +412,27 @@ public class Pyrobat : ModProjectile
 
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
-        Projectile.velocity.X = oldVelocity.X * -1f;
+        if (Projectile.velocity.X != oldVelocity.X)
+            Projectile.velocity.X = -oldVelocity.X;
+        //if (Projectile.velocity.Y != oldVelocity.Y)
+        //Projectile.velocity.Y = -oldVelocity.Y * 0.2f;
         return false;
     }
-
-    public override void PostDraw(Color lightColor)
+    public override bool PreDraw(ref Color lightColor)
     {
-        Texture2D texture = ModContent.Request<Texture2D>(this.Texture + "_Glow", AssetRequestMode.ImmediateLoad).Value;
-        Main.spriteBatch.Draw
-        (
-            texture,
-            new Vector2
-            (
-                Projectile.position.X - Main.screenPosition.X + Projectile.width * 0.5f,
-                Projectile.position.Y - Main.screenPosition.Y + Projectile.height + texture.Height * 0.5f - (texture.Height / 9)
-            ),
-            Utils.Frame(texture, 1, Main.projFrames[Projectile.type], 0, Projectile.frame),
-            Color.White,
-            Projectile.rotation,
-            texture.Size() * 0.5f,
-            Projectile.scale,
-            SpriteEffects.None,
-            0f
-        );
+        Texture2D tex = TextureAssets.Projectile[Type].Value;
+        Rectangle frame = tex.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
+        SpriteEffects effect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 128 }, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        ulong seed4 = Main.TileFrameSeed;
+        for (int i = 0; i < 5; i++)
+        {
+            Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2, 3), Utils.RandomInt(ref seed4, -2, 3));
+            Main.EntitySpriteDraw(_glow.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2 + rand, frame, Color.Lerp(Color.White, Color.Red, i / 5f) with { A = 64 } * (1f - (i / 5f)), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+            //Main.EntitySpriteDraw(_glow.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.White with { A = 0 } * ((1f - (i / 5f)) * 0.5f), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        }
+        return false;
     }
 }
 
@@ -367,60 +464,48 @@ public class PyrobatFlame : ModProjectile
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
         Projectile.velocity.Y = oldVelocity.Y * -0.24f;
-        Projectile.velocity.X += Main.rand.NextFloat(-0.75f, 0.75f);
         return false;
     }
-
+    public override bool PreDraw(ref Color lightColor)
+    {
+        Texture2D tex = TextureAssets.Projectile[Type].Value;
+        Rectangle frame = tex.Frame(1, 3, 0, Projectile.frame);
+        ulong seed4 = Main.TileFrameSeed;
+        for (int i = 0; i < 4; i++)
+        {
+            Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2, 3), Utils.RandomInt(ref seed4, -2, 3));
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + rand, frame, new Color(120, 120, 120, 0), Projectile.rotation, frame.Size() / 2, Projectile.scale - (float)i * 0.2f, SpriteEffects.None, 0);
+        }
+        return false;
+    }
     public override void AI()
     {
+        Projectile.rotation = Projectile.velocity.X * -1f;
         Projectile.velocity.Y += 0.1f;
-        Projectile.velocity.X *= 0.2f;
+        Projectile.velocity.X *= 0.96f;
         if (++Projectile.frameCounter >= 4)
         {
             Projectile.frameCounter = 0;
             Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
         }
 
-        for (int i = 0; i < 1; i++)
+        Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
+        d.scale = Main.rand.NextFloat(1f, 1.5f);
+        d.noGravity = true;
+        d.velocity.Y -= 1f;
+        if (Main.rand.NextBool(3))
         {
-            Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(-1f, -1f), (int)(Projectile.width * 1.5f), (int)(Projectile.height * 1.5f), DustID.Torch);
-            d.scale = Main.rand.NextFloat(1f, 1.5f);
-            d.noGravity = true;
-            d.velocity.X *= 0.2f;
-            d.velocity.Y -= 1f;
+            Dust d2 = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Smoke);
+            d2.noGravity = false;
+            d2.velocity.X *= 0.1f;
+            d2.velocity.Y = Main.rand.NextFloat(-2, 0);
+            d2.scale = Main.rand.NextFloat(0.3f, 1f);
+            d2.alpha = 128;
         }
-
-        Dust d2 = Dust.NewDustDirect(Projectile.position + new Vector2(-1f, -1f), (int)(Projectile.width * 1.5f), (int)(Projectile.height * 1.5f), DustID.Smoke, SpeedY: -0.3f);
-        d2.noGravity = false;
-        d2.velocity.X *= 0.1f;
-        d2.velocity.Y -= 0.7f;
-        d2.scale = Main.rand.NextFloat(0.3f, 1f);
-        d2.alpha = 128;
 
         if (Projectile.wet)
         {
             Projectile.Kill();
         }
-    }
-
-    public override void PostDraw(Color lightColor)
-    {
-        Texture2D texture = ModContent.Request<Texture2D>(this.Texture + "_Glow", AssetRequestMode.ImmediateLoad).Value;
-        Main.spriteBatch.Draw
-        (
-            texture,
-            new Vector2
-            (
-                Projectile.position.X - Main.screenPosition.X + Projectile.width * 0.5f,
-                Projectile.position.Y - Main.screenPosition.Y + Projectile.height + texture.Height * 0.5f - (texture.Height / 4)
-            ),
-            Utils.Frame(texture, 1, Main.projFrames[Projectile.type], 0, Projectile.frame),
-            Color.White,
-            Projectile.rotation,
-            texture.Size() * 0.5f,
-            Projectile.scale,
-            SpriteEffects.None,
-            0f
-        );
     }
 }

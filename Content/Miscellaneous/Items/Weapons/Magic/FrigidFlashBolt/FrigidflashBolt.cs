@@ -197,7 +197,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.NPCDeath15 with {MaxInstances = 5 }, Projectile.position);
+        SoundEngine.PlaySound(SoundID.NPCDeath15 with {MaxInstances = 5, volume = 0.5f }, Projectile.position);
         for (int i = 0; i < 25; i++)
         {
             Dust d = Dust.NewDustPerfect(Projectile.Center, Main.rand.NextBool() ? DustID.Snow : DustID.IceRod);
@@ -293,11 +293,11 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         }
 
         Projectile.frameCounter++;
-        if(Projectile.frameCounter > 3)
+        if(Projectile.frameCounter > 12)
         {
             Projectile.frame++;
             Projectile.frameCounter = 0;
-            if (Projectile.frame > 3)
+            if (Projectile.frame > 2)
                 Projectile.frame = 0;
         }
 
@@ -364,11 +364,12 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         p.ScaleVelocity = Vector2.One * Main.rand.NextFloat(-0.01f, 0.01f);
         p.Scale = Vector2.One * Main.rand.NextFloat(1f, 1.3f);
         Main.ParticleSystem_World_OverPlayers.Add(p);
-        SoundEngine.PlaySound(SoundID.Item62 with
-        {
-            PitchVariance = 0.2f,
-            MaxInstances = 10,
-        }, Projectile.Center);
+        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Custom/meteor_shower_", [1,2,3]) with { MaxInstances = 15, volume = 1.4f}, Projectile.position);
+        //SoundEngine.PlaySound(SoundID.Item62 with
+        //{
+        //    PitchVariance = 0.2f,
+        //    MaxInstances = 10,
+        //}, Projectile.Center);
         //SoundEngine.PlaySound(SoundID.Item38 with
         //{
         //    Pitch = 0.8f,

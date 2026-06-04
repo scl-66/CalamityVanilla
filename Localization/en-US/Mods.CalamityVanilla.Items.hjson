@@ -257,8 +257,8 @@ SinisterIncubator: {
 }
 
 PyrobatStaff: {
-	DisplayName: Pyrobat Staff
-	Tooltip: Conjures hellstone bats that drip fire
+	DisplayName: Blazing Bat Baton
+	Tooltip: Summons Molten bats
 }
 
 MagicChisel: {
