@@ -364,7 +364,7 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         p.ScaleVelocity = Vector2.One * Main.rand.NextFloat(-0.01f, 0.01f);
         p.Scale = Vector2.One * Main.rand.NextFloat(1f, 1.3f);
         Main.ParticleSystem_World_OverPlayers.Add(p);
-        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Custom/meteor_shower_", [1,2,3]) with { MaxInstances = 15, volume = 1.4f}, Projectile.position);
+        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Custom/meteor_shower_", [1,2,3]) with { MaxInstances = 15}, Projectile.position);
         //SoundEngine.PlaySound(SoundID.Item62 with
         //{
         //    PitchVariance = 0.2f,

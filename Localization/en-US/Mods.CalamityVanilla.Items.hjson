@@ -258,7 +258,7 @@ SinisterIncubator: {
 
 PyrobatStaff: {
 	DisplayName: Blazing Bat Baton
-	Tooltip: Summons Molten bats
+	Tooltip: Summons molten bats
 }
 
 MagicChisel: {
