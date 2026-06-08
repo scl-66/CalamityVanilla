@@ -652,3 +652,12 @@ BlacklightScepter: {
 	DisplayName: Blacklight Scepter
 	Tooltip: Shoots fluorescent energy
 }
+
+CandleSentryItem: {
+	DisplayName: Suspicious Candle
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Sentry}
+		Summons a floating water candle to shoot embers at your enemies
+		'''
+}
