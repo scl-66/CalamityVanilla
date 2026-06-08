@@ -5,7 +5,7 @@ ParasiticBeltBuff: {
 
 FungusmiteBuff: {
 	DisplayName: Fungusmite
-	Description: The Fungusmite will shower your enemies with bullets
+	Description: The Fungusmite will fight in time with you
 }
 
 MagicChiselBuff: {
@@ -54,8 +54,8 @@ UrchinSpineDebuff: {
 }
 
 FrostShieldBuff: {
-	DisplayName: Frost Shield Buff
-	Description: Mods.CalamityVanilla.Buffs.FrostShieldBuff.Description
+	DisplayName: Frost Guard
+	Description: The Frost Guard will shield you
 }
 
 FrictionlessBlessingBuff: {
