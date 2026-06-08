@@ -1,45 +1,39 @@
 ﻿using CalamityVanilla.Common.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Melee.WindowPain;
 
-// Jank Central oh my lord
-public class WindowPainAnimation : PlayerDrawLayer
+public class WindowPainAnimation : DrawAnimation
 {
-    public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
-    public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+    public static bool Active = false;
+    public override Rectangle GetFrame(Texture2D texture, int frameCounterOverride = -1)
     {
-        return drawInfo.drawPlayer.HeldItem.type == ModContent.ItemType<WindowPain>() && drawInfo.drawPlayer.ItemAnimationActive;
+        return texture.Frame(1, 2, 0, Active ? 1 : 0);
     }
-    protected override void Draw(ref PlayerDrawSet drawInfo)
+    private class WindowPainLayer : PlayerDrawLayer
     {
-        int frame = drawInfo.drawPlayer.GetModPlayer<WindowPainPlayer>().Shattered? 1 : 0;
-        Asset<Texture2D> texture = TextureAssets.Item[drawInfo.heldItem.type];
-        Vector2 basePosition = drawInfo.drawPlayer.itemLocation - Main.screenPosition;
-        basePosition = new Vector2((int)basePosition.X, (int)basePosition.Y) + (drawInfo.drawPlayer.RotatedRelativePoint(drawInfo.drawPlayer.Center) - drawInfo.drawPlayer.Center);
-        Item heldItem = drawInfo.drawPlayer.HeldItem;
+        public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
 
-        DrawData swingDraw = new DrawData(
-        texture.Value, // texture
-        basePosition, // position
-        new Rectangle(0, texture.Height() / 2 * frame, texture.Width(), texture.Height() / 2), // texture coords
-        new Color(Lighting.GetSubLight(drawInfo.drawPlayer.Center)), // color (wow really!?)
-        drawInfo.drawPlayer.itemRotation,  // rotation
-        new Vector2(drawInfo.drawPlayer.direction == -1 ? texture.Value.Width : 0, // origin X
-        drawInfo.drawPlayer.gravDir == 1 ? texture.Value.Height / 2 : 0), // origin Y
-        drawInfo.drawPlayer.GetAdjustedItemScale(heldItem), // scale
-        drawInfo.itemEffect // sprite effects
-        );
-        drawInfo.DrawDataCache.Add(swingDraw);
-        drawInfo.ItemLocation = Vector2.Zero;
+        protected override void Draw(ref PlayerDrawSet drawInfo)
+        {
+            if (drawInfo.drawPlayer.GetModPlayer<WindowPainPlayer>().Shattered)
+                Active = true;
+        }
+    }
+    private class WindowPainLayer2 : PlayerDrawLayer
+    {
+        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
+
+        protected override void Draw(ref PlayerDrawSet drawInfo)
+        {
+            Active = false;
+        }
     }
 }
 public class WindowPainPlayer : ModPlayer
@@ -56,9 +50,7 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
     }
     public override void SetStaticDefaults()
     {
-        DrawAnimationVertical animation = new DrawAnimationVertical(-1, 2, false);
-        animation.NotActuallyAnimating = true;
-        Main.RegisterItemAnimation(Type, animation);
+        Main.RegisterItemAnimation(Type, new WindowPainAnimation());
     }
     public override bool? UseItem(Player player)
     {
@@ -80,15 +72,18 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
 
     public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
     {
+        if (target.type == NPCID.TargetDummy)
+            return;
         WindowPainPlayer p = player.GetModPlayer<WindowPainPlayer>();
         if (!p.Shattered)
         {
             p.Shattered = true;
             SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.3f }, player.position);
-            for (int i = 0; i < 5; i++)
-            {
-                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, new Vector2(player.direction * Main.rand.NextFloat(3, 9), Main.rand.NextFloat(-6, -2)), ModContent.ProjectileType<WindowPainShard>(), damage / 3, knockback / 3, player.whoAmI);
-            }
+            if (Main.myPlayer == player.whoAmI)
+                for (int i = 0; i < 5; i++)
+                {
+                    Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, new Vector2(player.direction * Main.rand.NextFloat(3, 9), Main.rand.NextFloat(-6, -2)), ModContent.ProjectileType<WindowPainShard>(), damage / 3, knockback / 3, player.whoAmI);
+                }
             for (int i = 0; i < 20; i++)
             {
                 Dust d = Dust.NewDustPerfect(player.Center + new Vector2(player.direction * 17, 0) + Main.rand.NextVector2Circular(24, 12), DustID.Glass, new Vector2(player.direction * Main.rand.NextFloat(1, 3), Main.rand.NextFloat(-3, -1)));

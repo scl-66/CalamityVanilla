@@ -43,6 +43,8 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
 
     public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
     {
+        if (target.type == NPCID.TargetDummy)
+            return;
         VeinBusterPlayer modPlayer = player.GetModPlayer<VeinBusterPlayer>();
 
         if (!modPlayer.SpawnedShards)// && (target == null || target.HittableForOnHitRewards()))
