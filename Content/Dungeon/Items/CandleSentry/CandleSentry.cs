@@ -102,7 +102,7 @@ public class CandleSentry : ModProjectile
             }
         }
 
-        TargetingRange = 40 * 16;
+        TargetingRange = 50 * 16;
 
         SinTimer++;
 
@@ -120,10 +120,10 @@ public class CandleSentry : ModProjectile
             SoundEngine.PlaySound(SoundID.Item60, Projectile.position);
 
             // Dust indicating the sentry spawned. Optional.
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 25; i++)
             {
-                Vector2 speed = Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(0.85f, 1.15f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.WaterCandle, speed * 4, Scale: 1.5f);
+                Vector2 speed = Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(0.65f, 1.15f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.DungeonWater, speed * 4, Scale: Main.rand.NextFloat(1f, 1.5f));
                 d.noGravity = true;
             }
         }
@@ -170,12 +170,19 @@ public class CandleSentry : ModProjectile
                 {
                     if (ShootTimer % 12 == 0)
                     {
-                        for (int i = 0; i < 15; i++)
+                        for (int i = 0; i < 8; i++)
                         {
                             Vector2 rand = Main.rand.NextVector2Circular(4, 4);
-                            Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(7, -1), 3, 3, DustID.DungeonWater, rand.X, rand.Y);
+                            Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(8, -1), 3, 3, DustID.DungeonWater, rand.X, rand.Y);
                             d.noGravity = true;
                             d.scale = Main.rand.NextFloat(0.8f, 1.1f);
+                        }
+                        for (int i = 0; i < 8; i++)
+                        {
+                            Vector2 rand = Main.rand.NextVector2Circular(2, 2);
+                            Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(8, -1), 3, 3, DustID.Firework_Blue, rand.X, rand.Y);
+                            d.noGravity = true;
+                            d.scale = Main.rand.NextFloat(0.35f, 1f);
                         }
 
                         // Play a shoot sound
@@ -249,7 +256,7 @@ public class CandleSentryFlame : ModProjectile
     {
         Main.projFrames[Type] = 4;
         ProjectileID.Sets.SentryShot[Type] = true;
-        ProjectileID.Sets.TrailCacheLength[Type] = 3;
+        ProjectileID.Sets.TrailCacheLength[Type] = 5;
         ProjectileID.Sets.TrailingMode[Type] = 2;
     }
 
@@ -274,6 +281,9 @@ public class CandleSentryFlame : ModProjectile
             d.scale = 0.8f;
         }
 
+        ProjectileID.Sets.TrailCacheLength[Type] = 5;
+
+
         Projectile.ai[0]++;
 
         Projectile.frameCounter++;
@@ -287,14 +297,21 @@ public class CandleSentryFlame : ModProjectile
             }
         }
 
-        int target;
+        int target = -1;
         if (Projectile.ai[0] < 60)
         {
             target = -1;
         } else
         {
+            float closestTargetDistance = CandleSentry.TargetingRange;
             target = Projectile.FindTargetWithLineOfSight(CandleSentry.TargetingRange);
+            if (Projectile.OwnerMinionAttackTargetNPC != null)
+            {
+                TryTargeting(Projectile.OwnerMinionAttackTargetNPC, ref closestTargetDistance, ref target);
+            }
         }
+
+        Projectile.rotation = Utils.AngleLerp(Projectile.rotation, target != -1 ? Projectile.velocity.ToRotation() - MathHelper.PiOver2 : 0, 0.1f);
 
         if (target != -1)
         {
@@ -321,11 +338,13 @@ public class CandleSentryFlame : ModProjectile
         for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
         {
             float multiply = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Type];
-            Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length);
-            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, color, Projectile.oldRot[i], frame.Size() / 2, 1f + multiply * 0.2f, SpriteEffects.None);
+            Color color = Color.White with { A = 0 } * ((Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length);
+            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, color * 0.5f, Projectile.oldRot[i], frame.Size() / 2, 1f + multiply * 0.2f, SpriteEffects.None);
         }
 
         Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.None);
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 0 }, Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.None);
+
         return false;
     }
 
@@ -342,6 +361,27 @@ public class CandleSentryFlame : ModProjectile
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.DungeonWater, rand.X, rand.Y);
             d.noGravity = true;
             d.scale = Main.rand.NextFloat(0.8f, 1.1f);
+        }
+        for (int i = 0; i < 8; i++)
+        {
+            Vector2 rand = Main.rand.NextVector2Circular(2, 2);
+            Dust d = Dust.NewDustDirect(Projectile.position + new Vector2(8, -1), 3, 3, DustID.Firework_Blue, rand.X, rand.Y);
+            d.noGravity = true;
+            d.scale = Main.rand.NextFloat(0.35f, 1f);
+        }
+    }
+
+    private void TryTargeting(NPC npc, ref float closestTargetDistance, ref int targetNPCID)
+    {
+        if (npc.CanBeChasedBy(this))
+        {
+            float distanceToTargetNPC = Vector2.Distance(Projectile.Center, npc.Center);
+            // Is this enemy closer than others? Is it in line of sight?
+            if (distanceToTargetNPC < closestTargetDistance && Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height))
+            {
+                closestTargetDistance = distanceToTargetNPC; // Set a new closest distance value
+                targetNPCID = npc.whoAmI;
+            }
         }
     }
 }
