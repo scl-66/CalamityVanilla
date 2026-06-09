@@ -1,6 +1,7 @@
 ﻿using CalamityVanilla.Common.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -30,7 +31,7 @@ public class SkinBoilHat : ModItem
         if (player.ownedProjectileCounts[ModContent.ProjectileType<SkinBoilHatRaincloud>()] <= 0)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<SkinBoilHatRaincloud>(), 0, 0, Main.myPlayer);
+                Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Top - new Vector2(0, 60 - player.gfxOffY), Vector2.Zero, ModContent.ProjectileType<SkinBoilHatRaincloud>(), 0, 0, Main.myPlayer);
         }
     }
 }
@@ -57,20 +58,30 @@ public class SkinBoilHatRaincloud : ModProjectile
         Projectile.height = 28;
         Projectile.friendly = true;
         Projectile.tileCollide = false;
+        Projectile.alpha = 255;
     }
 
     public override void AI()
     {
         Player player = Main.player[Projectile.owner];
-        Vector2 position = player.Top - new Vector2(Projectile.width / 2, 60 - player.gfxOffY);
+        Vector2 position = player.Top - new Vector2(0, 60 - player.gfxOffY + MathF.Sin(Projectile.ai[1] * 0.02f) * 8);
         position.Floor();
+        //interpolated cloud movement to make it more fluid
+        Projectile.Center = new Vector2(MathHelper.Lerp(Projectile.Center.X, position.X, 0.5f), MathHelper.Lerp(Projectile.Center.Y, position.Y, 0.45f));
 
         if (!player.GetModPlayer<SkinBoilHatPlayer>().skinBoilHat)
             Projectile.Kill();
+        Projectile.Opacity += 0.2f;
+        if(Projectile.timeLeft > 2)
+        {
+            for (int i = 0; i < 35; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position,Projectile.width,Projectile.height,DustID.Wraith);
+                d.noGravity = true;
+            }
+        }
 
         Projectile.timeLeft = 2;
-        //interpolated cloud movement to make it more fluid
-        Projectile.position = new Vector2(MathHelper.Lerp(Projectile.oldPosition.X, position.X, 0.5f), MathHelper.Lerp(Projectile.position.Y, position.Y, 0.45f));
         if (++Projectile.frameCounter >= 10)
         {
             Projectile.frameCounter = 0;
@@ -79,7 +90,7 @@ public class SkinBoilHatRaincloud : ModProjectile
         }
 
         Vector2 rainPosition = Projectile.Bottom + new Vector2(Main.rand.Next(-Projectile.width / 3, Projectile.width / 3), 8);
-
+        Projectile.ai[1]++;
         if (++Projectile.ai[0] >= 8)
         {
             Projectile.ai[0] = 0;
@@ -113,8 +124,9 @@ public class SkinBoilHatRain : ModProjectile
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2, newColor: new Color(0.6f, 1f, 0f));
             d.noGravity = true;
-            d.velocity.X = 0;
-            d.velocity.Y = Projectile.velocity.Y;
+            d.velocity.X *= 0.2f;
+            d.velocity.Y = Projectile.velocity.Y * 0.3f;
+            d.scale = 0.5f;
         }
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -122,9 +134,12 @@ public class SkinBoilHatRain : ModProjectile
         target.AddBuff(BuffID.CursedInferno, 120);
     }
     public override void OnKill(int timeLeft)
-    {   
+    {
         //Dust.NewDustPerfect(Projectile.Bottom, DustID.Rain, new(0, -1), 0, Color.Lime);
-        Dust.NewDustPerfect(Projectile.Bottom, DustID.CursedTorch, new(0, -1), 0, default, 0.5f);
+        for (int i = 0; i < 3; i++)
+        {
+            Dust.NewDustPerfect(Projectile.Bottom, DustID.CursedTorch, new(Main.rand.NextFloat(-1,1), Main.rand.NextFloat(-2, 0)), 0, default, 0.75f);
+        }
     }
     public override bool? CanCutTiles()
     {
