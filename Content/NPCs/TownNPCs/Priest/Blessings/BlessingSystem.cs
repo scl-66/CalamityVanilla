@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Common.Blessings;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Blessings;
 
 public class BlessingSystem : ModSystem
 {
@@ -57,7 +57,7 @@ public sealed class PriestBlessing<T> : PriestBlessing where T : BlessingPlayer
         DisplayName = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.DisplayName");
         Description = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.Description");
         Stats = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.Stats");
-        Icon = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/{name}Icon");
+        Icon = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/{name}Icon");
 
         Tribute = tribute;
 

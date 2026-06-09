@@ -1,5 +1,5 @@
-﻿using CalamityVanilla.Common.Blessings;
-using CalamityVanilla.Common.UI;
+﻿using CalamityVanilla.Common.UI;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Blessings;
 using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -428,10 +428,10 @@ public class BlessingButton : UIElement
 
     public BlessingButton(PriestBlessing blessingObj) : base()
     {
-        bgTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonPanel", AssetRequestMode.ImmediateLoad);
-        bgInnerTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonPanelHighlight", AssetRequestMode.ImmediateLoad);
-        borderTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonPanelBorder", AssetRequestMode.ImmediateLoad);
-        gradient = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/BlessingButtonGradient", AssetRequestMode.ImmediateLoad);
+        bgTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonPanel", AssetRequestMode.ImmediateLoad);
+        bgInnerTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonPanelHighlight", AssetRequestMode.ImmediateLoad);
+        borderTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonPanelBorder", AssetRequestMode.ImmediateLoad);
+        gradient = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonGradient", AssetRequestMode.ImmediateLoad);
 
         //if (Main.netMode != NetmodeID.Server)
         //{
@@ -563,7 +563,7 @@ public class BlessingButton : UIElement
     }
     private void DrawArrow(UIElement affectedElement)
     {
-        Texture2D tex = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Common/Blessings/TributeArrow");
+        Texture2D tex = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/TributeArrow");
         Main.spriteBatch.Draw(tex, affectedElement.GetDimensions().Center(), null, Color.White, 0, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
     }
 
