@@ -661,3 +661,28 @@ CandleSentryItem: {
 		Summons a floating water candle to shoot embers at your enemies
 		'''
 }
+
+BlackCheckerBlock: {
+	DisplayName: Black Checker Block
+	Tooltip: Does not merge with {$Mods.CalamityVanilla.Items.CheckerBlock.DisplayName}
+}
+
+WhiteCheckerBlock: {
+	DisplayName: White Checker Block
+	Tooltip: Does not merge with {$Mods.CalamityVanilla.Items.CheckerBlock.DisplayName}
+}
+
+BlackCheckerWall: {
+	DisplayName: Black Checker Wall
+	Tooltip: ""
+}
+
+CheckerWall: {
+	DisplayName: Checker Wall
+	Tooltip: ""
+}
+
+WhiteCheckerWall: {
+	DisplayName: White Checker Wall
+	Tooltip: ""
+}

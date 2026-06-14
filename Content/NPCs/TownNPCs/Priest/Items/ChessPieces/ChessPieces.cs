@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ public class GenerateChessPieces : ModSystem
             {
                 string itemName = c.ToString() + p.ToString();
                 string tileName = itemName + "Tile";
-                Mod.AddContent(new ChessTileTemplate("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/ChessPieces/" + tileName, tileName, c, p, (int)p < 3));
+                Mod.AddContent(new ChessTileTemplate("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/ChessPieces/" + tileName, tileName, c, (int)p < 3));
                 int chessTile = Mod.Find<ModTile>(tileName).Type;
                 Mod.AddContent(new ChessItemTemplate(chessTile, itemName, "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/ChessPieces/" + itemName, c, p));
             }
@@ -55,12 +56,16 @@ public class ChessItemTemplate : ModItem
     private int _placedTile;
     private string _nameOverride;
     private string _textureOverride;
+    private Colors _color;
+    private Pieces _piece;
 
     public ChessItemTemplate(int placedTile, string nameOverride, string textureOverride, Colors color, Pieces piece)
     {
         _placedTile = placedTile;
         _nameOverride = nameOverride;
         _textureOverride = textureOverride;
+        _color = color;
+        _piece = piece;
     }
 
     public override string Texture => _textureOverride;
@@ -70,6 +75,15 @@ public class ChessItemTemplate : ModItem
     {
         Item.DefaultToPlaceableTile(_placedTile);
         Item.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 2));
+
+    }
+
+    public override void AddRecipes()
+    {
+        CreateRecipe(_piece == Pieces.Pawn ? 4 : _piece < Pieces.Queen ? 2 : 1)
+            .AddIngredient(_color == Colors.Black ? ModContent.ItemType<BlackCheckerBlock>() : ModContent.ItemType<WhiteCheckerBlock>())
+            .AddTile(TileID.Anvils)
+            .Register();
     }
 }
 
@@ -79,13 +93,11 @@ public class ChessTileTemplate : ModTile
     private string _nameOverride;
     private bool _isSmall;
     private Colors _color;
-    private Pieces _piece;
-    public ChessTileTemplate(string textureOverride, string nameOverride, Colors color, Pieces piece, bool isSmall)
+    public ChessTileTemplate(string textureOverride, string nameOverride, Colors color, bool isSmall)
     {
         _textureOverride = textureOverride;
         _nameOverride = nameOverride;
         _isSmall = isSmall;
-        _piece = piece;
         _color = color;
     }
     public override string Name => _nameOverride;
