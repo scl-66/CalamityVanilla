@@ -686,3 +686,18 @@ WhiteCheckerWall: {
 	DisplayName: White Checker Wall
 	Tooltip: ""
 }
+
+CheckerPlatform: {
+	DisplayName: Checker Platform
+	Tooltip: ""
+}
+
+BlackCheckerPlatform: {
+	DisplayName: Black Checker Platform
+	Tooltip: ""
+}
+
+WhiteCheckerPlatform: {
+	DisplayName: White Checker Platform
+	Tooltip: ""
+}
