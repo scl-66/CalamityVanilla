@@ -5,12 +5,24 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TileHelper.Common;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
-public class CheckerWallTile : ModWall
+public class CheckerWall : ModWall, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWallTileAlt";
+    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWall";
+
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 5);
+    public void ItemRecipes(ModItem modItem)
+    {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<CheckerBlock>()), out ModItem tileItem))
+        {
+            modItem.CreateRecipe(4)
+                .AddIngredient(tileItem)
+                .Register();
+        }
+    }
 
     public override void SetStaticDefaults()
     {
@@ -40,26 +52,21 @@ public class CheckerWallTile : ModWall
     }
 }
 
-internal class CheckerWall : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableWall(ModContent.WallType<CheckerWallTile>());
-        Item.value = Item.buyPrice(0, 0, 0, 5);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe(4)
-            .AddIngredient<CheckerBlock>()
-            .AddTile(TileID.WorkBenches)
-            .Register();
-    }
-}
-
 //flat color versions
-public class WhiteCheckerWallTile : ModWall
+public class WhiteCheckerWall : ModWall, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWallTile";
+    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/WhiteCheckerWall";
+
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 5);
+    public void ItemRecipes(ModItem modItem)
+    {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<WhiteCheckerBlock>()), out ModItem tileItem))
+        {
+            modItem.CreateRecipe(4)
+                .AddIngredient(tileItem)
+                .Register();
+        }
+    }
 
     public override void SetStaticDefaults()
     {
@@ -68,9 +75,20 @@ public class WhiteCheckerWallTile : ModWall
         DustType = ModContent.DustType<WhiteCheckerDust>();
     }
 }
-public class BlackCheckerWallTile : ModWall
+public class BlackCheckerWall : ModWall, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWallTile";
+    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/BlackCheckerWall";
+
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 5);
+    public void ItemRecipes(ModItem modItem)
+    {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<BlackCheckerBlock>()), out ModItem tileItem))
+        {
+            modItem.CreateRecipe(4)
+                .AddIngredient(tileItem)
+                .Register();
+        }
+    }
 
     public override void SetStaticDefaults()
     {
@@ -83,35 +101,5 @@ public class BlackCheckerWallTile : ModWall
     {
         Main.wallFrame[Type] = 1;
         return true;
-    }
-}
-internal class WhiteCheckerWall : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableWall(ModContent.WallType<WhiteCheckerWallTile>());
-        Item.value = Item.buyPrice(0, 0, 0, 5);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe(4)
-            .AddIngredient<WhiteCheckerBlock>()
-            .AddTile(TileID.WorkBenches)
-            .Register();
-    }
-}
-internal class BlackCheckerWall : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableWall(ModContent.WallType<BlackCheckerWallTile>());
-        Item.value = Item.buyPrice(0, 0, 0, 5);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe(4)
-            .AddIngredient<BlackCheckerBlock>()
-            .AddTile(TileID.WorkBenches)
-            .Register();
     }
 }

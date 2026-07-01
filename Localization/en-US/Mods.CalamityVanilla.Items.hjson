@@ -580,7 +580,7 @@ BlackKing: {
 
 BlackKnight: {
 	DisplayName: Black Knight
-	Tooltip: "'Black to move'"
+	Tooltip: "'The Black Knight appeared.'"
 }
 
 BlackPawn: {
@@ -699,5 +699,155 @@ BlackCheckerPlatform: {
 
 WhiteCheckerPlatform: {
 	DisplayName: White Checker Platform
+	Tooltip: ""
+}
+
+GospelBathtubItem: {
+	DisplayName: Gospel Bathtub
+	Tooltip: ""
+}
+
+GospelBedItem: {
+	DisplayName: Gospel Bed
+	Tooltip: ""
+}
+
+GospelBookcaseItem: {
+	DisplayName: Gospel Bookcase
+	Tooltip: ""
+}
+
+GospelCandelabraItem: {
+	DisplayName: Gospel Candelabra
+	Tooltip: ""
+}
+
+GospelCandleItem: {
+	DisplayName: Gospel Candle
+	Tooltip: ""
+}
+
+GospelChairItem: {
+	DisplayName: Gospel Chair
+	Tooltip: ""
+}
+
+GospelChandelierItem: {
+	DisplayName: Gospel Chandelier
+	Tooltip: ""
+}
+
+GospelChestItem: {
+	DisplayName: Gospel Chest
+	Tooltip: ""
+}
+
+GospelClockItem: {
+	DisplayName: Gospel Clock
+	Tooltip: ""
+}
+
+GospelDoorItem: {
+	DisplayName: Gospel Door
+	Tooltip: ""
+}
+
+GospelDresserItem: {
+	DisplayName: Gospel Dresser
+	Tooltip: ""
+}
+
+GospelLampItem: {
+	DisplayName: Gospel Lamp
+	Tooltip: ""
+}
+
+GospelLanternItem: {
+	DisplayName: Gospel Lantern
+	Tooltip: ""
+}
+
+GospelPianoItem: {
+	DisplayName: Gospel Piano
+	Tooltip: ""
+}
+
+GospelSinkItem: {
+	DisplayName: Gospel Sink
+	Tooltip: ""
+}
+
+GospelSofaItem: {
+	DisplayName: Gospel Sofa
+	Tooltip: ""
+}
+
+GospelTableItem: {
+	DisplayName: Gospel Table
+	Tooltip: ""
+}
+
+GospelToiletItem: {
+	DisplayName: Gospel Toilet
+	Tooltip: ""
+}
+
+GospelWorkBenchItem: {
+	DisplayName: Gospel Work Bench
+	Tooltip: ""
+}
+
+BlackCheckerBlockItem: {
+	DisplayName: Black Checker Block
+	Tooltip: ""
+}
+
+BlackCheckerPlatformItem: {
+	DisplayName: Black Checker Platform
+	Tooltip: ""
+}
+
+CheckerBlockItem: {
+	DisplayName: Checker Block
+	Tooltip: ""
+}
+
+WhiteCheckerBlockItem: {
+	DisplayName: White Checker Block
+	Tooltip: ""
+}
+
+WhiteCheckerPlatformItem: {
+	DisplayName: White Checker Platform
+	Tooltip: ""
+}
+
+BlackCheckerWallItem: {
+	DisplayName: Black Checker Wall
+	Tooltip: ""
+}
+
+CheckerWallItem: {
+	DisplayName: Checker Wall
+	Tooltip: ""
+}
+
+WhiteCheckerWallItem: {
+	DisplayName: White Checker Wall
+	Tooltip: ""
+}
+
+GospelClothTableItem: {
+	DisplayName: Gospel Cloth Table
+	Tooltip: ""
+}
+
+GospelClothWorkBenchItem: {
+	DisplayName: Gospel Cloth Work Bench
+	Tooltip: ""
+}
+
+GospelOrganItem: {
+	DisplayName: Gospel Organ
 	Tooltip: ""
 }

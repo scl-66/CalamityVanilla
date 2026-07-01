@@ -3,7 +3,7 @@
 Welcome to Vanillamity, or "Calamity if it was Vanilla"! This is a mod that reimagines various bosses and items from the Calamity Mod, and reimplenting them in a more vanilla-oriented style. For obvious reasons, not everything from Calamity will be redone.
 
 ### THIS IS NOT AN ADDON.
-You do not need CalamityMod installed to play this!
+You do not need CalamityMod installed to play this! Vanillamity does not replace any content from base Calamity, so it is NOT recommneded to play with both at the same time.
 
 ### THIS MOD IS NOT AFFILIATED WITH CALAMITY OR CALAMITY FABLES.
 This mod shares some similarities with Calamity Fables, however this mod is not intended to be played with either OG Calamity nor Fables. We are not officially tied to either mod.

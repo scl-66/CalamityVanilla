@@ -3,11 +3,26 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TileHelper.Common;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
-public class CheckerBlockTile : ModTile
+public class CheckerBlock : ModTile, ILoadItem
 {
+    public void SetItemDefaults(ModItem modItem)
+    {
+        modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
+    }
+    public void ItemRecipes(ModItem modItem)
+    {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.WallType<CheckerWall>()), out ModItem wallItem))
+        {
+            modItem.CreateRecipe()
+                .AddIngredient(wallItem)
+                .Register();
+        }
+    }
+
     public override void SetStaticDefaults()
     {
         Main.tileSolid[Type] = true;
@@ -41,31 +56,65 @@ public class CheckerBlockTile : ModTile
 }
 
 //flat color versions
-public class WhiteCheckerBlockTile : ModTile
+public class WhiteCheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlockTile";
+    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
+
+    public void SetDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
+    public void ItemRecipes(ModItem modItem)
+    {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.WallType<WhiteCheckerWall>()), out ModItem wallItem))
+        {
+            modItem.CreateRecipe()
+                .AddIngredient(wallItem)
+                .Register();
+        }
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<WhiteCheckerPlatform>()), out ModItem platformItem))
+        {
+            modItem.CreateRecipe()
+                .AddIngredient(platformItem)
+                .Register();
+        }
+    }
 
     public override void SetStaticDefaults()
     {
         Main.tileSolid[Type] = true;
         Main.tileBlockLight[Type] = true;
         Main.tileMerge[Type][TileID.Dirt] = true;
-        Main.tileMerge[Type][ModContent.TileType<BlackCheckerBlockTile>()] = true;
+        Main.tileMerge[Type][ModContent.TileType<BlackCheckerBlock>()] = true;
         AddMapEntry(new Color(219, 226, 225));
         HitSound = SoundID.Tink;
         DustType = ModContent.DustType<WhiteCheckerDust>();
     }
 }
-public class BlackCheckerBlockTile : ModTile
+public class BlackCheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlockTile";
+    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
+
+    public void SetDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
+    public void ItemRecipes(ModItem modItem)
+    {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.WallType<BlackCheckerWall>()), out ModItem wallItem))
+        {
+            modItem.CreateRecipe()
+                .AddIngredient(wallItem)
+                .Register();
+        }
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<BlackCheckerPlatform>()), out ModItem platformItem))
+        {
+            modItem.CreateRecipe()
+                .AddIngredient(platformItem)
+                .Register();
+        }
+    }
 
     public override void SetStaticDefaults()
     {
         Main.tileSolid[Type] = true;
         Main.tileBlockLight[Type] = true;
         Main.tileMerge[Type][TileID.Dirt] = true;
-        Main.tileMerge[Type][ModContent.TileType<WhiteCheckerBlockTile>()] = true;
+        Main.tileMerge[Type][ModContent.TileType<WhiteCheckerBlock>()] = true;
         AddMapEntry(new Color(87, 105, 122));
         HitSound = SoundID.Tink;
         DustType = ModContent.DustType<BlackCheckerDust>();
@@ -75,58 +124,5 @@ public class BlackCheckerBlockTile : ModTile
     {
         Tile t = Main.tile[i, j];
         t.TileFrameY += 270;
-    }
-}
-
-internal class CheckerBlock : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableTile(ModContent.TileType<CheckerBlockTile>());
-        Item.value = Item.buyPrice(0, 0, 0, 20);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe()
-            .AddIngredient<CheckerWall>(4)
-            .AddTile(TileID.WorkBenches)
-            .Register();
-    }
-}
-
-internal class WhiteCheckerBlock : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableTile(ModContent.TileType<WhiteCheckerBlockTile>());
-        Item.value = Item.buyPrice(0, 0, 0, 20);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe()
-            .AddIngredient<WhiteCheckerWall>()
-            .AddTile(TileID.WorkBenches)
-            .Register();
-        CreateRecipe()
-            .AddIngredient<WhiteCheckerPlatform>(2)
-            .Register();
-    }
-}
-internal class BlackCheckerBlock : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableTile(ModContent.TileType<BlackCheckerBlockTile>());
-        Item.value = Item.buyPrice(0, 0, 0, 20);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe()
-            .AddIngredient<BlackCheckerWall>()
-            .AddTile(TileID.WorkBenches)
-            .Register();
-        CreateRecipe()
-            .AddIngredient<BlackCheckerPlatform>(2)
-            .Register();
     }
 }

@@ -8,6 +8,13 @@
 		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
 		<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
 	</PropertyGroup>
+
+	<PropertyGroup>
+	  	<AssemblyName>CalamityVanilla</AssemblyName>
+	  	<LangVersion>12.0</LangVersion>
+	  	<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	</PropertyGroup>
+
 	<ItemGroup>
 	  <AdditionalFiles Remove="Localization\en-US\Mods.CalamityVanilla.GameTitles.hjson" />
 	</ItemGroup>
@@ -18,9 +25,13 @@
 		<Reference Include="Daybreak">
 			<HintPath>lib\Daybreak.dll</HintPath>
 		</Reference>
+		<Reference Include="TileHelper">
+		  <HintPath>lib\TileHelper.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Common\Items\" />
 	  <Folder Include="Content\Corruption\Tiles\" />
 	  <Folder Include="Content\AuthorTags\" />
 	</ItemGroup>

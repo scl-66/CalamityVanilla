@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using TileHelper.Common;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.ChessPieces;
 
@@ -80,8 +81,10 @@ public class ChessItemTemplate : ModItem
 
     public override void AddRecipes()
     {
+        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<BlackCheckerBlock>()), out ModItem black) &&
+            Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<WhiteCheckerBlock>()), out ModItem white))
         CreateRecipe(_piece == Pieces.Pawn ? 4 : _piece < Pieces.Queen ? 2 : 1)
-            .AddIngredient(_color == Colors.Black ? ModContent.ItemType<BlackCheckerBlock>() : ModContent.ItemType<WhiteCheckerBlock>())
+            .AddIngredient(_color == Colors.Black ? black.Type : white.Type)
             .AddTile(TileID.Anvils)
             .Register();
     }
