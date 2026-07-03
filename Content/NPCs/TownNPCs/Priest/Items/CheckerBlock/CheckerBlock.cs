@@ -56,7 +56,7 @@ public class WhiteCheckerBlock : ModTile, ILoadItem
 {
     //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
 
-    public void SetDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
     public void AddItemRecipes(ModItem modItem)
     {
         modItem.CreateRecipe()
@@ -81,8 +81,7 @@ public class WhiteCheckerBlock : ModTile, ILoadItem
 public class BlackCheckerBlock : ModTile, ILoadItem
 {
     //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
-
-    public void SetDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
     public void AddItemRecipes(ModItem modItem)
     {
         modItem.CreateRecipe()

@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
 using TileHelper.Common;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
@@ -19,7 +21,10 @@ public class GospelBrick : ModTile, ILoadItem
     public void AddItemRecipes(ModItem modItem)
     {
         modItem.CreateRecipe()
-                .AddIngredient<CheckerWallItem>(4) //todo: add wall
+                .AddIngredient<GospelBrickWallItem>(4)
+                .Register();
+        modItem.CreateRecipe()
+                .AddIngredient(AutoContent.ItemType<GospelPlatform>(), 2)
                 .Register();
     }
 
@@ -27,7 +32,12 @@ public class GospelBrick : ModTile, ILoadItem
     {
         Main.tileSolid[Type] = true;
         Main.tileBlockLight[Type] = true;
-        Main.tileMerge[Type][TileID.Dirt] = true;
+        // These relate to what tiles this tile will merge with
+        Main.tileBrick[Type] = true;
+        TileID.Sets.GemsparkFramingTypes[Type] = Type;
+        TileID.Sets.ForcedDirtMerging[Type] = true;
+        // This is necessary to avoid visual issues with half-blocks.
+        TileID.Sets.AllBlocksWithSmoothBordersToResolveHalfBlockIssue[Type] = true;
         AddMapEntry(new Color(49, 54, 77));
         HitSound = SoundID.Tink;
     }
@@ -46,4 +56,75 @@ public class GospelBrick : ModTile, ILoadItem
             type = DustID.Gold;
         return true;
     }
+}
+public class GospelBrickWall : ModWall
+{
+    public override void SetStaticDefaults()
+    {
+        Main.wallHouse[Type] = true;
+        AddMapEntry(new Color(27, 29, 42));
+        DustType = ModContent.DustType<BlackCheckerDust>();
+    }
+}
+
+internal class GospelBrickWallItem : ModItem
+{
+    public override void SetDefaults()
+    {
+        Item.DefaultToPlaceableWall(ModContent.WallType<GospelBrickWall>());
+        Item.value = Item.buyPrice(0, 0, 0, 5);
+    }
+    public override void AddRecipes()
+    {
+        CreateRecipe(4)
+            .AddTile(TileID.WorkBenches)
+            .AddIngredient(AutoContent.ItemType<GospelBrick>())
+            .Register();
+    }
+}
+
+public class GospelPlatform : ModTile, ILoadItem
+{
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 25);
+    public void AddItemRecipes(ModItem modItem)
+    {
+        modItem.CreateRecipe(2)
+                .AddIngredient(AutoContent.ItemType<GospelBrick>())
+                .Register();
+    }
+
+    public override void SetStaticDefaults()
+    {
+        // Properties
+        Main.tileFrameImportant[Type] = true;
+        Main.tileSolidTop[Type] = true;
+        Main.tileSolid[Type] = true;
+        Main.tileNoAttach[Type] = true;
+        Main.tileTable[Type] = true;
+        Main.tileLavaDeath[Type] = false;
+        TileID.Sets.Platforms[Type] = true;
+        TileID.Sets.DisableSmartCursor[Type] = true;
+
+        AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+        AddMapEntry(new Color(203, 179, 73));
+
+        DustType = DustID.Gold;
+        AdjTiles = [TileID.Platforms];
+        VanillaFallbackOnModDeletion = TileID.Platforms;
+
+        // Placement
+        TileObjectData.newTile.CoordinateHeights = [16];
+        TileObjectData.newTile.CoordinateWidth = 16;
+        TileObjectData.newTile.CoordinatePadding = 2;
+        TileObjectData.newTile.StyleHorizontal = true;
+        TileObjectData.newTile.StyleMultiplier = 27;
+        TileObjectData.newTile.StyleWrapLimit = 27;
+        TileObjectData.newTile.UsesCustomCanPlace = false;
+        TileObjectData.newTile.LavaDeath = false;
+        TileObjectData.addTile(Type);
+    }
+
+    public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;
+
+    public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 }

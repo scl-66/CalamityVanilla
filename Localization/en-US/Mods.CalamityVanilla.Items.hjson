@@ -856,3 +856,13 @@ GospelBrickItem: {
 	DisplayName: Gospel Brick
 	Tooltip: ""
 }
+
+GospelBrickWallItem: {
+	DisplayName: Gospel Brick Wall
+	Tooltip: ""
+}
+
+GospelPlatformItem: {
+	DisplayName: Gospel Platform Item
+	Tooltip: ""
+}
