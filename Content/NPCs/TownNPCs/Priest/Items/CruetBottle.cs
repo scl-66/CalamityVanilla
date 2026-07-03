@@ -1,22 +1,16 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Dusts;
 using Daybreak.Common.Rendering;
-using log4net.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
 
@@ -151,14 +145,18 @@ public class CruetBottleTile : ModTile
                     return true;
                 }
                 //drink potion
-                else if (!heldItemIsPotionable)
+                else if (!heldItemIsPotionable && !(new Item(entity.potionType).potion && player.potionDelay > 0))
                 {
                     if (player.inventory[58] == null || player.inventory[58].IsAir && player.ItemTimeIsZero)
                     {
                         entity.filled = false;
-                        Item drunkItem = new Item(entity.potionType);
-                        drunkItem.noUseGraphic = true;
+                        Item drunkItem = new Item(entity.potionType)
+                        {
+                            noUseGraphic = true
+                        };
                         SoundEngine.PlaySound(SoundID.Item3 with { MaxInstances = 0 }, tileCoords);
+                        
+                        //dust
                         for (int k = 0; k < Main.rand.Next(3, 7); k++)
                         {
                             FruitPunchItemSet.GetPotionColor(entity.potionType, out Color? color1, out Color? color2);
@@ -166,6 +164,7 @@ public class CruetBottleTile : ModTile
                             d.scale = Main.rand.NextFloat(0.5f, 0.75f);
                             d.color = (Color)color1;
                         }
+                        
                         int previousSelected = player.selectedItem;
                         player.inventory[58] = drunkItem;
                         player.selectedItem = 58;

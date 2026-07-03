@@ -1,5 +1,7 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.Dusts;
 using Microsoft.Xna.Framework;
+using ReLogic.Localization.IME;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,18 +11,12 @@ namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
 public class CheckerBlock : ModTile, ILoadItem
 {
-    public void SetItemDefaults(ModItem modItem)
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
+    public void AddItemRecipes(ModItem modItem)
     {
-        modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
-    }
-    public void ItemRecipes(ModItem modItem)
-    {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.WallType<CheckerWall>()), out ModItem wallItem))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(wallItem)
+        modItem.CreateRecipe()
+                .AddIngredient<CheckerWallItem>(4)
                 .Register();
-        }
     }
 
     public override void SetStaticDefaults()
@@ -58,23 +54,17 @@ public class CheckerBlock : ModTile, ILoadItem
 //flat color versions
 public class WhiteCheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
+    //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
 
     public void SetDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
-    public void ItemRecipes(ModItem modItem)
+    public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.WallType<WhiteCheckerWall>()), out ModItem wallItem))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(wallItem)
+        modItem.CreateRecipe()
+                .AddIngredient<WhiteCheckerWallItem>(4)
                 .Register();
-        }
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<WhiteCheckerPlatform>()), out ModItem platformItem))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(platformItem)
+        modItem.CreateRecipe()
+                .AddIngredient(AutoContent.ItemType<WhiteCheckerPlatform>(), 2)
                 .Register();
-        }
     }
 
     public override void SetStaticDefaults()
@@ -90,23 +80,17 @@ public class WhiteCheckerBlock : ModTile, ILoadItem
 }
 public class BlackCheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
+    //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
 
     public void SetDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
-    public void ItemRecipes(ModItem modItem)
+    public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.WallType<BlackCheckerWall>()), out ModItem wallItem))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(wallItem)
+        modItem.CreateRecipe()
+                .AddIngredient<BlackCheckerWallItem>(4)
                 .Register();
-        }
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<BlackCheckerPlatform>()), out ModItem platformItem))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(platformItem)
+        modItem.CreateRecipe()
+                .AddIngredient(AutoContent.ItemType<BlackCheckerPlatform>(), 2)
                 .Register();
-        }
     }
 
     public override void SetStaticDefaults()
@@ -118,11 +102,5 @@ public class BlackCheckerBlock : ModTile, ILoadItem
         AddMapEntry(new Color(87, 105, 122));
         HitSound = SoundID.Tink;
         DustType = ModContent.DustType<BlackCheckerDust>();
-    }
-
-    public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
-    {
-        Tile t = Main.tile[i, j];
-        t.TileFrameY += 270;
     }
 }

@@ -12,6 +12,10 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using TileHelper.Common;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
+using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
@@ -359,9 +363,10 @@ public class Priest : ModNPC
             .Add<Items.PriestWafer>()
             .Add<Items.FruitPunchBowl>()
             .Add<Items.CruetBottle>()
-            .Add()
-            .Add()
-            .Add()
+            .Add(AutoContent.ItemType<GospelBrick>())
+            .Add(AutoContent.ItemType<CheckerBlock>())
+            .Add(AutoContent.ItemType<WhiteCheckerBlock>())
+            .Add(AutoContent.ItemType<BlackCheckerBlock>())
             //.Add(Mod.Find<ModItem>("WhitePawn").Type)
             //.Add(Mod.Find<ModItem>("WhiteRook").Type)
             //.Add(Mod.Find<ModItem>("WhiteKnight").Type)
@@ -375,16 +380,16 @@ public class Priest : ModNPC
             //.Add(Mod.Find<ModItem>("BlackQueen").Type)
             //.Add(Mod.Find<ModItem>("BlackKing").Type)
             ;
-            //.Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
-            //.Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
-            //.Add<Items.Consumables.ExampleHealingPotion>(new Condition("Mods.ExampleMod.Conditions.PlayerHasLifeforceBuff", () => Main.LocalPlayer.HasBuff(BuffID.Lifeforce)))
-            //.Add<Items.Weapons.ExampleSword>(Condition.MoonPhasesQuarter0)
-            ////.Add<ExampleGun>(Condition.MoonPhasesQuarter1)
-            //.Add<Items.Ammo.ExampleBullet>(Condition.MoonPhasesQuarter1)
-            //.Add<Items.Weapons.ExampleStaff>(ExampleConditions.DownedMinionBoss)
-            //.Add<ExampleOnBuyItem>()
-            //.Add<EquipMaterial>()
-            //.Add<BossItem>();
+        //.Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
+        //.Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
+        //.Add<Items.Consumables.ExampleHealingPotion>(new Condition("Mods.ExampleMod.Conditions.PlayerHasLifeforceBuff", () => Main.LocalPlayer.HasBuff(BuffID.Lifeforce)))
+        //.Add<Items.Weapons.ExampleSword>(Condition.MoonPhasesQuarter0)
+        ////.Add<ExampleGun>(Condition.MoonPhasesQuarter1)
+        //.Add<Items.Ammo.ExampleBullet>(Condition.MoonPhasesQuarter1)
+        //.Add<Items.Weapons.ExampleStaff>(ExampleConditions.DownedMinionBoss)
+        //.Add<ExampleOnBuyItem>()
+        //.Add<EquipMaterial>()
+        //.Add<BossItem>();
 
         //if (ModContent.GetInstance<ExampleModConfig>().ExampleWingsToggle)
         //{

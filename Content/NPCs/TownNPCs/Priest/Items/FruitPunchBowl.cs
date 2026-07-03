@@ -150,7 +150,7 @@ public class FruitPunchBowlTile : ModTile
                     return true;
                 }
                 //drink potion
-                else if (!heldItemIsPotionable)
+                else if (!heldItemIsPotionable && !(new Item(entity.potionType).potion && player.potionDelay > 0))
                 {
                     if (player.inventory[58] == null || player.inventory[58].IsAir && player.ItemTimeIsZero)
                     {

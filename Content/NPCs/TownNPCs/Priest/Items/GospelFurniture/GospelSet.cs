@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -22,15 +23,12 @@ public class GospelSet : ILoadable
 
     private static void LoadGospelFurniture()
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<CheckerBlock.CheckerBlock>()), out ModItem item))
-        {
-            string gospelName = typeof(GospelSet).Namespace + ".Gospel";
-            TileHelper.ArgumentCollection args = AllArgs(DustID.Gold, Color.Orange.ToVector3())
-                - new BarrelTile()
-                - new BenchTile();
+        string gospelName = typeof(GospelSet).Namespace + ".Gospel";
+        TileHelper.ArgumentCollection args = AllArgs(DustID.Gold, Color.Orange.ToVector3())
+            - new BarrelTile()
+            - new BenchTile();
 
-            LoadFurnitureSet(gospelName, args, item.Type);
-        }
+        LoadFurnitureSet(gospelName, args, AutoContent.ItemType<GospelBrick>());
 
         GospelClothWorkBench gospelClothWorkBench = ModContent.GetInstance<GospelClothWorkBench>();
         GospelClothTable gospelClothTable = ModContent.GetInstance<GospelClothTable>();
@@ -51,13 +49,10 @@ public class GospelClothWorkBench : WorkBenchTile, ILoadItem
 {
     public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<CheckerBlock.CheckerBlock>()), out ModItem item))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(item, 10)
-                .AddIngredient(ItemID.Silk, 3) //placeholder until we add the priest cloth block
-                .Register();
-        }
+        modItem.CreateRecipe()
+            .AddIngredient(AutoContent.ItemType<GospelBrick>(), 10)
+            .AddIngredient(ItemID.Silk, 3) //placeholder until we add the priest cloth block
+            .Register();
     }
     public override void SetStaticDefaults()
     {
@@ -69,13 +64,11 @@ public class GospelClothTable : TableTile, ILoadItem
 {
     public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<CheckerBlock.CheckerBlock>()), out ModItem item))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(item, 8)
-                .AddIngredient(ItemID.Silk, 3) //placeholder until we add the priest cloth block
-                .Register();
-        }
+        modItem.CreateRecipe()
+            .AddTile(TileID.WorkBenches)
+            .AddIngredient(AutoContent.ItemType<GospelBrick>(), 8)
+            .AddIngredient(ItemID.Silk, 3) //placeholder until we add the priest cloth block
+            .Register();
     }
     public override void SetStaticDefaults()
     {
@@ -87,14 +80,12 @@ public class GospelOrgan : PianoTile, ILoadItem
 {
     public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<CheckerBlock.CheckerBlock>()), out ModItem item))
-        {
-            modItem.CreateRecipe()
-                .AddIngredient(item, 25)
-                .AddIngredient(ItemID.Bone, 6)
-                .AddIngredient(ItemID.Book)
-                .Register();
-        }
+        modItem.CreateRecipe()
+            .AddTile(TileID.Sawmill)
+            .AddIngredient(AutoContent.ItemType<GospelBrick>(), 25)
+            .AddIngredient(ItemID.Bone, 6)
+            .AddIngredient(ItemID.Book)
+            .Register();
     }
 
     public override void SetStaticDefaults()

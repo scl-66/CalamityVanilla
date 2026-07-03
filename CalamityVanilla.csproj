@@ -31,7 +31,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Common\Items\" />
 	  <Folder Include="Content\Corruption\Tiles\" />
 	  <Folder Include="Content\AuthorTags\" />
 	</ItemGroup>

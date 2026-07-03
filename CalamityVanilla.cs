@@ -14,6 +14,12 @@ public partial class CalamityVanilla : Mod, IHasCustomAuthorMessage
         return AuthorText.GetAuthorTooltip(this, headerText: null);
     }
 
+    public static CalamityVanilla Instance { get; private set; }
+    public CalamityVanilla()
+    {
+        Instance = this;
+    }
+
     public override void Load()
     {
         TileHelper.Autoloader.Load(this);

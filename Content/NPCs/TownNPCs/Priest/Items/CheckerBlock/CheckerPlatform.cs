@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.Dusts;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -11,14 +12,11 @@ namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 public class WhiteCheckerPlatform : ModTile, ILoadItem
 {
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 10);
-    public void ItemRecipes(ModItem modItem)
+    public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<WhiteCheckerBlock>()), out ModItem tileItem))
-        {
-            modItem.CreateRecipe(2)
-            .AddIngredient(tileItem)
-            .Register();
-        }
+        modItem.CreateRecipe(2)
+                .AddIngredient(AutoContent.ItemType<WhiteCheckerBlock>())
+                .Register();
     }
 
     public override void SetStaticDefaults()
@@ -59,14 +57,11 @@ public class WhiteCheckerPlatform : ModTile, ILoadItem
 public class BlackCheckerPlatform : ModTile, ILoadItem
 {
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 10);
-    public void ItemRecipes(ModItem modItem)
+    public void AddItemRecipes(ModItem modItem)
     {
-        if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<BlackCheckerBlock>()), out ModItem tileItem))
-        {
-            modItem.CreateRecipe(2)
-                .AddIngredient(tileItem)
+        modItem.CreateRecipe(2)
+                .AddIngredient(AutoContent.ItemType<BlackCheckerBlock>())
                 .Register();
-        }
     }
     public override void SetStaticDefaults()
     {
