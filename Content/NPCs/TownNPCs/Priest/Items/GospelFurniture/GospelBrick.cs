@@ -18,15 +18,6 @@ namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 public class GospelBrick : ModTile, ILoadItem
 {
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 50);
-    public void AddItemRecipes(ModItem modItem)
-    {
-        modItem.CreateRecipe()
-                .AddIngredient<GospelBrickWallItem>(4)
-                .Register();
-        modItem.CreateRecipe()
-                .AddIngredient(AutoContent.ItemType<GospelPlatform>(), 2)
-                .Register();
-    }
 
     public override void SetStaticDefaults()
     {
@@ -57,29 +48,22 @@ public class GospelBrick : ModTile, ILoadItem
         return true;
     }
 }
-public class GospelBrickWall : ModWall
+public class GospelBrickWall : ModWall, ILoadItem  
 {
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 12);
+    public void AddItemRecipes(ModItem item)
+    {
+        item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<GospelBrick>()).AddTile(TileID.WorkBenches).Register();
+
+        //Allow wall items to be crafted back into base materials
+        Recipe.Create(AutoContent.ItemType<GospelBrick>()).AddIngredient(item.Type, 4)
+            .AddTile(TileID.WorkBenches).Register();
+    }
     public override void SetStaticDefaults()
     {
         Main.wallHouse[Type] = true;
         AddMapEntry(new Color(27, 29, 42));
         DustType = ModContent.DustType<BlackCheckerDust>();
-    }
-}
-
-internal class GospelBrickWallItem : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableWall(ModContent.WallType<GospelBrickWall>());
-        Item.value = Item.buyPrice(0, 0, 0, 5);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe(4)
-            .AddTile(TileID.WorkBenches)
-            .AddIngredient(AutoContent.ItemType<GospelBrick>())
-            .Register();
     }
 }
 

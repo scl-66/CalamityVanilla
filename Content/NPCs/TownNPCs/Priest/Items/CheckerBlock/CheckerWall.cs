@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Common.Items;
 using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,9 +11,16 @@ using TileHelper.Common;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
-public class CheckerWall : ModWall
+public class CheckerWall : ModWall, ILoadItem
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWall";
+    public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 5);
+    public void AddItemRecipes(ModItem item)
+    {
+        item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<CheckerBlock>()).AddTile(TileID.WorkBenches).Register();
+
+        //Allow wall items to be crafted back into base materials
+        Recipe.Create(AutoContent.ItemType<CheckerBlock>()).AddIngredient(item.Type, 4).AddTile(TileID.WorkBenches).Register();
+    }
 
     public override void SetStaticDefaults()
     {
@@ -39,22 +47,6 @@ public class CheckerWall : ModWall
             type = ModContent.DustType<BlackCheckerDust>();
         }
         return true;
-    }
-}
-
-internal class CheckerWallItem : ModItem
-{
-    public override void SetDefaults()
-    {
-        Item.DefaultToPlaceableWall(ModContent.WallType<CheckerWall>());
-        Item.value = Item.buyPrice(0, 0, 0, 5);
-    }
-    public override void AddRecipes()
-    {
-        CreateRecipe(4)
-            .AddTile(TileID.WorkBenches)
-            .AddIngredient(AutoContent.ItemType<CheckerBlock>())
-            .Register();
     }
 }
 
@@ -100,6 +92,7 @@ internal class WhiteCheckerWallItem : ModItem
             .AddTile(TileID.WorkBenches)
             .AddIngredient(AutoContent.ItemType<WhiteCheckerBlock>())
             .Register();
+        Recipe.Create(AutoContent.ItemType<WhiteCheckerBlock>()).AddIngredient(Type, 4).Register(); //Allow wall items to be crafted back into base materials
     }
 }
 internal class BlackCheckerWallItem : ModItem
@@ -115,5 +108,6 @@ internal class BlackCheckerWallItem : ModItem
             .AddTile(TileID.WorkBenches)
             .AddIngredient(AutoContent.ItemType<BlackCheckerBlock>())
             .Register();
+        Recipe.Create(AutoContent.ItemType<BlackCheckerBlock>()).AddIngredient(Type, 4).Register(); //Allow wall items to be crafted back into base materials
     }
 }

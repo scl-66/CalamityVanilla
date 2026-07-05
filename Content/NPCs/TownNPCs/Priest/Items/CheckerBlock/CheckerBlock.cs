@@ -12,12 +12,6 @@ namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 public class CheckerBlock : ModTile, ILoadItem
 {
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
-    public void AddItemRecipes(ModItem modItem)
-    {
-        modItem.CreateRecipe()
-                .AddIngredient<CheckerWallItem>(4)
-                .Register();
-    }
 
     public override void SetStaticDefaults()
     {
@@ -57,15 +51,6 @@ public class WhiteCheckerBlock : ModTile, ILoadItem
     //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
 
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
-    public void AddItemRecipes(ModItem modItem)
-    {
-        modItem.CreateRecipe()
-                .AddIngredient<WhiteCheckerWallItem>(4)
-                .Register();
-        modItem.CreateRecipe()
-                .AddIngredient(AutoContent.ItemType<WhiteCheckerPlatform>(), 2)
-                .Register();
-    }
 
     public override void SetStaticDefaults()
     {
@@ -82,15 +67,6 @@ public class BlackCheckerBlock : ModTile, ILoadItem
 {
     //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
-    public void AddItemRecipes(ModItem modItem)
-    {
-        modItem.CreateRecipe()
-                .AddIngredient<BlackCheckerWallItem>(4)
-                .Register();
-        modItem.CreateRecipe()
-                .AddIngredient(AutoContent.ItemType<BlackCheckerPlatform>(), 2)
-                .Register();
-    }
 
     public override void SetStaticDefaults()
     {

@@ -14,9 +14,8 @@ public class WhiteCheckerPlatform : ModTile, ILoadItem
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 10);
     public void AddItemRecipes(ModItem modItem)
     {
-        modItem.CreateRecipe(2)
-                .AddIngredient(AutoContent.ItemType<WhiteCheckerBlock>())
-                .Register();
+        modItem.CreateRecipe(2).AddIngredient(AutoContent.ItemType<WhiteCheckerBlock>()).Register();
+        Recipe.Create(AutoContent.ItemType<WhiteCheckerBlock>()).AddIngredient(modItem.Type, 2).Register(); //Allow platform items to be crafted back into base materials
     }
 
     public override void SetStaticDefaults()
@@ -59,9 +58,8 @@ public class BlackCheckerPlatform : ModTile, ILoadItem
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 10);
     public void AddItemRecipes(ModItem modItem)
     {
-        modItem.CreateRecipe(2)
-                .AddIngredient(AutoContent.ItemType<BlackCheckerBlock>())
-                .Register();
+        modItem.CreateRecipe(2).AddIngredient(AutoContent.ItemType<BlackCheckerBlock>()).Register();
+        Recipe.Create(AutoContent.ItemType<BlackCheckerBlock>()).AddIngredient(modItem.Type, 2).Register(); //Allow platform items to be crafted back into base materials
     }
     public override void SetStaticDefaults()
     {
