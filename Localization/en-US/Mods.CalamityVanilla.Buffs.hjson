@@ -65,7 +65,7 @@ FrictionlessBlessingBuff: {
 
 MolemanBlessingBuff: {
 	DisplayName: Moleman
-	Description: 
+	Description:
 		'''
 			Increased vision, mining, and movement speed
 			underground, but blinded on the surface

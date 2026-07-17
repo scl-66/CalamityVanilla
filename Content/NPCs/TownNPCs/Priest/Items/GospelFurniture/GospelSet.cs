@@ -26,25 +26,61 @@ public class GospelSet : ILoadable
         string gospelName = typeof(GospelSet).Namespace + ".Gospel";
         TileHelper.ArgumentCollection args = AllArgs(DustID.Gold, Color.Orange.ToVector3())
             - new BarrelTile()
+            - new CandleTile()
             - new BenchTile();
 
         LoadFurnitureSet(gospelName, args, AutoContent.ItemType<GospelBrick>());
 
+        GospelCandle gospelCandle = ModContent.GetInstance<GospelCandle>();
         GospelClothWorkBench gospelClothWorkBench = ModContent.GetInstance<GospelClothWorkBench>();
         GospelClothTable gospelClothTable = ModContent.GetInstance<GospelClothTable>();
         GospelOrgan gospelOrgan = ModContent.GetInstance<GospelOrgan>();
 
         List<FurnitureTile> OtherFurniture = [
-            gospelClothWorkBench, gospelClothTable, gospelOrgan
+            gospelCandle,
+            gospelClothWorkBench, 
+            gospelClothTable, 
+            gospelOrgan
         ];
         foreach (var tile in OtherFurniture)
-        {
             TileTypes.Add(tile.FurnitureName, tile.Type);
-        }
     }
     public void Unload() { }
 }
 
+public class GospelCandle : CandleTile, ILoadItem
+{
+    public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<GospelBrick>());
+
+    public override void SetStaticDefaults()
+    {
+		Main.tileFrameImportant[Type] = true;
+		Main.tileNoAttach[Type] = true;
+		Main.tileLighted[Type] = true;
+		Main.tileLavaDeath[Type] = true;
+
+		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
+		TileObjectData.newTile.CoordinateHeights = [22];
+		//TileObjectData.newTile.DrawYOffset = -4;
+		TileObjectData.addTile(Type);
+
+		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+		AddMapEntry(MapColor, Language.GetText("ItemName.Candle"));
+
+		AdjTiles = [TileID.Candles];
+		DustType = -1;
+
+        base.SetStaticDefaults();
+    }
+
+    //public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+    //{
+    //    Tile tile = Main.tile[i, j];
+
+    //    if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
+    //        (r, g, b) = (Light.X, Light.Y, Light.Z);
+    //}
+}
 public class GospelClothWorkBench : WorkBenchTile, ILoadItem
 {
     public void AddItemRecipes(ModItem modItem)
