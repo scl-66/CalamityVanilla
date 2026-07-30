@@ -866,3 +866,8 @@ GospelPlatformItem: {
 	DisplayName: Gospel Platform
 	Tooltip: ""
 }
+
+TerraGlobe: {
+	DisplayName: The Terrarium
+	Tooltip: ""
+}

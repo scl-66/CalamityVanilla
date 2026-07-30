@@ -39,9 +39,9 @@ public class BlacklightScepter : ModItem
         Item.value = Item.sellPrice(0, 5);
         Item.UseSound = SoundID.Item43 with
         {
-            Pitch = 1f,
+            Pitch = 0.75f,
             Volume = 0.75f,
-            PitchVariance = 0.8f,
+            PitchVariance = 0.5f,
             MaxInstances = 0,
         };
     }

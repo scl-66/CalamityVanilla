@@ -20,6 +20,8 @@ public class BileBelcher : ModItem
         Item.DefaultToStaff(ModContent.ProjectileType<IchorBlob>(), 16, 12, 6);
         Item.UseSound = SoundID.NPCHit1;
         Item.damage = 50;
+        Item.rare = ItemRarityID.Pink;
+        Item.value = Item.sellPrice(0, 2, 50, 0);
     }
     public override float UseSpeedMultiplier(Player player)
     {
