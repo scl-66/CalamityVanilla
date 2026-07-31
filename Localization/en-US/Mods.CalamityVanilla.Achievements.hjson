@@ -17,3 +17,13 @@ ThrowBrickAtGlass: {
 	FriendlyName: Watch Where You're Throwing That!
 	Description: Lob a throwing brick at some glass or thin ice. Don't forget to clean up the mess!
 }
+
+TerraGlobeObtained: {
+	FriendlyName: Spell of the Hero
+	Description: Obtain the Globe of Terra, forged from the finest spells from around the globe.
+}
+
+TerraLongbowObtained: {
+	FriendlyName: Bow of the Hero
+	Description: Obtain the Terra Longbow, forged from the finest bows of dawn and dusk.
+}

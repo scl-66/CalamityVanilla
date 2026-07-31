@@ -113,3 +113,5 @@ PyrobatSmall.DisplayName: Pyrobat Small
 CandleSentry.DisplayName: Candle Sentry
 CandleSentryFlame.DisplayName: Candle Sentry Flame
 TerraGlobeProjectile.DisplayName: Terra Globe Projectile
+TerraGlobeExplosion.DisplayName: Terra Globe Explosion
+TerraGlobeOrb.DisplayName: Terra Globe Orb

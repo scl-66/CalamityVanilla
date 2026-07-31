@@ -27,15 +27,6 @@ public class BlossomFlux : ModItem
         Item.rare = ItemRarityID.Lime;
         Item.value = Item.sellPrice(0, 5);
     }
-    public override void AddRecipes()
-    {
-        CreateRecipe().AddTile(TileID.MythrilAnvil)
-            .AddIngredient(ModContent.ItemType<TheGothic>())
-            .AddIngredient(ModContent.ItemType<Twiflight>())
-            .AddIngredient(ItemID.ChlorophyteBar, 10)
-            .AddIngredient(ItemID.Ectoplasm, 8)
-            .Register();
-    }
     public override Vector2? HoldoutOffset()
     {
         return new Vector2(-10, 0);

@@ -868,6 +868,6 @@ GospelPlatformItem: {
 }
 
 TerraGlobe: {
-	DisplayName: The Terrarium
-	Tooltip: ""
+	DisplayName: Globe of Terra
+	Tooltip: Conjures energy globes that orbit the cursor
 }

@@ -25,7 +25,7 @@ public class TerraLongbow : ModItem
     {
         Item.DefaultToBow(70, 6f, true);
         Item.noUseGraphic = true;
-        Item.damage = 65;
+        Item.damage = 55;
         Item.knockBack = 2;
         Item.rare = ItemRarityID.Yellow;
         Item.shoot = ModContent.ProjectileType<TerraLongbowHeld>();
@@ -433,6 +433,7 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
         Projectile.timeLeft = 50;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
+        Projectile.ignoreWater = true;
     }
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
@@ -451,7 +452,10 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
         }
 
         //SoundEngine.PlaySound(_impact, Projectile.position);
-        SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+        SoundEngine.PlaySound(SoundID.Item10 with
+        {
+            Volume = 0.6f
+        }, Projectile.position);
 
         Projectile.damage = (int)(Projectile.damage * 0.95f);
 
@@ -553,10 +557,10 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
             p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
             p.LocalPosition = Projectile.Center;
             p.Rotation = Projectile.velocity.ToRotation();
-            p.Scale = new Vector2(3, 0.5f);
-            p.FadeInNormalizedTime = 5E-06f;
+            p.Scale = new Vector2(3, 0.75f);
+            p.FadeInNormalizedTime = 0.95f;
             p.FadeOutNormalizedTime = 0.95f;
-            p.TimeToLive = 30;
+            p.TimeToLive = 10;
             p.AdditiveAmount = 0.35f;
             p.DrawVerticalAxis = false;
             p.Velocity = Projectile.velocity * 0.05f * (i + 0.25f);
@@ -566,7 +570,7 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
             p2.ColorTint = p.ColorTint;
             p2.LocalPosition = p.LocalPosition;
             p2.Rotation = p.Rotation + MathHelper.PiOver2;
-            p2.Scale = new Vector2(3, 0.2f);
+            p2.Scale = new Vector2(3, 0.5f);
             p2.FadeInNormalizedTime = p.FadeInNormalizedTime;
             p2.FadeOutNormalizedTime = p.FadeOutNormalizedTime;
             p2.TimeToLive = p.TimeToLive;
