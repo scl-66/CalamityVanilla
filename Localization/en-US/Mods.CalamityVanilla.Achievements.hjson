@@ -27,3 +27,8 @@ TerraLongbowObtained: {
 	FriendlyName: Bow of the Hero
 	Description: Obtain the Terra Longbow, forged from the finest bows of dawn and dusk.
 }
+
+PriestGetBlessing: {
+	FriendlyName: Blessing in Disguise
+	Description: Become empowered by one of the Priest's many strange blessings.
+}

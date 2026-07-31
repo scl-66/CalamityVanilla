@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
+﻿using CalamityVanilla.Content.Achievements;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -92,6 +93,7 @@ public sealed class PriestBlessing<T> : PriestBlessing where T : BlessingPlayer
             player.ConsumeItem(Tribute.ItemType);
         }
         player.GetModPlayer<T>().Active = true;
+        ModContent.GetInstance<PriestGetBlessing>().Condition.Complete();
         return true;
     }
     public override void Disable(Player player)
