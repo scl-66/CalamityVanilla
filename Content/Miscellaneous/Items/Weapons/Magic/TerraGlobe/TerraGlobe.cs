@@ -430,7 +430,7 @@ public class TerraGlobeExplosion : ModProjectile, ISyncedOnHitEffect
         {
             var p = VanillaParticles.RequestPrettySparkleParticle();
             p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
-            p.LocalPosition = target.Center;
+            p.LocalPosition = target.Center + Main.rand.NextVector2Circular(15, 15);
             p.Rotation = Projectile.velocity.ToRotation();
             p.Scale = new Vector2(3, 0.75f);
             p.FadeInNormalizedTime = 0.95f;
