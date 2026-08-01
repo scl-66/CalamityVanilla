@@ -19,7 +19,7 @@ public class Twiflight : ModItem
     {
         Item.DefaultToBow(30, 12, true);
         Item.consumeAmmoOnFirstShotOnly = true;
-        Item.damage = 20;
+        Item.damage = 30;
         Item.knockBack = 2;
         Item.UseSound = SoundID.Item102;
         Item.rare = ItemRarityID.Orange;

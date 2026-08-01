@@ -72,7 +72,7 @@ HoarfrostBow: {
 }
 
 CatastropheClaymore: {
-	DisplayName: Catastrophe Claymore
+	DisplayName: Soulsaber
 	Tooltip: Launches a spread of elemental flames
 }
 
@@ -870,4 +870,9 @@ GospelPlatformItem: {
 TerraGlobe: {
 	DisplayName: Globe of Terra
 	Tooltip: Conjures energy globes that orbit the cursor
+}
+
+CandleSentryTileItem: {
+	DisplayName: Candle Sentry Tile Item
+	Tooltip: ""
 }

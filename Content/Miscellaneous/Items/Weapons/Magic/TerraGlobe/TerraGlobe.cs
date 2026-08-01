@@ -69,6 +69,8 @@ public class TerraGlobeProjectile : ModProjectile, ISyncedOnHitEffect
         Projectile.timeLeft = maxTimeLeft;
         Projectile.penetrate = 5;
         Projectile.DamageType = DamageClass.Magic;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.localNPCHitCooldown = 30;
         Projectile.ignoreWater = true;
     }
 
@@ -278,7 +280,7 @@ public class TerraGlobeOrb : ModProjectile
         Projectile.DamageType = DamageClass.Magic;
         Projectile.tileCollide = false;
         Projectile.usesLocalNPCImmunity = true;
-        Projectile.localNPCHitCooldown = 30;
+        Projectile.localNPCHitCooldown = 15;
         Projectile.ignoreWater = true;
         //Projectile.extraUpdates = 1;
     }

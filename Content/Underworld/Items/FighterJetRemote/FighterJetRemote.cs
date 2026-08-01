@@ -113,6 +113,7 @@ public class FighterJetMinion : ModProjectile
     public ref float AI_State => ref Projectile.ai[1];
 
     SoundStyle EmptyReload = new SoundStyle("CalamityVanilla/Assets/Sounds/EmptyReload_", 2);
+    private static readonly int skinCount = 6; // nunber of skins
 
     public override void SetStaticDefaults()
     {
@@ -123,7 +124,7 @@ public class FighterJetMinion : ModProjectile
         ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
         ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
 
-        Main.projFrames[Projectile.type] = 3; // nunber of skins
+        Main.projFrames[Projectile.type] = skinCount;
     }
 
     public override void SetDefaults()
@@ -165,7 +166,7 @@ public class FighterJetMinion : ModProjectile
     public int timeAfterEmpty = 10;
     public bool countingAfterEmpty = true;
 
-    public int chooseSkin = Main.rand.Next(3);
+    public int chooseSkin = Main.rand.Next(skinCount);
     public override void AI()
     {
         Projectile.frame = chooseSkin;
