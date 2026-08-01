@@ -50,6 +50,7 @@ public class GospelSet : ILoadable
 
 public class GospelCandle : CandleTile, ILoadItem
 {
+    
     public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<GospelBrick>());
 
     public override void SetStaticDefaults()
@@ -58,28 +59,29 @@ public class GospelCandle : CandleTile, ILoadItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileLighted[Type] = true;
 		Main.tileLavaDeath[Type] = true;
-
-		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
+        TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
 		TileObjectData.newTile.CoordinateHeights = [22];
-		//TileObjectData.newTile.DrawYOffset = -4;
-		TileObjectData.addTile(Type);
+        TileObjectData.newTile.DrawYOffset = -6;
+
+        TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+        AdjTiles = [33];
+        TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
 		AddMapEntry(MapColor, Language.GetText("ItemName.Candle"));
 
 		AdjTiles = [TileID.Candles];
 		DustType = -1;
-
-        base.SetStaticDefaults();
+        Light = Color.Orange.ToVector3();
     }
 
-    //public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-    //{
-    //    Tile tile = Main.tile[i, j];
+    public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+    {
+        Tile tile = Main.tile[i, j];
 
-    //    if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
-    //        (r, g, b) = (Light.X, Light.Y, Light.Z);
-    //}
+        if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
+            (r, g, b) = (Light.X, Light.Y, Light.Z);
+    }
 }
 public class GospelClothWorkBench : WorkBenchTile, ILoadItem
 {
