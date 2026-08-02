@@ -11,7 +11,8 @@ internal sealed class CommonWorldFlags : ModSystem
     
     #if DEBUG
     public override void PostUpdateEverything()
-    {
+    {   
+        /*
         if (Main.keyState.IsKeyDown(Keys.L) && !Main.oldKeyState.IsKeyDown(Keys.L))
         {
             AstroOrHallow = !AstroOrHallow;
@@ -25,6 +26,7 @@ internal sealed class CommonWorldFlags : ModSystem
             string status = AstroOrHallow ? "enabled" : "disabled";
             Main.NewText($"Astro/Hallow flag is {status}.");
         }
+        */
     }
 #endif
     
