@@ -437,6 +437,38 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
     }
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
+        #region Sparkle
+        for (int i = 0; i < 1; i++)
+        {
+            var p = VanillaParticles.RequestPrettySparkleParticle();
+            p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
+            p.LocalPosition = Projectile.Center;
+            p.Rotation = Projectile.velocity.ToRotation();
+            p.Scale = new Vector2(3, 0.75f);
+            p.FadeInNormalizedTime = 0.95f;
+            p.FadeOutNormalizedTime = 0.95f;
+            p.TimeToLive = 10;
+            p.AdditiveAmount = 0.35f;
+            p.DrawVerticalAxis = false;
+            p.Velocity = Projectile.velocity * 0.05f * (i + 0.25f);
+            Main.ParticleSystem_World_OverPlayers.Add(p);
+
+            var p2 = VanillaParticles.RequestPrettySparkleParticle();
+            p2.ColorTint = p.ColorTint;
+            p2.LocalPosition = p.LocalPosition;
+            p2.Rotation = p.Rotation + MathHelper.PiOver2;
+            p2.Scale = new Vector2(3, 0.5f);
+            p2.FadeInNormalizedTime = p.FadeInNormalizedTime;
+            p2.FadeOutNormalizedTime = p.FadeOutNormalizedTime;
+            p2.TimeToLive = p.TimeToLive;
+            p2.AdditiveAmount = p.AdditiveAmount;
+            p2.DrawVerticalAxis = false;
+            p2.Velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2) * 0.02f * i;
+            Main.ParticleSystem_World_OverPlayers.Add(p2);
+        }
+        #endregion
+
+
         int target = Projectile.FindTargetWithLineOfSight(500);
 
         if (target == -1)

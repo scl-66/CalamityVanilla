@@ -96,8 +96,8 @@ public class PerfectDarkCloud : ModProjectile, ISyncedOnHitEffect
 
         Projectile.DamageType = DamageClass.Melee;
         Projectile.penetrate = -1;
-        Projectile.usesIDStaticNPCImmunity = true;
-        Projectile.idStaticNPCHitCooldown = 20;
+        Projectile.usesLocalNPCImmunity = true;
+        Projectile.idStaticNPCHitCooldown = 40;
         Projectile.friendly = true;
         Projectile.hostile = false;
 

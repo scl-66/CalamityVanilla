@@ -22,7 +22,7 @@ public class MushroomBomber : ModItem
     {
         Item.channel = true;
         Item.DamageType = DamageClass.Ranged;
-        Item.damage = 1500;
+        Item.damage = 900;
         Item.useStyle = ItemUseStyleID.Shoot;
         Item.useTime = Item.useAnimation = 60 * 5;
         Item.knockBack = 10;
