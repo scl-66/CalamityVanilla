@@ -298,6 +298,7 @@ public class MushroomBomberSpores : ModProjectile
         Projectile.timeLeft = 300;
         Projectile.alpha = 64;
         Projectile.tileCollide = false;
+        Projectile.friendly = true;
         Projectile.DamageType = DamageClass.Ranged;
         Projectile.penetrate = -1;
         Projectile.frame = Main.rand.Next(3);
