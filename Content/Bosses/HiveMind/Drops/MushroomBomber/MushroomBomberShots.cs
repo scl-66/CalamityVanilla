@@ -225,7 +225,7 @@ public class MushroomBomberShotLarge : ModProjectile
     }
     public override bool? CanHitNPC(NPC target)
     {
-        if (Projectile.ai[1] == 1)
+        if (Projectile.ai[1] == 1 && !target.friendly)
         {
             return target.Hitbox.ClosestPointInRect(Projectile.Center).Distance(Projectile.Center) < Projectile.width;
         }
