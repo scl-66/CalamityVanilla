@@ -15,7 +15,7 @@ public class FighterJetRemote : ModItem
     {
         Item.width = 26;
         Item.height = 30;
-        Item.damage = 13;
+        Item.damage = 19;
         Item.DamageType = DamageClass.Summon;
         Item.mana = 20;
         Item.useTime = 36;
@@ -161,7 +161,7 @@ public class FighterJetMinion : ModProjectile
 
     public int AI_Shoot_Timer = 0;
 
-    public int startAttackRange = 950;
+    public int startAttackRange = 800;
 
     public int timeAfterEmpty = 10;
     public bool countingAfterEmpty = true;
@@ -236,13 +236,13 @@ public class FighterJetMinion : ModProjectile
                     // short pause between bullets
                     if (AI_Shoot_Timer-- <= 0)
                     {
-                        AI_Shoot_Timer = fireRate * Main.rand.Next(7, 12);
+                        AI_Shoot_Timer = fireRate * Main.rand.Next(3, 6);
                     }
 
                     // shoot bullets!!!!
-                    if (AI_Shoot_Timer > fireRate * 5)
+                    if (AI_Shoot_Timer > fireRate * 2)
                     {
-                        if (AI_Timer % fireRate == 0 && lineOfSight)
+                        if (AI_Timer % fireRate == 0)
                         {
                             float shootSpeed = 8f;
                             Vector2 shootDir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.ToRadians(Main.rand.Next(-10, 10)));
@@ -255,7 +255,10 @@ public class FighterJetMinion : ModProjectile
 
                             SoundEngine.PlaySound(SoundID.Item11 with { Volume = 0.7f }, Projectile.Center);
                             int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), new Vector2(Projectile.Center.X - 4f, Projectile.Center.Y), shootVelocity, projToShoot, Projectile.damage, 3, Projectile.owner);
-                            ProjectileID.Sets.MinionShot[Main.projectile[p].type] = true;
+
+                            FighterJetBullet bullet = Main.projectile[p].GetGlobalProjectile<FighterJetBullet>();
+                            bullet.shotByJet = true;
+                            Main.projectile[p].minion = true;
                         }
                     }
                 }
@@ -332,12 +335,6 @@ public class FighterJetMinion : ModProjectile
         }
 
         Projectile.netUpdate = true;
-
-        //Main.chatMonitor.Clear();
-        //Main.NewText(timeAfterEmpty);
-        //Main.NewText(target);
-        //Main.NewText(timeSinceSightCutOff);
-        //Main.NewText(CountAmmo());
     }
 
 
@@ -354,23 +351,24 @@ public class FighterJetMinion : ModProjectile
             if (distanceToTargetNPC < closestTargetDistance)
             {
                 closestTargetDistance = distanceToTargetNPC; // Set a new closest distance value
-                targetNPC = npc;
                 if (Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height))
                 {
-                    timeSinceSightCutOff = 0;
+                    targetNPC = npc;
+                    //timeSinceSightCutOff = 0;
                 }
             }
-            // if line of sight is cut, increment timeSinceSightCutOff
-            if (!Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height) && !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height))
-            {
-                timeSinceSightCutOff++;
-            }
+            //// if line of sight is cut, increment timeSinceSightCutOff
+            //if (!Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height) && !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height))
+            //{
+            //    timeSinceSightCutOff++;
+            //}
 
-            //loses interest in target if line of sight is cut off for too long, the lower the number timeSinceSightCutOff being compared to is, the faster they lose interest
-            if (owner.Center.Distance(npc.Center) > startAttackRange || timeSinceSightCutOff >= 45/* || !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height)*/)
-            {
-                targetNPC = null;
-            }
+            ////loses interest in target if line of sight is cut off for too long, the lower the number timeSinceSightCutOff being compared to is, the faster they lose interest
+            //if (owner.Center.Distance(npc.Center) > startAttackRange || timeSinceSightCutOff >= 45/* || !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height)*/)
+            //{
+            //    targetNPC = null;
+            //    //timeSinceSightCutOff = 0;
+            //}
         }
     }
 
@@ -388,6 +386,29 @@ public class FighterJetMinion : ModProjectile
             Projectile.timeLeft = 2;
         }
 
+        return true;
+    }
+}
+
+public class FighterJetBullet : GlobalProjectile
+{
+    public override bool InstancePerEntity => true;
+    public bool shotByJet = false;
+
+    public override void SetDefaults(Projectile entity)
+    {
+        entity.tileCollide = false;
+    }
+
+    public override bool PreAI(Projectile projectile)
+    {
+        if (shotByJet)
+        {
+            if (!Collision.SolidCollision(projectile.TopLeft, projectile.width, projectile.height))
+            {
+                projectile.tileCollide = true;
+            }
+        }
         return true;
     }
 }
