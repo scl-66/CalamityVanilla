@@ -1,11 +1,16 @@
 ﻿using CalamityVanilla.Common.Players;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using rail;
+using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 
 namespace CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
 
@@ -218,9 +223,7 @@ public class FighterJetMinion : ModProjectile
                         countingAfterEmpty = false;
                     }
                 }
-
                 break;
-
             case (float)State.Attack:
                 target = targetNPC;
                 speed = 0.3f;
@@ -230,7 +233,7 @@ public class FighterJetMinion : ModProjectile
                 {
                     countingAfterEmpty = true;
                     timeAfterEmpty = Main.rand.Next(1, 30);
-                    bool lineOfSight = Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, target.position, target.width, target.height);
+                    //bool lineOfSight = Collision.CanHitLine(Projectile.position, Projectile.width, Projectile.height, target.position, target.width, target.height);
 
                     int fireRate = 10;
                     // short pause between bullets
@@ -257,7 +260,10 @@ public class FighterJetMinion : ModProjectile
                             int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), new Vector2(Projectile.Center.X - 4f, Projectile.Center.Y), shootVelocity, projToShoot, Projectile.damage, 3, Projectile.owner);
 
                             FighterJetBullet bullet = Main.projectile[p].GetGlobalProjectile<FighterJetBullet>();
-                            bullet.shotByJet = true;
+                            if (Main.projectile[p].tileCollide)
+                            {
+                                bullet.shotByJet = true;
+                            }
                             Main.projectile[p].minion = true;
                         }
                     }
@@ -351,25 +357,43 @@ public class FighterJetMinion : ModProjectile
             if (distanceToTargetNPC < closestTargetDistance)
             {
                 closestTargetDistance = distanceToTargetNPC; // Set a new closest distance value
+                targetNPC = npc;
                 if (Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height))
                 {
-                    targetNPC = npc;
-                    //timeSinceSightCutOff = 0;
+                    timeSinceSightCutOff = 0;
                 }
             }
-            //// if line of sight is cut, increment timeSinceSightCutOff
-            //if (!Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height) && !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height))
-            //{
-            //    timeSinceSightCutOff++;
-            //}
+            // if line of sight is cut, increment timeSinceSightCutOff
+            if (!Collision.CanHit(Projectile.position, Projectile.width, Projectile.height, npc.position, npc.width, npc.height) && !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height))
+            {
+                timeSinceSightCutOff++;
+            }
 
-            ////loses interest in target if line of sight is cut off for too long, the lower the number timeSinceSightCutOff being compared to is, the faster they lose interest
-            //if (owner.Center.Distance(npc.Center) > startAttackRange || timeSinceSightCutOff >= 45/* || !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height)*/)
-            //{
-            //    targetNPC = null;
-            //    //timeSinceSightCutOff = 0;
-            //}
+            //loses interest in target if line of sight is cut off for too long, the lower the number timeSinceSightCutOff being compared to is, the faster they lose interest
+            if (owner.Center.Distance(npc.Center) > startAttackRange || timeSinceSightCutOff >= 30/* || !Collision.CanHit(owner.position, owner.width, owner.height, npc.position, npc.width, npc.height)*/)
+            {
+                targetNPC = null;
+                //timeSinceSightCutOff = 0;
+            }
         }
+    }
+
+    public override void PostDraw(Color lightColor)
+    {
+        string text = "";
+        Color col = Color.White;
+        switch (AI_State)
+        {
+            case (float)State.Idle:
+                text = nameof(State.Idle);
+                col = Color.Lime;
+                break;
+            case (float)State.Attack:
+                text = nameof(State.Attack);
+                col = Color.Red;
+                break;
+        }
+        ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, Projectile.Top - Main.screenPosition + new Vector2(0f, -15f), col, 0f, new Vector2(Projectile.width/ 2, 0f), Vector2.One, 10);
     }
 
     private bool CheckAlive(Player owner)
@@ -395,11 +419,6 @@ public class FighterJetBullet : GlobalProjectile
     public override bool InstancePerEntity => true;
     public bool shotByJet = false;
 
-    public override void SetDefaults(Projectile entity)
-    {
-        entity.tileCollide = false;
-    }
-
     public override bool PreAI(Projectile projectile)
     {
         if (shotByJet)
@@ -407,6 +426,10 @@ public class FighterJetBullet : GlobalProjectile
             if (!Collision.SolidCollision(projectile.TopLeft, projectile.width, projectile.height))
             {
                 projectile.tileCollide = true;
+                shotByJet = false;
+            } else
+            {
+                projectile.tileCollide = false;
             }
         }
         return true;
