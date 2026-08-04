@@ -1,8 +1,5 @@
 ﻿using CalamityVanilla.Common.Players;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using rail;
-using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -393,7 +390,7 @@ public class FighterJetMinion : ModProjectile
                 col = Color.Red;
                 break;
         }
-        ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, Projectile.Top - Main.screenPosition + new Vector2(0f, -15f), col, 0f, new Vector2(Projectile.width/ 2, 0f), Vector2.One, 10);
+        ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, Projectile.Top - Main.screenPosition + new Vector2(0f, -15f), col, 0f, new Vector2(Projectile.width / 2, 0f), Vector2.One, 10);
     }
 
     private bool CheckAlive(Player owner)
@@ -427,7 +424,8 @@ public class FighterJetBullet : GlobalProjectile
             {
                 projectile.tileCollide = true;
                 shotByJet = false;
-            } else
+            }
+            else
             {
                 projectile.tileCollide = false;
             }
