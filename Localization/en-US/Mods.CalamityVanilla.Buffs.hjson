@@ -91,3 +91,8 @@ AdrenalineBlessingBuff: {
 	DisplayName: Adrenaline
 	Description: Damage and defense increased when close to enemies and vise versa
 }
+
+PriestAttackDebuff: {
+	DisplayName: Priest Attack Debuff
+	Description: Mods.CalamityVanilla.Buffs.PriestAttackDebuff.Description
+}

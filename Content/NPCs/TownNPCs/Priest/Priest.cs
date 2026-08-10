@@ -16,6 +16,7 @@ using TileHelper.Common;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 using CalamityVanilla.Common.Items;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
+using Microsoft.Xna.Framework;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
@@ -50,8 +51,9 @@ public class Priest : ModNPC
         NPCID.Sets.AttackFrameCount[Type] = 3; // The amount of frames in the attacking animation.
         NPCID.Sets.DangerDetectRange[Type] = 700; // The amount of pixels away from the center of the NPC that it tries to attack enemies.
         NPCID.Sets.AttackType[Type] = 2; // The type of attack the Town NPC performs. 0 = throwing, 1 = shooting, 2 = magic, 3 = melee
-        NPCID.Sets.AttackTime[Type] = 180; // The amount of time it takes for the NPC's attack animation to be over once it starts.
-        NPCID.Sets.AttackAverageChance[Type] = 20; // The denominator for the chance for a Town NPC to attack. Lower numbers make the Town NPC appear more aggressive.
+        NPCID.Sets.AttackTime[Type] = 360; // The amount of time it takes for the NPC's attack animation to be over once it starts.
+        NPCID.Sets.AttackAverageChance[Type] = 60; // The denominator for the chance for a Town NPC to attack. Lower numbers make the Town NPC appear more aggressive.
+        NPCID.Sets.MagicAuraColor[Type] = new Color(255, 231, 91, 127);
         NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
         NPCID.Sets.ShimmerTownTransform[Type] = true; // This set says that the Town NPC has a Shimmered form. Otherwise, the Town NPC will become transparent when touching Shimmer like other enemies.
 
@@ -441,30 +443,26 @@ public class Priest : ModNPC
     //    return true;
     //}
 
+
+
     public override void TownNPCAttackStrength(ref int damage, ref float knockback)
     {
-        damage = 20;
         knockback = 4f;
     }
 
     public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
     {
-        cooldown = 180;
-        randExtraCooldown = 30;
+        cooldown = 10;
+        randExtraCooldown = 1;
     }
 
     public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
     {
-        projType = ModContent.ProjectileType<Corruption.Items.DarkPrismStaff.DarkPrism>();
-        attackDelay = 200;
+        projType = ModContent.ProjectileType<PriestAttackController>();
+        attackDelay = 24;
     }
 
-    public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
-    {
-        multiplier = 12f;
-        randomOffset = 2f;
-        // SparklingBall is not affected by gravity, so gravityCorrection is left alone.
-    }
+
 
     //public override void LoadData(TagCompound tag)
     //{
