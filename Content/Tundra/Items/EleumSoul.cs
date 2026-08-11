@@ -8,6 +8,8 @@ namespace CalamityVanilla.Content.Tundra.Items;
 
 public class EleumSoul : ModItem // thanks example mod lmao
 {
+    public override string Texture => Assets.Textures.Tundra.Items.EleumSoul.KEY;
+
     public override Color? GetAlpha(Color lightColor)
     {
         return new Color(255, 255, 255, 100);

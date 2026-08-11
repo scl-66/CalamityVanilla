@@ -1,6 +1,4 @@
 ﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
-using CalamityVanilla.Content.Tundra.Items.Frostbolt;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
