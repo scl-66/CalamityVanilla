@@ -6,7 +6,7 @@ using CalamityVanilla.Content.Bosses.Cryogen.Drops.MagicChisel;
 using CalamityVanilla.Content.Bosses.Cryogen.Drops.TheSnowman;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 using CalamityVanilla.Content.Particles;
-using CalamityVanilla.Content.Vanity.BossMasks;
+using CalamityVanilla.Content.Vanity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

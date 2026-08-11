@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Vanity.BossMasks;
+﻿using CalamityVanilla.Content.Vanity;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

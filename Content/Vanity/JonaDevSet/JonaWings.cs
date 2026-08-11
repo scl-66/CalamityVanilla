@@ -9,10 +9,13 @@ namespace CalamityVanilla.Content.Vanity.JonaDevSet;
 [AutoloadEquip(EquipType.Wings)]
 public class JonaWings : ModItem
 {
+    public override string Texture => Assets.Textures.Vanity.JonaDevSet.JonaWings.KEY;
+
     public override void SetStaticDefaults()
     {
         ArmorIDs.Wing.Sets.Stats[Item.wingSlot] = ArmorIDs.Wing.Sets.Stats[ArmorIDs.Wing.RedsWings];
     }
+
     public override void SetDefaults()
     {
         Item.width = 24;
@@ -21,6 +24,7 @@ public class JonaWings : ModItem
         Item.rare = ItemRarityID.Cyan;
         Item.value = 400000;
     }
+
     public override bool WingUpdate(Player player, bool inUse)
     {
         if (!player.sleeping.isSleeping)

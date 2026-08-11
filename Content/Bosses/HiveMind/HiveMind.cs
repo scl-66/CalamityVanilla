@@ -8,7 +8,7 @@ using CalamityVanilla.Content.Bosses.HiveMind.Drops.MyceliumStaff;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.PerfectDark;
 using CalamityVanilla.Content.Bosses.HiveMind.Drops.SinisterIncubator;
 using CalamityVanilla.Content.Bosses.HiveMind.Minions;
-using CalamityVanilla.Content.Vanity.BossMasks;
+using CalamityVanilla.Content.Vanity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
