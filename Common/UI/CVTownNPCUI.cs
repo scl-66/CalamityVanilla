@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
+﻿using CalamityVanilla.Content.TownNPCs.Priest;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;

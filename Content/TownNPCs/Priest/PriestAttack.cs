@@ -9,10 +9,12 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
+namespace CalamityVanilla.Content.TownNPCs.Priest;
 
 public class PriestAttackDebuff : ModBuff
 {
+    public override string Texture => Assets.Textures.TownNPCs.Priest.PriestAttackDebuff.KEY;
+
     public override void SetStaticDefaults()
     {
         Main.debuff[Type] = true;
@@ -51,6 +53,8 @@ public class PriestAttackDebuffNPC : GlobalNPC
 
 public class PriestAttackController : ModProjectile
 {
+    public override string Texture => Assets.Textures.TownNPCs.Priest.PriestAttackController.KEY;
+
     public int SpawnNPCWhoAmI
     {
         get => (int)Projectile.ai[1];

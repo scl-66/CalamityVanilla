@@ -1,6 +1,5 @@
 ﻿using CalamityVanilla.Common.Items;
 using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -9,10 +8,12 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using TileHelper.Common;
 
-namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
+namespace CalamityVanilla.Content.TownNPCs.Priest.Items.CheckerBlocks;
 
 public class CheckerWall : ModWall, ILoadItem
 {
+    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.CheckerWall.KEY;
+
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 5);
     public void AddItemRecipes(ModItem item)
     {
@@ -53,7 +54,7 @@ public class CheckerWall : ModWall, ILoadItem
 //flat color versions
 public class WhiteCheckerWall : ModWall
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWallFlat";
+    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.CheckerWallFlat.KEY;
 
     public override void SetStaticDefaults()
     {
@@ -64,7 +65,7 @@ public class WhiteCheckerWall : ModWall
 }
 public class BlackCheckerWall : ModWall
 {
-    public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerWallFlat";
+    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.CheckerWallFlat.KEY;
 
     public override void SetStaticDefaults()
     {
@@ -81,6 +82,8 @@ public class BlackCheckerWall : ModWall
 }
 internal class WhiteCheckerWallItem : ModItem
 {
+    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.WhiteCheckerWallItem.KEY;
+
     public override void SetDefaults()
     {
         Item.DefaultToPlaceableWall(ModContent.WallType<WhiteCheckerWall>());
@@ -97,6 +100,8 @@ internal class WhiteCheckerWallItem : ModItem
 }
 internal class BlackCheckerWallItem : ModItem
 {
+    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.BlackCheckerWallItem.KEY;
+
     public override void SetDefaults()
     {
         Item.DefaultToPlaceableWall(ModContent.WallType<BlackCheckerWall>());

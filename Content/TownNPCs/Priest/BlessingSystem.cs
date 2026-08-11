@@ -1,5 +1,4 @@
 ﻿using CalamityVanilla.Content.Achievements;
-using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Blessings;
+namespace CalamityVanilla.Content.TownNPCs.Priest;
 
 public class BlessingSystem : ModSystem
 {
@@ -58,7 +57,7 @@ public sealed class PriestBlessing<T> : PriestBlessing where T : BlessingPlayer
         DisplayName = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.DisplayName");
         Description = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.Description");
         Stats = Language.GetOrRegister($"Mods.CalamityVanilla.Blessings.{name}.Stats");
-        Icon = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/{name}Icon");
+        Icon = ModContent.Request<Texture2D>($"CalamityVanilla/Assets/Textures/TownNPCs/Priest/Blessings/{name}Icon");
 
         Tribute = tribute;
 
@@ -120,6 +119,8 @@ public abstract class BlessingPlayer : ModPlayer
 
 public class BlessingBuff<T> : ModBuff where T : BlessingPlayer
 {
+    public override string Texture => $"CalamityVanilla/Assets/Textures/TownNPCs/Priest/Blessings/{Name}";
+
     public override void SetStaticDefaults()
     {
         BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;

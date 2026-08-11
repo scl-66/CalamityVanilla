@@ -1,5 +1,4 @@
 ﻿using CalamityVanilla.Common.UI;
-using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Blessings;
 using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +14,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
+namespace CalamityVanilla.Content.TownNPCs.Priest;
 
 public class PriestUIState : UIState
 {
@@ -419,20 +418,15 @@ public class BlessingButton : UIElement
 
     public SoundStyle? HoverSound = SoundID.MenuTick;
     public SoundStyle? ClickSound = SoundID.MenuTick;
-    public static Asset<Texture2D> bgTexture;
-    public static Asset<Texture2D> bgInnerTexture;
-    public static Asset<Texture2D> borderTexture;
-    public static Texture2D gradient;
+    public static Asset<Texture2D> bgTexture = Assets.Textures.TownNPCs.Priest.BlessingMenu.BlessingButtonPanel.Asset;
+    public static Asset<Texture2D> bgInnerTexture = Assets.Textures.TownNPCs.Priest.BlessingMenu.BlessingButtonPanelHighlight.Asset;
+    public static Asset<Texture2D> borderTexture = Assets.Textures.TownNPCs.Priest.BlessingMenu.BlessingButtonPanelBorder.Asset;
+    public static Texture2D gradient = Assets.Textures.TownNPCs.Priest.BlessingMenu.BlessingButtonGradient.Asset.Value;
     public static float siner;
     public Asset<Effect> dyeShader;
 
     public BlessingButton(PriestBlessing blessingObj) : base()
     {
-        bgTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonPanel", AssetRequestMode.ImmediateLoad);
-        bgInnerTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonPanelHighlight", AssetRequestMode.ImmediateLoad);
-        borderTexture = ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonPanelBorder", AssetRequestMode.ImmediateLoad);
-        gradient = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/BlessingButtonGradient", AssetRequestMode.ImmediateLoad);
-
         //if (Main.netMode != NetmodeID.Server)
         //{
         //    dyeShader = ModContent.Request<Effect>("Effects/MyDyes");
@@ -563,7 +557,7 @@ public class BlessingButton : UIElement
     }
     private void DrawArrow(UIElement affectedElement)
     {
-        Texture2D tex = (Texture2D)ModContent.Request<Texture2D>($"CalamityVanilla/Content/NPCs/TownNPCs/Priest/Blessings/TributeArrow");
+        Texture2D tex = Assets.Textures.TownNPCs.Priest.BlessingMenu.TributeArrow.Asset.Value;
         Main.spriteBatch.Draw(tex, affectedElement.GetDimensions().Center(), null, Color.White, 0, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
     }
 

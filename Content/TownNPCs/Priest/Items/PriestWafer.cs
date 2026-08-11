@@ -1,14 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using static Daybreak.Common.Features.Hooks.GlobalItemHooks;
 
-namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
+namespace CalamityVanilla.Content.TownNPCs.Priest.Items;
 
 public class PriestWafer : ModItem
 {
+    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.PriestWafer.KEY;
+
     public override void SetStaticDefaults()
     {
         Item.ResearchUnlockCount = 5;
@@ -40,14 +45,28 @@ public class PriestWafer : ModItem
         Item.useAnimation = (Item.useTime = 17);
         Item.maxStack = Item.CommonMaxStack;
         Item.consumable = true;
+        Item.healLife = 5;
         Item.width = 26;
         Item.height = 26;
         Item.value = Item.buyPrice(0, 0, 5);
         Item.rare = ItemRarityID.LightRed;
     }
 
-    public override void OnConsumeItem(Player player)
+    public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
-        player.Heal(Main.rand.Next(1, 5));
+        TooltipLine? line = tooltips.FirstOrDefault(x => x.Mod == "Terraria" && x.Name == "HealLife");
+
+        if (line != null)
+            tooltips.Remove(line);
+    }
+
+    public override void GetHealLife(Player player, bool quickHeal, ref int healValue)
+    {
+        healValue = Main.rand.Next(1, 5);
+    }
+
+    public override bool ApplyPotionDelay(Player player, int potionDelay)
+    {
+        return false;
     }
 }
