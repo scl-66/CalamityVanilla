@@ -38,7 +38,7 @@ public class FrostBolt : ModItem
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
-        Projectile.NewProjectile(source, position, velocity.RotatedByRandom(0.4) * Main.rand.NextFloat(0.8f,1.2f), type, damage, knockback, player.whoAmI,
+        Projectile.NewProjectile(source, position, velocity.RotatedByRandom(0.4) * Main.rand.NextFloat(0.8f, 1.2f), type, damage, knockback, player.whoAmI,
             ai0: Main.rand.NextFloat(0.01f, 0.05f));
 
         return false;
@@ -92,18 +92,18 @@ public class FrostBoltProjectile : ModProjectile
         Projectile.velocity.Y += 0.2f;
         if (Main.rand.NextBool(3))
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(14 * Projectile.scale, 14 * Projectile.scale), Main.rand.NextBool()? DustID.Snow : DustID.IceRod);
+            Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(14 * Projectile.scale, 14 * Projectile.scale), Main.rand.NextBool() ? DustID.Snow : DustID.IceRod);
             d.velocity = Projectile.velocity * 0.8f;
             d.alpha = Projectile.alpha;
-            d.scale *= Main.rand.NextFloat(1f,1.25f);
+            d.scale *= Main.rand.NextFloat(1f, 1.25f);
             d.noGravity = true;
         }
 
-        if(Projectile.alpha == 260)
+        if (Projectile.alpha == 260)
         {
             Projectile.scale = Main.rand.NextFloat(0.8f, 1f);
         }
-        if(Projectile.alpha > 0)
+        if (Projectile.alpha > 0)
         {
             Projectile.alpha -= 13;
         }
@@ -171,7 +171,7 @@ public class FrostBoltProjectile : ModProjectile
             {
                 Projectile.velocity.Y = -oldVelocity.Y;
             }
-            SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.25f, MaxInstances = 10}, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.25f, MaxInstances = 10 }, Projectile.Center);
         }
         return false;
     }
@@ -180,12 +180,12 @@ public class FrostBoltProjectile : ModProjectile
     {
         SoundEngine.PlaySound(SoundID.Item27 with
         {
-            PitchRange = (0.2f,0.5f),
+            PitchRange = (0.2f, 0.5f),
             Volume = 0.4f,
 
             MaxInstances = 0,
         }, Projectile.Center);
-        for(int i = 0; i < 15; i++)
+        for (int i = 0; i < 15; i++)
         {
             Dust d = Dust.NewDustPerfect(Projectile.Center, Main.rand.NextBool() ? DustID.Snow : DustID.IceRod);
             d.velocity = Main.rand.NextVector2Circular(6, 6);
@@ -234,7 +234,7 @@ public struct FrostboltVertexStrip
     }
     public static Color StripColors(float progressOnStrip)
     {
-        return Color.Lerp(new Color(1f, 1f, 1f, 0f), new Color(0f,0.5f,1f,0f), progressOnStrip) * (1f - progressOnStrip * progressOnStrip);
+        return Color.Lerp(new Color(1f, 1f, 1f, 0f), new Color(0f, 0.5f, 1f, 0f), progressOnStrip) * (1f - progressOnStrip * progressOnStrip);
     }
     private float StripWidth(float progressOnStrip)
     {

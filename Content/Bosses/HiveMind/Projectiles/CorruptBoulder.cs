@@ -18,7 +18,7 @@ public class CorruptBoulder : ModProjectile
     private static SoundStyle _spawn;
     public override void SetStaticDefaults()
     {
-        _death = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_RockDestroy", [1,2]) { PitchVariance = 0.1f, MaxInstances = 10 };
+        _death = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_RockDestroy", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
         _spawn = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_RockEmerge", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
         Main.projFrames[Type] = 4;
         ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -42,7 +42,7 @@ public class CorruptBoulder : ModProjectile
     {
         Player target = Main.player[(int)Projectile.ai[0]];
         Projectile.ai[1]++;
-        if(Projectile.scale < 1.2f)
+        if (Projectile.scale < 1.2f)
             Projectile.scale += 0.06f;
 
         float LaunchTime = 240;
@@ -75,8 +75,8 @@ public class CorruptBoulder : ModProjectile
 
                 Projectile.position.Y -= 0.5f;
                 Projectile.rotation += MathF.Sin((Projectile.ai[1] * 0.5f) + (Projectile.identity * 7) * 0.1f) * 0.1f;
-                if(Main.rand.NextBool(15))
-                Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+                if (Main.rand.NextBool(15))
+                    Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
             }
             else if (Projectile.ai[1] == 61)
             {
@@ -136,7 +136,7 @@ public class CorruptBoulder : ModProjectile
             int time = 40;
             Vector2 adjustedTargetPosition = target.Top;// + new Vector2(target.velocity.X * time, 0);
             Projectile.velocity = CVUtils.FindVelocityForGravityAffectedThing(Projectile.Bottom, adjustedTargetPosition, 0.2f, time).LengthClamp(32);
-            for(int i = 0; i < 25; i++)
+            for (int i = 0; i < 25; i++)
             {
                 Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2);
                 d.color = Color.Purple;
@@ -180,7 +180,7 @@ public class CorruptBoulder : ModProjectile
             //{
             //    Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0,8 + (float)Math.Sin(Main.timeForVisualEffects * 0.1f) * 4).RotatedBy(i * MathHelper.PiOver2), frame, Color.Purple with { A = 0 } * Projectile.Opacity * 0.5f, Projectile.rotation, frame.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             //}
-            float colorMultiply = Projectile.Opacity * Utils.Remap(Projectile.ai[1],30,120,0,2);
+            float colorMultiply = Projectile.Opacity * Utils.Remap(Projectile.ai[1], 30, 120, 0, 2);
             float interval = 60;
             float amount = (float)(Main.timeForVisualEffects % interval) / interval;
             Color c = Color.Purple with { A = 0 } * amount * colorMultiply * (1f - amount);
@@ -201,9 +201,9 @@ public class CorruptBoulder : ModProjectile
     {
         if (Main.expertMode && Main.rand.NextBool(4))
         {
-            int[] Types = [NPCID.LittleEater, NPCID.EaterofSouls, NPCID.BigEater, NPCID.Slimer,NPCID.CorruptSlime];
+            int[] Types = [NPCID.LittleEater, NPCID.EaterofSouls, NPCID.BigEater, NPCID.Slimer, NPCID.CorruptSlime];
             NPC n = NPC.NewNPCDirect(Projectile.GetSource_FromThis(), Projectile.Center, Types[Main.rand.Next(Types.Length)]);
-            n.velocity = -Projectile.oldVelocity.RotatedByRandom(1) * Main.rand.NextFloat(0.25f,0.5f);
+            n.velocity = -Projectile.oldVelocity.RotatedByRandom(1) * Main.rand.NextFloat(0.25f, 0.5f);
             NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n.whoAmI);
         }
         SoundEngine.PlaySound(_death, Projectile.position);
@@ -213,9 +213,9 @@ public class CorruptBoulder : ModProjectile
             d.alpha = 128;
             d.velocity *= 3;
         }
-        for(int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 3; i++)
         {
-            Gore g = Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center + Main.rand.NextVector2Circular(8,8), Main.rand.NextVector2Circular(7,7), Mod.Find<ModGore>(Name + $"_{Projectile.ai[2] + 1}_{i}").Type);
+            Gore g = Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center + Main.rand.NextVector2Circular(8, 8), Main.rand.NextVector2Circular(7, 7), Mod.Find<ModGore>(Name + $"_{Projectile.ai[2] + 1}_{i}").Type);
             g.timeLeft = 120;
         }
         Point center = Projectile.Center.ToTileCoordinates();

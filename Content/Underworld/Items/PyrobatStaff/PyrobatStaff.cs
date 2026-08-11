@@ -281,7 +281,7 @@ public class PyrobatSmall : ModProjectile
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
-        if(Main.rand.NextBool(2))
+        if (Main.rand.NextBool(2))
             target.AddBuff(BuffID.OnFire3, 60 * 2);
         else if (Main.rand.NextBool(4))
         {
@@ -387,14 +387,14 @@ public class Pyrobat : ModProjectile
         if (Projectile.ai[1]-- <= 0)
         {
             SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.75f }, Projectile.position);
-            if(Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * new Vector2(Main.rand.NextFloat(-0.7f,0.2f),0.2f), ModContent.ProjectileType<PyrobatFlame>(), Projectile.damage / 2, Projectile.knockBack);
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * new Vector2(Main.rand.NextFloat(-0.7f, 0.2f), 0.2f), ModContent.ProjectileType<PyrobatFlame>(), Projectile.damage / 2, Projectile.knockBack);
             Projectile.ai[1] = Main.rand.Next(15, 40);
         }
 
         if (Main.rand.NextBool(4))
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(0,8) + Main.rand.NextVector2Circular(16,16), DustID.Torch);
+            Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 8) + Main.rand.NextVector2Circular(16, 16), DustID.Torch);
             d.noGravity = true;
             d.scale = Main.rand.NextFloat(1f, 1.5f);
             d.velocity.X += Projectile.velocity.X;

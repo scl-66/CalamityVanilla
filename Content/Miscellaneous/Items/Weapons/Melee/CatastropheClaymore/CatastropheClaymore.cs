@@ -79,7 +79,7 @@ public class CatastropheClaymore : ModItem
             CVUtils.GetPointOnSwungItemPath(70f, 72f, 0.15f + Main.rand.NextFloat(0.8f), Item.scale, out var location2, out var outwardDirection2, player);
             Vector2 vector2 = outwardDirection2.RotatedBy((float)Math.PI / 2f * (float)player.direction * player.gravDir);
 
-            Dust d = Dust.NewDustPerfect(location2, t, new Vector2(player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f), 140, i == 0? Main.DiscoColor : new Color(255 - Main.DiscoColor.R, 255 - Main.DiscoColor.G, 255 - Main.DiscoColor.B), 1.5f);
+            Dust d = Dust.NewDustPerfect(location2, t, new Vector2(player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f), 140, i == 0 ? Main.DiscoColor : new Color(255 - Main.DiscoColor.R, 255 - Main.DiscoColor.G, 255 - Main.DiscoColor.B), 1.5f);
             d.noGravity = true;
             d.color = Color.Lerp(d.color, Color.White, Main.rand.NextFloat(0.6f));
             d.color.A = 0;
@@ -311,7 +311,7 @@ public class CatastropheClaymoreBall : ModProjectile
             for (int i = 0; i < 15; i++)
             {
                 Dust d = Dust.NewDustPerfect(Projectile.Center, type, Main.rand.NextVector2Circular(6, 6));
-                d.color = Color.Lerp(GetDustColor(), Color.White, Main.rand.NextFloat(0f, 0.6f)) with { A = 0};
+                d.color = Color.Lerp(GetDustColor(), Color.White, Main.rand.NextFloat(0f, 0.6f)) with { A = 0 };
                 d.noGravity = true;
                 d.fadeIn = Main.rand.NextFloat(1.5f);
             }

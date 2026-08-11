@@ -149,7 +149,7 @@ public class Dentata : ModProjectile
                 }
 
                 if (!distCheck)
-                { 
+                {
                     Projectile.velocity = vectorToCursor;
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.velocity.RotatedByRandom(MathHelper.Pi / 2), 0.2f);
                 }

@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Melee.PrismPiercer;
+
 public class PrismPiercer : ModItem
 {
     public bool Shattered = false;
@@ -100,7 +101,7 @@ public class PrismPiercerShard : ModProjectile
             d.noLight = true;
         }
         NPC n = Projectile.FindTargetWithinRange(300);
-        if(n != null)
+        if (n != null)
         {
             Projectile.velocity += Projectile.Center.DirectionTo(n.Center) * 0.2f;
             Projectile.velocity = Projectile.velocity.LengthClamp(10);
@@ -109,7 +110,7 @@ public class PrismPiercerShard : ModProjectile
         {
             Projectile.velocity *= 0.98f;
         }
-        if(Projectile.timeLeft < 20)
+        if (Projectile.timeLeft < 20)
         {
             Projectile.alpha += 255 / 20;
         }
@@ -148,7 +149,7 @@ public class PrismPiercerStar : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.5f}, Projectile.position);
+        SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = 0.5f }, Projectile.position);
         for (int i = 0; i < 25; i++)
         {
             Dust d = Dust.NewDustPerfect(Projectile.position, ModContent.DustType<SimpleColorableGlowyDust>(), Main.rand.NextVector2Circular(6, 6), 0, Color.Lerp(Main.DiscoColor, Color.White, Main.rand.NextFloat(0.5f)) with { A = 0 });

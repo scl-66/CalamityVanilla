@@ -16,7 +16,7 @@ public class FadingParticleWithLighting : FadingParticle
     public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
     {
         Color oc = ColorTint;
-        ColorTint = new Color(ColorTint.ToVector3() * Lighting.GetSubLight(LocalPosition)) with { A = oc.A};
+        ColorTint = new Color(ColorTint.ToVector3() * Lighting.GetSubLight(LocalPosition)) with { A = oc.A };
         base.Draw(ref settings, spritebatch);
         ColorTint = oc;
     }

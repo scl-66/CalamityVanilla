@@ -283,7 +283,7 @@ public class TerraLongbowHeld : ModProjectile
             ShootTimer = 0f;
         }
         #endregion
-        Vector2 playerCenter = player.RotatedRelativePoint(player.MountedCenter) + new Vector2(0,-player.gfxOffY);
+        Vector2 playerCenter = player.RotatedRelativePoint(player.MountedCenter) + new Vector2(0, -player.gfxOffY);
         Vector2 toMouse = Vector2.Normalize(Main.MouseWorld - playerCenter);
         float holdoutDist = TerraLongbow.HoldoutDistance * Projectile.scale;
         Vector2 holdoutOffset = holdoutDist * toMouse;
@@ -354,8 +354,8 @@ public class TerraLongbowHeld : ModProjectile
                     }
                     ShootCount++;
                 }
-            } 
-            else 
+            }
+            else
                 Projectile.Kill();
         }
         #endregion
@@ -411,7 +411,7 @@ public class TerraLongbowHeld : ModProjectile
 
     public override Color? GetAlpha(Color lightColor)
     {
-        return Color.White with { A = 200};
+        return Color.White with { A = 200 };
     }
 }
 
@@ -535,7 +535,7 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
             Projectile.velocity += Projectile.DirectionTo(Main.npc[target].Center) * 1f;
             Projectile.velocity = Projectile.velocity.LengthClamp(Projectile.oldVelocity.Length(), 12f);
         }
-        if(Projectile.timeLeft < 20)
+        if (Projectile.timeLeft < 20)
         {
             Projectile.Opacity -= 0.025f;
             Projectile.velocity *= 0.9f;
@@ -551,7 +551,7 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
         //SoundEngine.PlaySound(_impact, Projectile.position);
         for (int i = 0; i < 15; i++)
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,DustID.Terra);
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Terra);
             d.velocity += Projectile.velocity * 0.1f;
             d.noGravity = true;
         }
@@ -564,14 +564,14 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
         for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
         {
             float multiply = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Type];
-            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2]/3), multiply * multiply) * multiply * glowOpacity, Projectile.oldRot[i], frame.Size() / 2, 1f + multiply * 0.2f, SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2] / 3), multiply * multiply) * multiply * glowOpacity, Projectile.oldRot[i], frame.Size() / 2, 1f + multiply * 0.2f, SpriteEffects.FlipVertically);
         }
 
         Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, new Color(1f, 1f, 1f, 1f) * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.FlipVertically);
 
         Asset<Texture2D> glow = TextureAssets.Extra[ExtrasID.ThePerfectGlow];
         Vector2 velocityNormal = Vector2.Normalize(Projectile.velocity);
-        Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(0.2f, 0.85f, 0.4f, 0.5f) * glowOpacity, Projectile.rotation, glow.Size() / 2, new Vector2(0.4f,1f), SpriteEffects.FlipVertically);
+        Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(0.2f, 0.85f, 0.4f, 0.5f) * glowOpacity, Projectile.rotation, glow.Size() / 2, new Vector2(0.4f, 1f), SpriteEffects.FlipVertically);
         Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(1f, 1f, 1f, 0f) * 0.5f * glowOpacity, Projectile.rotation, glow.Size() / 2, new Vector2(0.2f, 0.8f), SpriteEffects.FlipVertically);
 
         float sin = Utils.Remap((float)Math.Sin(Main.timeForVisualEffects * 0.5f), -1, 1, 0, 1);

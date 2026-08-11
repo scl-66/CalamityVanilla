@@ -56,7 +56,8 @@ public class CVTownNPCUI : ModSystem
                 "CalamityVanilla: Priest UI Panel",
                 delegate
                 {
-                    if (_lastUpdateUIGameTime != null && _NPCPanelInterface?.CurrentState != null) {
+                    if (_lastUpdateUIGameTime != null && _NPCPanelInterface?.CurrentState != null)
+                    {
                         _NPCPanelInterface.Draw(Main.spriteBatch, new GameTime());
                     }
                     return true;

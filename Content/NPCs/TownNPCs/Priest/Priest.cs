@@ -1,6 +1,10 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content;
+using CalamityVanilla.Common.Items;
 using CalamityVanilla.Common.UI;
+using CalamityVanilla.Content;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -13,10 +17,6 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 using TileHelper.Common;
-using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
-using CalamityVanilla.Common.Items;
-using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
-using Microsoft.Xna.Framework;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
@@ -67,8 +67,8 @@ public class Priest : ModNPC
         {
             Velocity = 1f, // Draws the NPC in the bestiary as if its walking +1 tiles in the x direction
             Direction = -1 // -1 is left and 1 is right. NPCs are drawn facing the left by default but Priest will be drawn facing the right
-                          // Rotation = MathHelper.ToRadians(180) // You can also change the rotation of an NPC. Rotation is measured in radians
-                          // If you want to see an example of manually modifying these when the NPC is drawn, see PreDraw
+                           // Rotation = MathHelper.ToRadians(180) // You can also change the rotation of an NPC. Rotation is measured in radians
+                           // If you want to see an example of manually modifying these when the NPC is drawn, see PreDraw
         };
 
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
@@ -243,7 +243,8 @@ public class Priest : ModNPC
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.HomelessChat1"));
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.HomelessChat2"));
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.HomelessChat3"));
-        } else
+        }
+        else
         {
             // These are things that the NPC has a chance of telling you when you talk to it.
             chat.Add(Language.GetTextValue("Mods.CalamityVanilla.Dialogue.Priest.DayChat1"));
@@ -314,7 +315,8 @@ public class Priest : ModNPC
         if (!CVTownNPCUI.PriestUIOpen)
         {
             button2 = "Blessing";
-        } else
+        }
+        else
         {
             button2 = "Close Blessing";
         }
@@ -326,7 +328,7 @@ public class Priest : ModNPC
         {
             shop = ShopName; // Name of the shop tab we want to open.
             CVTownNPCUI.ClosePanel();
-        } 
+        }
         else // clicked Blessing button
         {
             if (!CVTownNPCUI.PriestUIOpen)

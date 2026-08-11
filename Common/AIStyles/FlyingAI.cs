@@ -74,7 +74,7 @@ public static class FlyingAI
                 n.velocity.Y -= acceleration;
         }
 
-        if(bounceStrength != 0)
+        if (bounceStrength != 0)
         {
             if (n.collideX)
             {

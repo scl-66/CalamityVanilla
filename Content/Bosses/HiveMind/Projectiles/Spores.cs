@@ -41,15 +41,15 @@ public class Spores : ModProjectile
             d.velocity *= 0.4f;
         }
 
-        foreach(Projectile p in Main.ActiveProjectiles)
+        foreach (Projectile p in Main.ActiveProjectiles)
         {
             if (p.type == Type && p.Center != Projectile.Center && p.Center.Distance(Projectile.Center) < 36)
                 p.velocity += Projectile.Center.DirectionTo(p.Center) * 0.01f;
         }
 
         Projectile.ai[0]++;
-            Projectile.velocity *= 0.95f;
-        
+        Projectile.velocity *= 0.95f;
+
         Projectile.scale = (0.5f + Projectile.Opacity * 0.5f) + (float)Math.Sin(Projectile.ai[0] * 0.1f) * 0.1f;
         Projectile.rotation += Projectile.velocity.X * 0.02f + Projectile.direction * 0.02f;
         //Projectile.velocity = Projectile.velocity.RotatedBy(MathF.Sin(Projectile.identity * 7) * 0.04f);

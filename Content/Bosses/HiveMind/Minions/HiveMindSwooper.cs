@@ -92,7 +92,7 @@ public class HiveMindSwooper : ModNPC
 
         NPC.width = 34;
         NPC.height = 36;
-        if(!NPC.IsABestiaryIconDummy)
+        if (!NPC.IsABestiaryIconDummy)
             NPC.alpha = 255;
 
         NPC.value = 0;
@@ -108,7 +108,7 @@ public class HiveMindSwooper : ModNPC
     public override void AI()
     {
         NPC.Opacity += 0.05f;
-        NPC.rotation = Utils.AngleTowards(NPC.rotation, NPC.ai[2] > _swoopAttackTime ? NPC.velocity.ToRotation() + MathHelper.PiOver2: MathHelper.Clamp(NPC.velocity.X / 10f,-0.3f,0.3f), 0.1f);
+        NPC.rotation = Utils.AngleTowards(NPC.rotation, NPC.ai[2] > _swoopAttackTime ? NPC.velocity.ToRotation() + MathHelper.PiOver2 : MathHelper.Clamp(NPC.velocity.X / 10f, -0.3f, 0.3f), 0.1f);
 
         NPC.ai[0]++;
         if (NPC.ai[0] < 0)
@@ -162,28 +162,28 @@ public class HiveMindSwooper : ModNPC
                     {
                         Vector2 adjustedTargetPosition = target.Center + (target.velocity * swoopTime);
                         NPC.velocity = CVUtils.FindVelocityForGravityAffectedThing(NPC.Bottom, adjustedTargetPosition, swoopUpwardsAcceleration, swoopTime).LengthClamp(16);
-                        for(int i = 0; i < 15; i++)
+                        for (int i = 0; i < 15; i++)
                         {
                             Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption, Scale: 0.75f);
                             d.velocity = Main.rand.NextVector2CircularEdge(3, 1).RotatedBy(NPC.rotation);
                             d.fadeIn = Main.rand.NextFloat(2);
                             d.alpha = 128;
                         }
-                        SoundEngine.PlaySound(SoundID.Item131 with { MaxInstances = 10, Pitch = 0.1f, PitchVariance = 0.2f}, NPC.position);
+                        SoundEngine.PlaySound(SoundID.Item131 with { MaxInstances = 10, Pitch = 0.1f, PitchVariance = 0.2f }, NPC.position);
                         NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
                     }
                     else if (NPC.ai[2] > _swoopAttackTime)
                     {
-                        for(int i = -1; i < 2; i += 2)
+                        for (int i = -1; i < 2; i += 2)
                         {
                             Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Corruption, Scale: 0.75f);
                             d.velocity = NPC.velocity.RotatedBy(MathHelper.Pi + MathHelper.PiOver4 * i) * 0.1f;
                             d.alpha = 128;
                         }
                         NPC.velocity.Y += swoopUpwardsAcceleration;
-                        if(NPC.Center.Distance(target.Center) > 16 * 80)
+                        if (NPC.Center.Distance(target.Center) > 16 * 80)
                         {
-                            NPC.ai[2]+= 2;
+                            NPC.ai[2] += 2;
                             NPC.velocity *= 0.98f;
                         }
                         if (NPC.ai[2] > 120 + (swoopTime * 2))
@@ -193,7 +193,7 @@ public class HiveMindSwooper : ModNPC
                             NPC.ai[2] = 0;
                         }
                     }
-                    else if(NPC.ai[2] < _swoopAttackTime)
+                    else if (NPC.ai[2] < _swoopAttackTime)
                     {
                         NPC.localAI[0] += 0.75f / _swoopAttackTime;
                         NPC.velocity = Vector2.Normalize(NPC.velocity.RotatedBy(0.1f * NPC.direction)) * 4;
@@ -227,14 +227,14 @@ public class HiveMindSwooper : ModNPC
         for (int i = 3; i >= 0; i--)
         {
             float percent = Utils.Remap(NPC.ai[2], _swoopAttackTime - (i * 10) - 30, _swoopAttackTime - (i * 10), 0, 1);
-            Color c2 = c with { A = 0 } * Utils.Remap(NPC.ai[2],_swoopAttackTime, _swoopAttackTime + 60, 0.5f, 0) * percent;
+            Color c2 = c with { A = 0 } * Utils.Remap(NPC.ai[2], _swoopAttackTime, _swoopAttackTime + 60, 0.5f, 0) * percent;
             spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, c2, NPC.rotation, NPC.frame.Size() / 2, NPC.scale + (1f - percent), SpriteEffects.None, 0);
         }
 
-        if(NPC.Opacity < 1)
+        if (NPC.Opacity < 1)
         {
             tex = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
-            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0} * (1f - NPC.Opacity), 0, tex.Size() / 2, 2f - NPC.Opacity, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0 } * (1f - NPC.Opacity), 0, tex.Size() / 2, 2f - NPC.Opacity, SpriteEffects.None, 0);
             spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White with { A = 0 } * (1f - NPC.Opacity) * 0.5f, 0, tex.Size() / 2, 0.8f, SpriteEffects.None, 0);
 
             spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.Purple with { A = 0 } * (1f - NPC.Opacity), MathHelper.PiOver2, tex.Size() / 2, 1.5f - NPC.Opacity, SpriteEffects.None, 0);

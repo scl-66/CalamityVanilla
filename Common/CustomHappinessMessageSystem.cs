@@ -86,42 +86,52 @@ public class CustomHappinessMessageSystem : ModSystem
             orig.Invoke(self, npcType, affectionLevel);
             return;
         }
-		string otherNPCName = NPCID.Search.GetName(npcType); // Get the name of the other Town NPC.
+        string otherNPCName = NPCID.Search.GetName(npcType); // Get the name of the other Town NPC.
 
-		// If the current Town NPC is a ModNPC
-		if (self._currentNPCBeingTalkedTo.ModNPC is ModNPC modNPC) {
+        // If the current Town NPC is a ModNPC
+        if (self._currentNPCBeingTalkedTo.ModNPC is ModNPC modNPC)
+        {
 
-			// Check to see if there is a localization entry for the other Town NPC defined in our current Town NPC.
-			if (Language.Exists($"{modNPC.GetLocalizationKey("TownNPCMood")}.{affectionLevel}NPC_{otherNPCName}")) {
-				if (otherNPCName == "Princess")
+            // Check to see if there is a localization entry for the other Town NPC defined in our current Town NPC.
+            if (Language.Exists($"{modNPC.GetLocalizationKey("TownNPCMood")}.{affectionLevel}NPC_{otherNPCName}"))
+            {
+                if (otherNPCName == "Princess")
                 {
                     return;
                 }
-                
+
                 // If it does exist, add the happiness report.
-				self.AddHappinessReportText($"{affectionLevel}NPC_{otherNPCName}", new {
-					NPCName = NPC.GetFullnameByID(npcType)
-				});
-			}
-			else {
-				// Otherwise, add the generic affection quote.
-				self.AddHappinessReportText($"{affectionLevel}NPC", new {
-					NPCName = NPC.GetFullnameByID(npcType)
-				});
-			}
-		}
-		else { // Vanilla NPC
-			if (Language.Exists($"TownNPCMood_{NPCID.Search.GetName(self._currentNPCBeingTalkedTo.netID)}.{affectionLevel}NPC_{otherNPCName}")) {
-                self.AddHappinessReportText($"{affectionLevel}NPC_{otherNPCName}", new {
-					NPCName = NPC.GetFullnameByID(npcType)
-				});
-			}
-			else {
-                self.AddHappinessReportText($"{affectionLevel}NPC", new {
-					NPCName = NPC.GetFullnameByID(npcType)
-				});
-			}
-		}
+                self.AddHappinessReportText($"{affectionLevel}NPC_{otherNPCName}", new
+                {
+                    NPCName = NPC.GetFullnameByID(npcType)
+                });
+            }
+            else
+            {
+                // Otherwise, add the generic affection quote.
+                self.AddHappinessReportText($"{affectionLevel}NPC", new
+                {
+                    NPCName = NPC.GetFullnameByID(npcType)
+                });
+            }
+        }
+        else
+        { // Vanilla NPC
+            if (Language.Exists($"TownNPCMood_{NPCID.Search.GetName(self._currentNPCBeingTalkedTo.netID)}.{affectionLevel}NPC_{otherNPCName}"))
+            {
+                self.AddHappinessReportText($"{affectionLevel}NPC_{otherNPCName}", new
+                {
+                    NPCName = NPC.GetFullnameByID(npcType)
+                });
+            }
+            else
+            {
+                self.AddHappinessReportText($"{affectionLevel}NPC", new
+                {
+                    NPCName = NPC.GetFullnameByID(npcType)
+                });
+            }
+        }
         self._currentPriceAdjustment *= NPCHappiness.AffectionLevelToPriceMultiplier[affectionLevel];
     }
 }

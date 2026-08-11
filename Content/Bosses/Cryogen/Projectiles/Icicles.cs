@@ -27,7 +27,7 @@ public class Icicles : ModProjectile
     }
     public override void AI()
     {
-        if(Projectile.timeLeft == 179)
+        if (Projectile.timeLeft == 179)
         {
             SoundEngine.PlaySound(SoundID.Item88, Projectile.position);
         }
@@ -46,7 +46,7 @@ public class Icicles : ModProjectile
             d.fadeIn = Main.rand.NextFloat(1.4f);
             d.velocity += Projectile.velocity;
         }
-        if(Projectile.timeLeft < 30)
+        if (Projectile.timeLeft < 30)
         {
             Projectile.velocity *= 1f - (1f / 20f);
             Dust d = Dust.NewDustDirect(Projectile.position, 30, 30, DustID.FrostStaff);

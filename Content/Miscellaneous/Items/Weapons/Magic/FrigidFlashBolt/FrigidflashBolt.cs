@@ -197,7 +197,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
 
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.NPCDeath15 with {MaxInstances = 5, volume = 0.5f }, Projectile.position);
+        SoundEngine.PlaySound(SoundID.NPCDeath15 with { MaxInstances = 5, volume = 0.5f }, Projectile.position);
         for (int i = 0; i < 25; i++)
         {
             Dust d = Dust.NewDustPerfect(Projectile.Center, Main.rand.NextBool() ? DustID.Snow : DustID.IceRod);
@@ -216,14 +216,14 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
             d.velocity *= 0.2f;
             d.noGravity = true;
         }
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
             var p = VanillaParticles.RequestFadingParticle();
             p.ColorTint = Color.White;
-            float time = Main.rand.NextFloat(25,45);
+            float time = Main.rand.NextFloat(25, 45);
             p.SetTypeInfo(time);
             Main.instance.LoadProjectile(ProjectileID.NorthPoleSnowflake);
-            p.SetBasicInfo(TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake], TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake].Frame(1, 3, 0, Main.rand.Next(3)), Main.rand.NextVector2Circular(6,6),Projectile.Center);
+            p.SetBasicInfo(TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake], TextureAssets.Projectile[ProjectileID.NorthPoleSnowflake].Frame(1, 3, 0, Main.rand.Next(3)), Main.rand.NextVector2Circular(6, 6), Projectile.Center);
             p.FadeInNormalizedTime = 0.2f;
             p.FadeOutNormalizedTime = 0.5f;
             p.Scale = Vector2.One * 1.3f;
@@ -277,7 +277,7 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        default(FrostboltVertexStrip).Draw(Projectile,-7);
+        default(FrostboltVertexStrip).Draw(Projectile, -7);
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(Projectile.Opacity, Projectile.Opacity * 2, 1f, 0.7f) * Projectile.Opacity * 2, Projectile.localAI[0], TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, SpriteEffects.None);
         return false;
     }
@@ -293,7 +293,7 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         }
 
         Projectile.frameCounter++;
-        if(Projectile.frameCounter > 12)
+        if (Projectile.frameCounter > 12)
         {
             Projectile.frame++;
             Projectile.frameCounter = 0;
@@ -364,7 +364,7 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
         p.ScaleVelocity = Vector2.One * Main.rand.NextFloat(-0.01f, 0.01f);
         p.Scale = Vector2.One * Main.rand.NextFloat(1f, 1.3f);
         Main.ParticleSystem_World_OverPlayers.Add(p);
-        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Custom/meteor_shower_", [1,2,3]) with { MaxInstances = 15}, Projectile.position);
+        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Custom/meteor_shower_", [1, 2, 3]) with { MaxInstances = 15 }, Projectile.position);
         //SoundEngine.PlaySound(SoundID.Item62 with
         //{
         //    PitchVariance = 0.2f,
@@ -390,7 +390,7 @@ public class FrigidflashHotBoltProjectile : FrigidflashBoltProjectile
     public override bool PreDraw(ref Color lightColor)
     {
         default(FrigidFlashFlareBoltVertexStrip).Draw(Projectile);
-        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, TextureAssets.Projectile[Type].Frame(1,3,0,Projectile.frame), new Color(1f, Projectile.Opacity * 2, Projectile.Opacity, 0.7f) * Projectile.Opacity * 2, Projectile.rotation - MathHelper.PiOver2, new Vector2(10,32), Projectile.scale, SpriteEffects.None);
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, TextureAssets.Projectile[Type].Frame(1, 3, 0, Projectile.frame), new Color(1f, Projectile.Opacity * 2, Projectile.Opacity, 0.7f) * Projectile.Opacity * 2, Projectile.rotation - MathHelper.PiOver2, new Vector2(10, 32), Projectile.scale, SpriteEffects.None);
         return false;
     }
     public override void Load()

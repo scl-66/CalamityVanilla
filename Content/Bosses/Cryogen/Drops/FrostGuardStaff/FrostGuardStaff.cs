@@ -388,7 +388,7 @@ public class FrostShield : ModProjectile
         return hitboxes;
     }
 
-    private static readonly HashSet<int> _projectileAiStylesThatCanBeReflected = 
+    private static readonly HashSet<int> _projectileAiStylesThatCanBeReflected =
     [
         ProjAIStyleID.Arrow,
         ProjAIStyleID.ThrownProjectile,

@@ -81,7 +81,7 @@ public class HiveMindWeeper : ModNPC
 
         NPC.width = 34;
         NPC.height = 36;
-        if(!NPC.IsABestiaryIconDummy)
+        if (!NPC.IsABestiaryIconDummy)
             NPC.alpha = 255;
 
         NPC.value = 0;
@@ -118,7 +118,7 @@ public class HiveMindWeeper : ModNPC
             if (NPC.ai[0] < FlyTime)
             {
                 Vector2 targetPos = target.Top - new Vector2(0, hoverDistance);
-                if(NPC.Center.Distance(targetPos) > 64)
+                if (NPC.Center.Distance(targetPos) > 64)
                     NPC.SimpleFlyMovement(NPC.Center.DirectionTo(targetPos) * 6, 0.1f);
             }
             else if (NPC.ai[0] < FlyTime + 500)
@@ -137,9 +137,9 @@ public class HiveMindWeeper : ModNPC
                     NPC.velocity.Y += 0.03f;
                 }
                 int vineType = ModContent.ProjectileType<HiveVine>();
-                foreach(Projectile p in Main.ActiveProjectiles)
+                foreach (Projectile p in Main.ActiveProjectiles)
                 {
-                    if(p.type == vineType && Math.Abs(p.Center.X - NPC.Center.X) < 64)
+                    if (p.type == vineType && Math.Abs(p.Center.X - NPC.Center.X) < 64)
                     {
                         NPC.velocity.X -= MathF.Sign(p.Center.X - NPC.Center.X) * 0.2f;
                     }
@@ -223,7 +223,7 @@ public class HiveMindWeeperTears : ModProjectile
     {
         for (int i = 0; i < 3; i++)
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Bottom,DustID.Corruption);
+            Dust d = Dust.NewDustPerfect(Projectile.Bottom, DustID.Corruption);
             d.velocity *= 0.3f;
             d.velocity.Y -= 0.5f;
             d.noGravity = true;

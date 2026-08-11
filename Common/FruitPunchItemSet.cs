@@ -99,11 +99,11 @@ public sealed class FruitPunchItemSet : ModSystem
 
     public override void PostSetupRecipes()
     {
-        int[] ingredientList = { 
-            ItemID.BottledWater, ItemID.Bottle, 
-            ItemID.LesserHealingPotion, ItemID.LesserManaPotion, 
-            ItemID.HealingPotion, ItemID.ManaPotion, 
-            ItemID.GreaterHealingPotion, ItemID.GreaterManaPotion, 
+        int[] ingredientList = {
+            ItemID.BottledWater, ItemID.Bottle,
+            ItemID.LesserHealingPotion, ItemID.LesserManaPotion,
+            ItemID.HealingPotion, ItemID.ManaPotion,
+            ItemID.GreaterHealingPotion, ItemID.GreaterManaPotion,
             ItemID.SuperHealingPotion, ItemID.SuperManaPotion,
             ItemID.RecallPotion,
         };
@@ -130,4 +130,3 @@ public sealed class FruitPunchItemSet : ModSystem
         PunchAccepts[ItemID.GreaterManaPotion] = true;
     }
 }
-

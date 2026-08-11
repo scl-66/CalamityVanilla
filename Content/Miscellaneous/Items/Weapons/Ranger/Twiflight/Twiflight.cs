@@ -92,7 +92,7 @@ public class TwiflightFeather : ModProjectile
         sparkle.Scale = new Vector2(6f, 1.3f);
         sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.2f, 0.2f);
         sparkle.DrawVerticalAxis = true;
-        sparkle.ColorTint = Projectile.ai[0] == 0 ? new Color(24,128,255) : new Color(255,100,24);
+        sparkle.ColorTint = Projectile.ai[0] == 0 ? new Color(24, 128, 255) : new Color(255, 100, 24);
         sparkle.FadeInEnd = 5;
         sparkle.FadeOutStart = 5;
         sparkle.FadeOutEnd = 20;

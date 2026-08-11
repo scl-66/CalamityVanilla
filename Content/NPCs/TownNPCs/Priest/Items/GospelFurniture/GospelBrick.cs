@@ -48,7 +48,7 @@ public class GospelBrick : ModTile, ILoadItem
         return true;
     }
 }
-public class GospelBrickWall : ModWall, ILoadItem  
+public class GospelBrickWall : ModWall, ILoadItem
 {
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 12);
     public void AddItemRecipes(ModItem item)

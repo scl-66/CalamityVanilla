@@ -175,7 +175,7 @@ public sealed class FrictionlessBlessingPlayer : BlessingPlayer
                     {
                         if (Main.rand.NextBool(num))
                         {
-                            Dust d = Dust.NewDustDirect(Player.position + new Vector2(0, 30), Player.width, Player.width, DustID.Ice, velX/2, -Main.rand.NextFloat(1f, 2f));
+                            Dust d = Dust.NewDustDirect(Player.position + new Vector2(0, 30), Player.width, Player.width, DustID.Ice, velX / 2, -Main.rand.NextFloat(1f, 2f));
                             d.scale = Main.rand.NextFloat(0.5f, 1.2f);
                             d.velocity *= 0.5f;
                             d.noGravity = false;

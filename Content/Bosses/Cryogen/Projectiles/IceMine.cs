@@ -30,9 +30,9 @@ public class IceMine : ModProjectile
         Projectile.Opacity += 0.1f;
         if (Projectile.timeLeft < 10)
             Projectile.Opacity -= 0.2f;
-        foreach(Player p in Main.ActivePlayers)
+        foreach (Player p in Main.ActivePlayers)
         {
-            if(p.Center.Distance(Projectile.Center) < 36)
+            if (p.Center.Distance(Projectile.Center) < 36)
             {
                 Projectile.Kill();
             }
@@ -53,10 +53,10 @@ public class IceMine : ModProjectile
             return;
         SoundEngine.PlaySound(SoundID.Item122, Projectile.position);
         int iterations = 200;
-        for(int i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.SnowSpray);
-            d.velocity = Vector2.UnitY.RotatedBy((i / (float)iterations * MathHelper.TwoPi) + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(10,12);
+            d.velocity = Vector2.UnitY.RotatedBy((i / (float)iterations * MathHelper.TwoPi) + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(10, 12);
             d.noGravity = true;
             d.fadeIn = Main.rand.NextFloat(2);
         }
@@ -76,8 +76,8 @@ public class IceMine : ModProjectile
 
             for (int j = -num3; j <= num3; j++)
             {
-                if((i*i) + (j*j) > innerRadiusSquare)
-                    CryogenIceBlockSystem.PlaceIceBlock(j + origin.X, i + origin.Y,60 * 3);
+                if ((i * i) + (j * j) > innerRadiusSquare)
+                    CryogenIceBlockSystem.PlaceIceBlock(j + origin.X, i + origin.Y, 60 * 3);
             }
         }
     }

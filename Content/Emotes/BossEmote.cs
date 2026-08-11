@@ -8,6 +8,7 @@ using Terraria.GameContent.UI;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Emotes;
+
 public class HiveMindEmote : ModEmoteBubble
 {
     public override void SetStaticDefaults()

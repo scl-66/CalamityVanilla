@@ -67,7 +67,7 @@ public class FilthyGripSlash : ModProjectile
     {
         Projectile.width = Projectile.height = 30;
         Projectile.friendly = true;
-        Projectile.timeLeft = 6*frameSpeed;
+        Projectile.timeLeft = 6 * frameSpeed;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 7;
         Projectile.DamageType = DamageClass.Default;

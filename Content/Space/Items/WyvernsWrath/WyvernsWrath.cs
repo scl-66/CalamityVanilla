@@ -26,7 +26,7 @@ public class WyvernsWrath : ModItem
     public override void SetDefaults()
     {
         Item.DefaultToStaff(ModContent.ProjectileType<WyvernsWrathFeather>(), 24, 45, 20);
-        Item.UseSound = SoundID.Item66 with { Volume = 0.7f};
+        Item.UseSound = SoundID.Item66 with { Volume = 0.7f };
 
         // Set damage and knockBack
         Item.SetWeaponValues(27, 2);
@@ -67,7 +67,7 @@ public class WyvernsWrathFeather : ModProjectile
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 20;
         ProjectileID.Sets.TrailingMode[Type] = 2;
-        Main.projFrames[Projectile.type] = 4; 
+        Main.projFrames[Projectile.type] = 4;
     }
     public override void SetDefaults()
     {
@@ -98,7 +98,7 @@ public class WyvernsWrathFeather : ModProjectile
             Projectile.frame = 0;
             Projectile.rotation = Projectile.velocity.ToRotation(); // projectile sprite faces up
         }
-        else 
+        else
         {
             if (++Projectile.frameCounter >= 6)
             {
@@ -230,7 +230,8 @@ public class WyvernsWrathEnergyFeather : ModProjectile
             Vector2 dir = Projectile.Center.DirectionTo(target.Center);
             Projectile.velocity += (dir);
             Projectile.velocity = Projectile.velocity.LengthClamp(15, 5);
-        } else
+        }
+        else
         {
             Projectile.velocity *= 0.95f;
         }
@@ -247,7 +248,7 @@ public class WyvernsWrathEnergyFeather : ModProjectile
             d.velocity = Main.rand.NextVector2Circular(2, 2);
             d.noGravity = true;
         }
-        
+
         for (int i = 1; i < Projectile.oldPos.Length; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, type);

@@ -8,10 +8,10 @@ namespace CalamityVanilla.Common.World;
 internal sealed class CommonWorldFlags : ModSystem
 {
     public static bool AstroOrHallow;
-    
-    #if DEBUG
+
+#if DEBUG
     public override void PostUpdateEverything()
-    {   
+    {
         /*
         if (Main.keyState.IsKeyDown(Keys.L) && !Main.oldKeyState.IsKeyDown(Keys.L))
         {
@@ -29,22 +29,22 @@ internal sealed class CommonWorldFlags : ModSystem
         */
     }
 #endif
-    
+
     public override void OnWorldLoad()
     {
         AstroOrHallow = false;
     }
-    
-    public override void OnWorldUnload() 
+
+    public override void OnWorldUnload()
     {
         AstroOrHallow = false;
     }
-    
+
     public override void SaveWorldData(TagCompound tag)
     {
-        tag["CalamityVanilla:HasAstro"] = AstroOrHallow; 
+        tag["CalamityVanilla:HasAstro"] = AstroOrHallow;
     }
-    
+
     public override void SaveWorldHeader(TagCompound tag)
     {
         tag["CalamityVanilla:HasAstro"] = AstroOrHallow;

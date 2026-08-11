@@ -34,7 +34,7 @@ public static class BatAI
     /// <summary>
     /// NPC.AI[1] is used.
     /// </summary>
-    public static void AI(NPC n, 
+    public static void AI(NPC n,
         float XSpeed = 4f, float YSpeed = 1.5f, float XAcceleration = 0.1f, float YAcceleration = 0.04f,
         float AggroXSpedd = 4f, float AggroYSpeed = 1.5f, float AggroXAcceleration = 0.2f, float AggroYAcceleration = 0.1f)
     {

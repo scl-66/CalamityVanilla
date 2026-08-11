@@ -5,8 +5,10 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Achievements;
 
-public class GutOfCthulhuKilled : ModAchievement {
-    public override void SetStaticDefaults() {
+public class GutOfCthulhuKilled : ModAchievement
+{
+    public override void SetStaticDefaults()
+    {
         Achievement.SetCategory(AchievementCategory.Slayer);
 
         AddNPCKilledCondition("GutOfCthulhuKillCondition", ModContent.NPCType<GutOfCthulhu>());

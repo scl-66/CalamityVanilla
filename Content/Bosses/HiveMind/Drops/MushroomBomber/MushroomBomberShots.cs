@@ -39,7 +39,7 @@ public class MushroomBomberShotSmall : ModProjectile
     public override void OnKill(int timeLeft)
     {
         int type = ModContent.DustType<VileMushroomDust>();
-        for(int i = 0; i < 15; i++)
+        for (int i = 0; i < 15; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
             d.velocity *= 2.5f;
@@ -86,7 +86,7 @@ public class MushroomBomberShotMedium : ModProjectile
             d.fadeIn = Main.rand.NextFloat(0.2f, 0.5f);
             d.noGravity = Main.rand.NextBool();
         }
-        if(Projectile.owner == Main.myPlayer)
+        if (Projectile.owner == Main.myPlayer)
         {
             int spore = ModContent.ProjectileType<MushroomBomberSpores>();
             for (int i = 0; i < 5; i++)
@@ -233,11 +233,11 @@ public class MushroomBomberShotLarge : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        if(Main.myPlayer == Projectile.owner)
+        if (Main.myPlayer == Projectile.owner)
         {
             int spore = ModContent.ProjectileType<MushroomBomberSpores>();
-            for(int i = 0; i < 16; i++)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.1f,0.4f) + new Vector2(0,-1), spore, Projectile.damage / 20, 0, Projectile.owner, Main.rand.Next(90, 150));
+            for (int i = 0; i < 16; i++)
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.1f, 0.4f) + new Vector2(0, -1), spore, Projectile.damage / 20, 0, Projectile.owner, Main.rand.Next(90, 150));
         }
 
         SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
@@ -249,7 +249,7 @@ public class MushroomBomberShotLarge : ModProjectile
         for (int i = 0; i < 45; i++)
         {
             Vector2 vect = Main.rand.NextVector2CircularEdge(Projectile.width / 2, Projectile.width / 2) * Main.rand.NextFloat(0.5f, 1f);
-            Dust d = Dust.NewDustPerfect(Projectile.Center + vect, type, Vector2.Normalize(vect) * Main.rand.NextFloat(5,11));
+            Dust d = Dust.NewDustPerfect(Projectile.Center + vect, type, Vector2.Normalize(vect) * Main.rand.NextFloat(5, 11));
             d.fadeIn = Main.rand.NextFloat(0.2f, 0.5f);
             d.noGravity = true;
             d.scale += Main.rand.NextFloat();
@@ -272,16 +272,16 @@ public class MushroomBomberShotLarge : ModProjectile
             p2.ColorTint = Color.White * 0.5f;
             p2.FadeInNormalizedTime = 0.15f;
             p2.FadeOutNormalizedTime = 0.7f;
-            p2.Scale = Vector2.One * Main.rand.NextFloat(0.8f,1f);
+            p2.Scale = Vector2.One * Main.rand.NextFloat(0.8f, 1f);
             p2.Velocity = Main.rand.NextVector2Circular(4, 3) + new Vector2(0, -3);
-            p2.RotationVelocity = Main.rand.NextFloat(-0.2f,0.2f);
+            p2.RotationVelocity = Main.rand.NextFloat(-0.2f, 0.2f);
             p2.AccelerationPerFrame = new Vector2(0f, 0.1f);
             Main.ParticleSystem_World_BehindPlayers.Add(p2);
         }
 
         var p = AnimatedParticle.RequestAnimatedParticle();
         p.SetTypeInfo(10, 50, _explosionTexture, Color.White);
-        p.LocalPosition = Projectile.Center + new Vector2(0,-10);
+        p.LocalPosition = Projectile.Center + new Vector2(0, -10);
         p.Scale = Vector2.One;
         Main.ParticleSystem_World_OverPlayers.Add(p);
     }

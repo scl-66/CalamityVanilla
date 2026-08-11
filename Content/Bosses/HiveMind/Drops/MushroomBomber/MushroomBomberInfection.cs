@@ -23,11 +23,11 @@ public class MushroomBomberInfectionNPC : GlobalNPC
 
     public override void UpdateLifeRegen(NPC npc, ref int damage)
     {
-        if(Active)
+        if (Active)
         {
             int stacks = 0;
             int type = ModContent.ProjectileType<MushroomBomberShotMedium>();
-            foreach(Projectile p in Main.ActiveProjectiles)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
                 if (p.type == type && p.ai[1] == npc.whoAmI)
                     stacks++;

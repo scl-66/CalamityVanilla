@@ -36,7 +36,7 @@ public class GenerateChessPieces : ModSystem
 {
     public override void Load()
     {
-        foreach (Colors c in (Colors[]) Enum.GetValues(typeof(Colors)))
+        foreach (Colors c in (Colors[])Enum.GetValues(typeof(Colors)))
         {
             foreach (Pieces p in (Pieces[])Enum.GetValues(typeof(Pieces)))
             {
@@ -83,10 +83,10 @@ public class ChessItemTemplate : ModItem
     {
         if (Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<BlackCheckerBlock>()), out ModItem black) &&
             Helpers.TryGetBlockItem(TileLoader.GetTile(ModContent.TileType<WhiteCheckerBlock>()), out ModItem white))
-        CreateRecipe(_piece == Pieces.Pawn ? 4 : _piece < Pieces.Queen ? 2 : 1)
-            .AddIngredient(_color == Colors.Black ? black.Type : white.Type)
-            .AddTile(TileID.Anvils)
-            .Register();
+            CreateRecipe(_piece == Pieces.Pawn ? 4 : _piece < Pieces.Queen ? 2 : 1)
+                .AddIngredient(_color == Colors.Black ? black.Type : white.Type)
+                .AddTile(TileID.Anvils)
+                .Register();
     }
 }
 

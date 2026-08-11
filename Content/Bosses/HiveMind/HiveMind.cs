@@ -127,7 +127,7 @@ public partial class HiveMind : ModNPC
         Texture2D tex = TextureAssets.Npc[NPC.type].Value;
         if (NPC.IsABestiaryIconDummy)
         {
-            spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(0,6), NPC.frame, Color.White, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, NPC.Bottom - screenPos + new Vector2(0, 6), NPC.frame, Color.White, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);
             return false;
         }
         spriteBatch.Draw(tex, NPC.Bottom - screenPos, NPC.frame, NPC.GetNPCColorTintedByBuffs(drawColor) * NPC.Opacity, NPC.rotation, new Vector2(NPC.frame.Width / 2, NPC.frame.Height - 34), NPC.scale, SpriteEffects.None, 0);

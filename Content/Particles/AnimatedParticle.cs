@@ -54,4 +54,3 @@ public class AnimatedParticle : ABasicParticle
         spritebatch.Draw(_texture.Value, settings.AnchorPosition + LocalPosition, _frame, _color, Rotation, _origin, Scale, SpriteEffects.None, 0f);
     }
 }
-

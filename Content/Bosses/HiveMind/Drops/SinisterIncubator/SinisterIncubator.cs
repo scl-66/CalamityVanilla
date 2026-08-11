@@ -25,8 +25,8 @@ public class SinisterIncubatorAnimation : DrawAnimation
 
         protected override void Draw(ref PlayerDrawSet drawInfo)
         {
-            if(drawInfo.drawPlayer.ItemAnimationActive)
-            Open = true;
+            if (drawInfo.drawPlayer.ItemAnimationActive)
+                Open = true;
         }
     }
     private class SinisterPlayerLayer2 : PlayerDrawLayer
@@ -140,7 +140,7 @@ public class Fungusmite : ModProjectile
     {
         if (Projectile.velocity.Y != oldVelocity.Y)
             Projectile.velocity.Y = Math.Sign(Projectile.oldVelocity.Y) * -2;
-            //Projectile.velocity.Y = -oldVelocity.Y;
+        //Projectile.velocity.Y = -oldVelocity.Y;
         if (Projectile.velocity.X != oldVelocity.X)
             //Projectile.velocity.X = -oldVelocity.X;
             Projectile.velocity.X = Math.Sign(Projectile.oldVelocity.X) * -2;
@@ -169,7 +169,7 @@ public class Fungusmite : ModProjectile
             Projectile.Center = owner.Center;
         }
 
-        foreach(Projectile p in Main.ActiveProjectiles)
+        foreach (Projectile p in Main.ActiveProjectiles)
         {
             if (p.owner == owner.whoAmI && p.type == Type)
             {
@@ -180,7 +180,7 @@ public class Fungusmite : ModProjectile
 
         Vector2 targetPos = owner.Center;
         //if (owner.ownedProjectileCounts[Type] > 1)
-            targetPos -= new Vector2(0, MathF.Sin(Projectile.ai[1] * 0.05f) * 32 + 64).RotatedBy((Projectile.minionPos / (float)owner.ownedProjectileCounts[Type] * MathHelper.TwoPi) + Projectile.ai[1] * 0.02f);
+        targetPos -= new Vector2(0, MathF.Sin(Projectile.ai[1] * 0.05f) * 32 + 64).RotatedBy((Projectile.minionPos / (float)owner.ownedProjectileCounts[Type] * MathHelper.TwoPi) + Projectile.ai[1] * 0.02f);
         //else
         //    targetPos -= new Vector2(0, MathF.Sin(Projectile.ai[1] * 0.05f) * 32 + 64);
 
@@ -189,7 +189,7 @@ public class Fungusmite : ModProjectile
         if (targetDistance < 128 && Projectile.velocity.Length() > 1f)
             Projectile.velocity *= 0.95f;
 
-        Projectile.velocity = Projectile.velocity.LengthClamp(MathHelper.Max(MathHelper.Max(5,targetDistance * 0.03f), owner.velocity.Length()));
+        Projectile.velocity = Projectile.velocity.LengthClamp(MathHelper.Max(MathHelper.Max(5, targetDistance * 0.03f), owner.velocity.Length()));
         Projectile.ai[0] -= 1;
 
 
@@ -230,11 +230,11 @@ public class Fungusmite : ModProjectile
         Texture2D tex = TextureAssets.Projectile[Type].Value;
         Rectangle frame = tex.Frame(3, Main.projFrames[Type], (int)Projectile.ai[2], Projectile.frame);
         SpriteEffects se = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-        Vector2 scale = Vector2.One + new Vector2((float)Math.Sin((Main.timeForVisualEffects * 0.5f) + Projectile.identity * 17), -(float)Math.Sin((Main.timeForVisualEffects * 0.5f) + Projectile.identity * 17)) * Utils.Remap(Projectile.ai[0],-10,20,0,0.3f);
+        Vector2 scale = Vector2.One + new Vector2((float)Math.Sin((Main.timeForVisualEffects * 0.5f) + Projectile.identity * 17), -(float)Math.Sin((Main.timeForVisualEffects * 0.5f) + Projectile.identity * 17)) * Utils.Remap(Projectile.ai[0], -10, 20, 0, 0.3f);
 
         int mod = (int)(Main.timeForVisualEffects % 3);
         //for(int i = Projectile.oldPos.Length - 3 + mod; i > 0; i-= 3)
-        for (int i = Projectile.oldPos.Length - 2; i > 0; i-= 3)
+        for (int i = Projectile.oldPos.Length - 2; i > 0; i -= 3)
         {
             float percent = 1f - (i / (float)Projectile.oldPos.Length);
             Main.EntitySpriteDraw(tex, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, lightColor * 0.5f * percent, Projectile.oldRot[i], frame.Size() / 2, Projectile.scale * scale, se);
@@ -273,7 +273,7 @@ public class FungusmiteProjectile : ModProjectile
         if (Projectile.ai[0] == 0)
         {
             //SoundEngine.PlaySound(SoundID.Item111, Projectile.Center);
-            for(int i = 0; i < 15; i++)
+            for (int i = 0; i < 15; i++)
             {
                 Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Corruption);
                 d.noGravity = true;
@@ -311,11 +311,11 @@ public class FungusmiteProjectile : ModProjectile
     {
         int type = ModContent.DustType<VileMushroomDust>();
         Vector2 direction = Vector2.Normalize(Projectile.velocity);
-        for (int i = 0; i < 48; i+= 8)
+        for (int i = 0; i < 48; i += 8)
         {
             Dust d = Dust.NewDustPerfect(Projectile.Center - (direction * i), type);
             d.frame.X = 10;
-            d.velocity = direction * Main.rand.NextFloat(2,4) + Main.rand.NextVector2Square(-1,1);
+            d.velocity = direction * Main.rand.NextFloat(2, 4) + Main.rand.NextVector2Square(-1, 1);
             d.noGravity = true;
             d.alpha = Main.rand.Next(128);
         }

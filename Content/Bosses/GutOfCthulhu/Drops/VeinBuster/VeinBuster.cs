@@ -104,7 +104,7 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
             modPlayer.SpawnedShards = true;
         }
 
-	}
+    }
 }
 
 public class VeinBusterShard : ModProjectile
@@ -150,7 +150,7 @@ public class VeinBusterShard : ModProjectile
 
             var dust = Dust.NewDustPerfect(
                 Projectile.Center - Projectile.rotation.ToRotationVector2() * 42 - Projectile.velocity * Main.rand.NextFloat(),
-				ModContent.DustType<VeinBusterBloodDust>(),
+                ModContent.DustType<VeinBusterBloodDust>(),
                 Velocity: Projectile.velocity,
                 Scale: 1.25f * Projectile.Opacity
             );
@@ -225,9 +225,9 @@ public class VeinBusterShardDust : ModDust;
 
 public class VeinBusterBloodDust : ModDust
 {
-	public override bool Update(Dust dust)
-	{
-		UpdateType = DustID.Blood;
-		return base.Update(dust);
-	}
+    public override bool Update(Dust dust)
+    {
+        UpdateType = DustID.Blood;
+        return base.Update(dust);
+    }
 }

@@ -179,79 +179,79 @@ public static class FighterAI
         }
 
         if (n.velocity.Y >= 0f && n.directionY != 1)
-		{
-			int num79 = 0;
-			if (n.velocity.X < 0f)
-			{
-				num79 = -1;
-			}
-			if (n.velocity.X > 0f)
-			{
-				num79 = 1;
-			}
-			Vector2 position3 = n.position;
-			position3.X += n.velocity.X;
-			int num80 = (int)((position3.X + (float)(n.width / 2) + (float)((n.width / 2 + 1) * num79)) / 16f);
-			int num81 = (int)((position3.Y + (float)n.height - 1f) / 16f);
-			if (WorldGen.InWorld(num80, num81, 4))
-			{
-				//if (Main.tile[num80, num81] == null)
-				//{
-				//	Main.tile[num80, num81] = default(Tile);
-				//}
-				//if (Main.tile[num80, num81 - 1] == null)
-				//{
-				//	Main.tile[num80, num81 - 1] = default(Tile);
-				//}
-				//if (Main.tile[num80, num81 - 2] == null)
-				//{
-				//	Main.tile[num80, num81 - 2] = default(Tile);
-				//}
-				//if (Main.tile[num80, num81 - 3] == null)
-				//{
-				//	Main.tile[num80, num81 - 3] = default(Tile);
-				//}
-				//if (Main.tile[num80, num81 + 1] == null)
-				//{
-				//	Main.tile[num80, num81 + 1] = default(Tile);
-				//}
-				//if (Main.tile[num80 - num79, num81 - 3] == null)
-				//{
-				//	Main.tile[num80 - num79, num81 - 3] = default(Tile);
-				//}
+        {
+            int num79 = 0;
+            if (n.velocity.X < 0f)
+            {
+                num79 = -1;
+            }
+            if (n.velocity.X > 0f)
+            {
+                num79 = 1;
+            }
+            Vector2 position3 = n.position;
+            position3.X += n.velocity.X;
+            int num80 = (int)((position3.X + (float)(n.width / 2) + (float)((n.width / 2 + 1) * num79)) / 16f);
+            int num81 = (int)((position3.Y + (float)n.height - 1f) / 16f);
+            if (WorldGen.InWorld(num80, num81, 4))
+            {
+                //if (Main.tile[num80, num81] == null)
+                //{
+                //	Main.tile[num80, num81] = default(Tile);
+                //}
+                //if (Main.tile[num80, num81 - 1] == null)
+                //{
+                //	Main.tile[num80, num81 - 1] = default(Tile);
+                //}
+                //if (Main.tile[num80, num81 - 2] == null)
+                //{
+                //	Main.tile[num80, num81 - 2] = default(Tile);
+                //}
+                //if (Main.tile[num80, num81 - 3] == null)
+                //{
+                //	Main.tile[num80, num81 - 3] = default(Tile);
+                //}
+                //if (Main.tile[num80, num81 + 1] == null)
+                //{
+                //	Main.tile[num80, num81 + 1] = default(Tile);
+                //}
+                //if (Main.tile[num80 - num79, num81 - 3] == null)
+                //{
+                //	Main.tile[num80 - num79, num81 - 3] = default(Tile);
+                //}
                 // torment nexus line what the hell
-				if ((float)(num80 * 16) < position3.X + (float)n.width && (float)(num80 * 16 + 16) > position3.X && ((Main.tile[num80, num81].HasTile && !Main.tile[num80, num81].TopSlope && !Main.tile[num80, num81 - 1].TopSlope && Main.tileSolid[Main.tile[num80, num81].TileType] && !Main.tileSolidTop[Main.tile[num80, num81].TileType]) || (Main.tile[num80, num81 - 1].IsHalfBlock && Main.tile[num80, num81 - 1].HasTile)) && (!Main.tile[num80, num81 - 1].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 1].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 1].TileType] || (Main.tile[num80, num81 - 1].IsHalfBlock && (!Main.tile[num80, num81 - 4].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 4].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 4].TileType]))) && (!Main.tile[num80, num81 - 2].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 2].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 2].TileType]) && (!Main.tile[num80, num81 - 3].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 3].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 3].TileType]) && (!Main.tile[num80 - num79, num81 - 3].HasTile || !Main.tileSolid[Main.tile[num80 - num79, num81 - 3].TileType]))
-				{
-					float num82 = num81 * 16;
-					if (Main.tile[num80, num81].IsHalfBlock)
-					{
-						num82 += 8f;
-					}
-					if (Main.tile[num80, num81 - 1].IsHalfBlock)
-					{
-						num82 -= 8f;
-					}
-					if (num82 < position3.Y + (float)n.height)
-					{
-						float num83 = position3.Y + (float)n.height - num82;
-						float num84 = 16.1f;
-						if (num83 <= num84)
-						{
-							n.gfxOffY += n.position.Y + (float)n.height - num82;
-							n.position.Y = num82 - (float)n.height;
-							if (num83 < 9f)
-							{
-								n.stepSpeed = 1f;
-							}
-							else
-							{
-								n.stepSpeed = 2f;
-							}
-						}
-					}
-				}
-			}
-		}
+                if ((float)(num80 * 16) < position3.X + (float)n.width && (float)(num80 * 16 + 16) > position3.X && ((Main.tile[num80, num81].HasTile && !Main.tile[num80, num81].TopSlope && !Main.tile[num80, num81 - 1].TopSlope && Main.tileSolid[Main.tile[num80, num81].TileType] && !Main.tileSolidTop[Main.tile[num80, num81].TileType]) || (Main.tile[num80, num81 - 1].IsHalfBlock && Main.tile[num80, num81 - 1].HasTile)) && (!Main.tile[num80, num81 - 1].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 1].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 1].TileType] || (Main.tile[num80, num81 - 1].IsHalfBlock && (!Main.tile[num80, num81 - 4].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 4].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 4].TileType]))) && (!Main.tile[num80, num81 - 2].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 2].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 2].TileType]) && (!Main.tile[num80, num81 - 3].HasTile || !Main.tileSolid[Main.tile[num80, num81 - 3].TileType] || Main.tileSolidTop[Main.tile[num80, num81 - 3].TileType]) && (!Main.tile[num80 - num79, num81 - 3].HasTile || !Main.tileSolid[Main.tile[num80 - num79, num81 - 3].TileType]))
+                {
+                    float num82 = num81 * 16;
+                    if (Main.tile[num80, num81].IsHalfBlock)
+                    {
+                        num82 += 8f;
+                    }
+                    if (Main.tile[num80, num81 - 1].IsHalfBlock)
+                    {
+                        num82 -= 8f;
+                    }
+                    if (num82 < position3.Y + (float)n.height)
+                    {
+                        float num83 = position3.Y + (float)n.height - num82;
+                        float num84 = 16.1f;
+                        if (num83 <= num84)
+                        {
+                            n.gfxOffY += n.position.Y + (float)n.height - num82;
+                            n.position.Y = num82 - (float)n.height;
+                            if (num83 < 9f)
+                            {
+                                n.stepSpeed = 1f;
+                            }
+                            else
+                            {
+                                n.stepSpeed = 2f;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (flag23)
         {
             int num85 = (int)((n.position.X + (float)(n.width / 2) + (float)(15 * n.direction)) / 16f);
@@ -298,7 +298,7 @@ public static class FighterAI
                 n.ai[3] = 0f;
                 if (n.ai[2] >= 60f)
                 {
-                    
+
                     bool flag15 = Main.player[n.target].ZoneGraveyard && Main.rand.Next(60) == 0;
                     if ((!Main.bloodMoon || Main.getGoodWorld) && !flag15 && undead)
                     {

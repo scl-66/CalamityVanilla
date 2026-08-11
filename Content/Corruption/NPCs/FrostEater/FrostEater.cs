@@ -44,7 +44,7 @@ public class FrostEater : ModNPCWithBanner
     public override void FindFrame(int frameHeight)
     {
         NPC.frameCounter++;
-        if(NPC.frameCounter > 8)
+        if (NPC.frameCounter > 8)
         {
             NPC.frame.Y = NPC.frame.Y == frameHeight ? 0 : frameHeight;
             NPC.frameCounter = 0;
@@ -68,7 +68,7 @@ public class FrostEater : ModNPCWithBanner
 
         if (!NPC.HasValidTarget)
             NPC.TargetClosest();
-        FlyingAI.AI(NPC,3.6f, Main.expertMode? 0.02f : 0.01f, 0.4f, true);
+        FlyingAI.AI(NPC, 3.6f, Main.expertMode ? 0.02f : 0.01f, 0.4f, true);
 
         if (NPC.wet)
         {
@@ -113,7 +113,7 @@ public class FrostEater : ModNPCWithBanner
         }
         for (int i = 0; i < 3; i++)
         {
-            Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + "Gore_" + i).Type,NPC.scale);
+            Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + "Gore_" + i).Type, NPC.scale);
         }
     }
     public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)

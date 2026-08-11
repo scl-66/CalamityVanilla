@@ -17,6 +17,7 @@ public partial class CalamityVanilla : Mod, IHasCustomAuthorMessage
     public static CalamityVanilla Instance { get; private set; }
     public CalamityVanilla()
     {
+        MusicAutoloadingEnabled = false;
         Instance = this;
     }
 

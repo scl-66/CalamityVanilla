@@ -384,7 +384,7 @@ public class TerraGlobeOrb : ModProjectile
             for (int j = 0; j < inbetween; j++)
             {
                 float percent = 1f - ((MathHelper.Lerp(i, i - 1 >= 0 ? i - 1 : 0, j)) / (float)Projectile.oldPos.Length);
-                Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[i], Projectile.oldPos[(i - 1) >= 0 ? i - 1 : 0], j/inbetween) + Projectile.Size / 2 - Main.screenPosition);
+                Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[i], Projectile.oldPos[(i - 1) >= 0 ? i - 1 : 0], j / inbetween) + Projectile.Size / 2 - Main.screenPosition);
                 Main.EntitySpriteDraw(tex.Value, drawPos, null, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2] / 3), percent) * (percent / 2) * glowOpacity, Projectile.oldRot[i], TextureAssets.Projectile[Type].Size() / 2, 1f + percent * 0.2f, SpriteEffects.None);
             }
         }

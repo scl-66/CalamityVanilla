@@ -199,7 +199,7 @@ public class PriestUIState : UIState
                         {
                             LocalPosition = widthHeight,
                             AccelerationPerFrame = accelerationPerFrame,
-                            Scale = new Vector2( 0.5f, 0.5f),
+                            Scale = new Vector2(0.5f, 0.5f),
                             DrawVerticalAxis = true,
                             FadeInEnd = 5,
                             FadeOutStart = fadeStart,
@@ -275,7 +275,7 @@ public class PriestUIState : UIState
                 text.SetText(_button.toolTip);
                 statsText.SetText(_button.statsToolTip);
                 anyHover = true;
-            } 
+            }
             if (!anyHover)
             {
                 text.SetText("");
@@ -448,7 +448,7 @@ public class BlessingButton : UIElement
 
         toolTip = _desc.ToString();
         statsToolTip = _stat.ToString();
-        
+
         _uiPanel = new UIPanel
         {
             Height = StyleDimension.Fill,
@@ -516,7 +516,7 @@ public class BlessingButton : UIElement
 
     private void DrawGradient(UIElement affectedElement)
     {
-        Main.spriteBatch.Draw(gradient, affectedElement.GetDimensions().Center(), null, gradientColor, 0, gradient.Size() / 2f, new Vector2(_uiPanel.GetInnerDimensions().Width/40.2f, 0.55f + siner/4), SpriteEffects.None, 0);
+        Main.spriteBatch.Draw(gradient, affectedElement.GetDimensions().Center(), null, gradientColor, 0, gradient.Size() / 2f, new Vector2(_uiPanel.GetInnerDimensions().Width / 40.2f, 0.55f + siner / 4), SpriteEffects.None, 0);
     }
 
     //protected override void DrawChildren(SpriteBatch spriteBatch)
@@ -644,8 +644,8 @@ public class BlessingButton : UIElement
     {
         base.LeftClick(evt);
         if (_uiPanel.IsMouseHovering)
-        { 
-            toggle = !toggle; 
+        {
+            toggle = !toggle;
         }
 
         if (ClickSound != null && _uiPanel.IsMouseHovering)

@@ -86,7 +86,7 @@ public class CarnageFlailProjectile : BaseFlailProjectile
         {
             base.AI();
             Projectile.spriteDirection = Projectile.Center.X < player.MountedCenter.X ? -1 : 1;
-            if(_targetWhoami == -2)
+            if (_targetWhoami == -2)
             {
                 Projectile.frame = 1;
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.LifeDrain);
@@ -98,7 +98,7 @@ public class CarnageFlailProjectile : BaseFlailProjectile
         else
         {
             Projectile.frameCounter++;
-            if(Projectile.frameCounter > 5)
+            if (Projectile.frameCounter > 5)
             {
                 for (int i = 0; i < 10; i++)
                 {
@@ -126,13 +126,13 @@ public class CarnageFlailProjectile : BaseFlailProjectile
             Projectile.Center = target.Center - Projectile.velocity;
             if (!target.active || player.controlUseItem || player.Center.Distance(Projectile.Center) > MaxDistanceLaunched)
             {
-                if(!target.active && target.lifeMax > 5 && !target.immortal && !target.SpawnedFromStatue)
+                if (!target.active && target.lifeMax > 5 && !target.immortal && !target.SpawnedFromStatue)
                 {
                     SoundEngine.PlaySound(SoundID.NPCDeath12, Projectile.position);
                     _targetWhoami = -2;
                 }
                 Projectile.velocity = Vector2.Zero;
-                _targetWhoami = Math.Min(_targetWhoami,-1);
+                _targetWhoami = Math.Min(_targetWhoami, -1);
                 CurrentAIState = AIState.ForcedRetracting;
             }
         }

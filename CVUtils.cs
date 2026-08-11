@@ -296,14 +296,15 @@ public static class CVUtils
         float to = Math.Abs(toangle % MathHelper.TwoPi);
         return Math.Abs(from - to);
     }
-    
-    public static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
+
+    public static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness)
+    {
         Vector2 edge = end - start;
         float angle = (float)Math.Atan2(edge.Y, edge.X);
         float length = edge.Length();
 
         var tex = ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/Pixel");
-        
+
         spriteBatch.Draw(
             tex.Value,
             start,
@@ -316,10 +317,11 @@ public static class CVUtils
             0
         );
     }
-    
-    public static void DrawPixel(SpriteBatch spriteBatch, Vector2 pos, Color color) {
+
+    public static void DrawPixel(SpriteBatch spriteBatch, Vector2 pos, Color color)
+    {
         var tex = ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/Pixel");
-        
+
         spriteBatch.Draw(
             tex.Value,
             pos,

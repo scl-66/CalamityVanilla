@@ -52,7 +52,7 @@ public class HiveMindBag : ModItem
             ModContent.ItemType<MyceliumStaff.MyceliumStaff>(),
             ModContent.ItemType<SinisterIncubator.SinisterIncubator>()));
         itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<AdrianHelmet.AdrianHelmet>(), 50));
-        itemLoot.Add(ItemDropRule.Common(ItemID.SoulofNight, 1,10,15));
+        itemLoot.Add(ItemDropRule.Common(ItemID.SoulofNight, 1, 10, 15));
         itemLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(ModContent.NPCType<HiveMind>()));
     }
 }

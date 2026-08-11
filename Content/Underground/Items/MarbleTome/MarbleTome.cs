@@ -94,7 +94,7 @@ public class MarbleTomePillar : ModProjectile, ISyncedOnHitEffect
         Projectile.friendly = true;
         Projectile.DamageType = DamageClass.Magic;
         Projectile.ignoreWater = true;
-        Projectile.timeLeft = 60*8;
+        Projectile.timeLeft = 60 * 8;
         Projectile.tileCollide = false;
         Projectile.penetrate = 7;
         Projectile.Opacity = 0f;
@@ -126,7 +126,8 @@ public class MarbleTomePillar : ModProjectile, ISyncedOnHitEffect
         {
             Projectile.Opacity += 0.05f;
             Projectile.velocity.Y *= 0.84f;
-        } else
+        }
+        else
         {
             Projectile.alpha = 0;
             Projectile.velocity.Y = 0;

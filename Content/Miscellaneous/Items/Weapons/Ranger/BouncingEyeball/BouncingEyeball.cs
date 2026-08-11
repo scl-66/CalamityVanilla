@@ -194,7 +194,7 @@ public class BouncingEyeProj : ModProjectile
 
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = 0.1f}, Projectile.position);
+        SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = 0.1f }, Projectile.position);
 
         for (int i = 0; i < 10; i++)
         {

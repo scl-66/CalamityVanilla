@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Bosses.Cryogen;
+
 public struct CryogenIce
 {
     public CryogenIce(int x, int y, int timeLeft)
@@ -32,10 +33,10 @@ public class CryogenIceBlockSystem : ModSystem
                 return true;
             }
         }
-        if (WorldGen.PlaceTile(x,y,ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer))
+        if (WorldGen.PlaceTile(x, y, ModContent.TileType<CryogenIceTile>(), plr: Main.myPlayer))
         {
-            CryogenIceBlocks.Add(new CryogenIce(x,y,timeLeft));
-            NetMessage.SendTileSquare(-1, x,y);
+            CryogenIceBlocks.Add(new CryogenIce(x, y, timeLeft));
+            NetMessage.SendTileSquare(-1, x, y);
             return true;
         }
         return false;
@@ -46,7 +47,7 @@ public class CryogenIceBlockSystem : ModSystem
     }
     public override void PostUpdateWorld()
     {
-        if(CryogenIceBlocks.Count == 0)
+        if (CryogenIceBlocks.Count == 0)
             return;
         bool cryogenIsREAL = false;
         int iceBlockType = ModContent.TileType<CryogenIceTile>();

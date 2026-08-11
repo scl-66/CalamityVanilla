@@ -82,7 +82,7 @@ public partial class Cryogen : ModNPC
     }
     public override void FindFrame(int frameHeight)
     {
-        if(_currentAttack > 19)
+        if (_currentAttack > 19)
         {
             NPC.frame.Y = frameHeight;
             if (BossDownedSystem.DownedCryogen)

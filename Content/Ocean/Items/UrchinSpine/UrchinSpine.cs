@@ -109,10 +109,10 @@ public class UrchinSpineProj : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.TintablePaint);
-            d.color = new Color(Main.rand.NextFloat(0.7f,1f), 0.3f, 1f);
+            d.color = new Color(Main.rand.NextFloat(0.7f, 1f), 0.3f, 1f);
             d.noGravity = true;
             d.scale *= 0.8f;
             d.velocity += Vector2.Normalize(Projectile.velocity);

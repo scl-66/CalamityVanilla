@@ -77,9 +77,12 @@ public class MushroomBomberHeld : ModProjectile
             Projectile.ai[0]++;
             if (Projectile.ai[0] == _mediumTime || Projectile.ai[0] == _bigTime)
             {
-                if (Projectile.ai[0] == _mediumTime) {
+                if (Projectile.ai[0] == _mediumTime)
+                {
                     SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.position);
-                } else if (Projectile.ai[0] == _bigTime) {
+                }
+                else if (Projectile.ai[0] == _bigTime)
+                {
                     SoundEngine.PlaySound(SoundID.DD2_KoboldIgnite with { Pitch = 0.7f, Volume = 1.1f }, Projectile.position);
                 }
                 Projectile.frame++;
@@ -95,7 +98,7 @@ public class MushroomBomberHeld : ModProjectile
         {
             Vector2 mouthPos = Projectile.Center + new Vector2(Projectile.spriteDirection * 2, -10).RotatedBy(Projectile.rotation);
             Projectile.ai[2]++;
-            float Power = Projectile.frame == 1? Utils.Remap(Projectile.ai[0], 0, _mediumTime, 0, 1, true) : Utils.Remap(Projectile.ai[0], _mediumTime, _bigTime, 0, 1, true);
+            float Power = Projectile.frame == 1 ? Utils.Remap(Projectile.ai[0], 0, _mediumTime, 0, 1, true) : Utils.Remap(Projectile.ai[0], _mediumTime, _bigTime, 0, 1, true);
             if (owner == Main.LocalPlayer)
             {
                 StatModifier damageModifier = owner.GetTotalDamage(Projectile.DamageType);
@@ -103,7 +106,7 @@ public class MushroomBomberHeld : ModProjectile
                 damageModifier = damageModifier.CombineWith(new StatModifier((float)owner.HeldItem.damage / owner.HeldItem.OriginalDamage, 1));
                 CombinedHooks.ModifyWeaponDamage(owner, owner.HeldItem, ref damageModifier);
                 StatModifier knockbackModifier = owner.GetTotalKnockback(Projectile.DamageType);
-                knockbackModifier.CombineWith(new StatModifier(owner.HeldItem.knockBack / ContentSamples.ItemsByType[owner.HeldItem.type].knockBack,1));
+                knockbackModifier.CombineWith(new StatModifier(owner.HeldItem.knockBack / ContentSamples.ItemsByType[owner.HeldItem.type].knockBack, 1));
                 CombinedHooks.ModifyWeaponKnockback(owner, owner.HeldItem, ref knockbackModifier);
                 switch (Projectile.frame)
                 {
@@ -136,7 +139,7 @@ public class MushroomBomberHeld : ModProjectile
                         break;
                 }
             }
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Dust d = Dust.NewDustPerfect(mouthPos, DustID.Corruption, Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1f));
                 d.noGravity = true;
@@ -160,7 +163,7 @@ public class MushroomBomberHeld : ModProjectile
         //int xFrame = ((Projectile.frame == 1 && Projectile.ai[0] > _mediumTime - 60) || (Projectile.frame == 2 && Projectile.ai[0] > _bigTime - 60)) ? 1 : 0;
         Rectangle frame = TextureAssets.Projectile[Type].Frame(2, 4, 0, Projectile.frame);
         int xOrigin = Projectile.spriteDirection == 1 ? 38 : frame.Width - 38;
-        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value,Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
+        Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(xOrigin, 28), Projectile.scale, effect);
         float glowRotation = (float)(Main.timeForVisualEffects * 0.04f);
         if (Projectile.frame == 3)
         {

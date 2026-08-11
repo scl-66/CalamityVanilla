@@ -148,7 +148,7 @@ public class SixtyWingsLayer : PlayerDrawLayer
 
         Vector2 drawPos = new Vector2((int)drawInfo.Center.X, (int)drawInfo.Center.Y + drawInfo.seatYOffset) - Main.screenPosition;
         Vector2 flip = new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
-        if(drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<SixtyHead>()].headSlot)
+        if (drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<SixtyHead>()].headSlot)
             drawPos += new Vector2(-9, -27) * flip;
         else
             drawPos += new Vector2(-8, -24) * flip;

@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace CalamityVanilla.Content.Bosses.HiveMind;
+
 public partial class HiveMind
 {
     public const int ShieldMax = 35;
@@ -22,7 +23,7 @@ public partial class HiveMind
     {
         if (_currentAttack > 20)
         {
-            Lighting.AddLight(NPC.Center, new Vector3(1.7f,0,2) * NPC.localAI[2]);
+            Lighting.AddLight(NPC.Center, new Vector3(1.7f, 0, 2) * NPC.localAI[2]);
             if (_shieldAmountForPhase2 > 0)
             {
                 if (NPC.localAI[2] < 1)
@@ -31,7 +32,7 @@ public partial class HiveMind
                 }
                 NPC.dontTakeDamage = true;
             }
-            else if(NPC.dontTakeDamage)
+            else if (NPC.dontTakeDamage)
             {
                 for (int i = 0; i < 50; i++)
                 {
@@ -75,11 +76,11 @@ public partial class HiveMind
         else
         {
             NPC.localAI[0] = 0;
-        } 
-        if(_currentAttack < 0)
+        }
+        if (_currentAttack < 0)
         {
             NPC.alpha += 5;
-            if(NPC.alpha > 255)
+            if (NPC.alpha > 255)
             {
                 NPC.active = false;
             }
@@ -140,7 +141,7 @@ public partial class HiveMind
                 int weeperCount = NPC.CountNPCS(weeper);
                 int swooperCount = NPC.CountNPCS(swooper);
                 NPC.localAI[1]++;
-                if(Main.netMode != NetmodeID.MultiplayerClient && (NPC.localAI[1] == 600 || swooperCount + weeperCount == 0))
+                if (Main.netMode != NetmodeID.MultiplayerClient && (NPC.localAI[1] == 600 || swooperCount + weeperCount == 0))
                 {
                     NPC.localAI[1] = 0;
                     if (weeperCount + swooperCount < 12)
@@ -315,7 +316,7 @@ public partial class HiveMind
             Vector2 chosenTile = Vector2.Zero;
             Vector2 targetPos = target.Center;
             targetPos /= 16;
-            if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y,40))
+            if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y, 40))
             {
                 chosenTile *= 16;
                 teleportX = chosenTile.X;
@@ -325,7 +326,7 @@ public partial class HiveMind
             {
                 targetPos = CVUtils.FindFloorBelow(target.Center, 32);
                 targetPos /= 16;
-                if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y,40))
+                if (NPC.AI_AttemptToFindTeleportSpot(ref chosenTile, (int)targetPos.X, (int)targetPos.Y, 40))
                 {
                     chosenTile *= 16;
                     teleportX = chosenTile.X;
@@ -419,7 +420,7 @@ public partial class HiveMind
         else if (NPC.ai[1] > teleportTime)
         {
             CycleAttack();
-            if(NPC.life / (float)NPC.lifeMax < _secondPhaseHealthPercent)
+            if (NPC.life / (float)NPC.lifeMax < _secondPhaseHealthPercent)
             {
                 SwitchToPhaseTwo();
             }
@@ -453,7 +454,7 @@ public partial class HiveMind
             int type = ModContent.ProjectileType<SporeBomb>();
 
             Vector2 adjustedTargetPosition = target.Center + new Vector2(target.velocity.X * 120, 0);
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128,128), 0.2f, 120), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, adjustedTargetPosition + Main.rand.NextVector2Circular(128, 128), 0.2f, 120), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
             //Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(target.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(6, 9), type, 30, 1, -1, 0, Main.rand.Next(10, 20));
         }
         else if (NPC.ai[1] > 160)
@@ -497,7 +498,7 @@ public partial class HiveMind
                         break;
                 }
             }
-            Projectile.NewProjectile(NPC.GetSource_FromThis(), place + new Vector2(0,16), Vector2.Zero, ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
+            Projectile.NewProjectile(NPC.GetSource_FromThis(), place + new Vector2(0, 16), Vector2.Zero, ModContent.ProjectileType<CorruptBoulder>(), 40, 1, -1, NPC.target, ai2: rockType);
         }
         else if (NPC.ai[1] > 240)
         {
@@ -583,7 +584,7 @@ public partial class HiveMind
             {
                 if (i == 0)
                     continue;
-                Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2((NPC.Center.X + i * spacing) + (offset? spacing / 2 : 0), NPC.Center.Y - 256), 64);
+                Vector2 place = CVUtils.FindFloorBelowIgnoringSolidTops(new Vector2((NPC.Center.X + i * spacing) + (offset ? spacing / 2 : 0), NPC.Center.Y - 256), 64);
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), place, Vector2.Zero, type, 30, 1, -1, -MathF.Abs(i * 5), Main.rand.Next(20, 30));
             }
         }

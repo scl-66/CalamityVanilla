@@ -155,7 +155,7 @@ public class CruetBottleTile : ModTile
                             noUseGraphic = true
                         };
                         SoundEngine.PlaySound(SoundID.Item3 with { MaxInstances = 0 }, tileCoords);
-                        
+
                         //dust
                         for (int k = 0; k < Main.rand.Next(3, 7); k++)
                         {
@@ -164,7 +164,7 @@ public class CruetBottleTile : ModTile
                             d.scale = Main.rand.NextFloat(0.5f, 0.75f);
                             d.color = (Color)color1;
                         }
-                        
+
                         int previousSelected = player.selectedItem;
                         player.inventory[58] = drunkItem;
                         player.selectedItem = 58;
@@ -219,5 +219,3 @@ public class CruetBottle : ModItem
         Item.value = Item.buyPrice(0, 0, 15, 0);
     }
 }
-
-

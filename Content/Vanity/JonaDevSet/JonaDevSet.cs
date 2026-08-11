@@ -57,7 +57,7 @@ public class JonaWigEyesAndHairTip : PlayerDrawLayer
         drawInfo.DrawDataCache.Add(face);
 
         DrawData faceGlow = face with { sourceRect = frame with { X = 10 } };
-        faceGlow.color = new Color(Vector3.One - (Lighting.GetSubLight(drawInfo.drawPlayer.Center))) with { A = 0};
+        faceGlow.color = new Color(Vector3.One - (Lighting.GetSubLight(drawInfo.drawPlayer.Center))) with { A = 0 };
         drawInfo.DrawDataCache.Add(faceGlow);
 
         offset = new Vector2(-10, -13);

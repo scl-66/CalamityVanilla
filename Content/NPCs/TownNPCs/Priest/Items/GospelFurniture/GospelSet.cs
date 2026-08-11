@@ -38,8 +38,8 @@ public class GospelSet : ILoadable
 
         List<FurnitureTile> OtherFurniture = [
             gospelCandle,
-            gospelClothWorkBench, 
-            gospelClothTable, 
+            gospelClothWorkBench,
+            gospelClothTable,
             gospelOrgan
         ];
         foreach (var tile in OtherFurniture)
@@ -50,28 +50,28 @@ public class GospelSet : ILoadable
 
 public class GospelCandle : CandleTile, ILoadItem
 {
-    
+
     public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<GospelBrick>());
 
     public override void SetStaticDefaults()
     {
-		Main.tileFrameImportant[Type] = true;
-		Main.tileNoAttach[Type] = true;
-		Main.tileLighted[Type] = true;
-		Main.tileLavaDeath[Type] = true;
+        Main.tileFrameImportant[Type] = true;
+        Main.tileNoAttach[Type] = true;
+        Main.tileLighted[Type] = true;
+        Main.tileLavaDeath[Type] = true;
         TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
-		TileObjectData.newTile.CoordinateHeights = [22];
+        TileObjectData.newTile.CoordinateHeights = [22];
         TileObjectData.newTile.DrawYOffset = -6;
 
         TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
         AdjTiles = [33];
         TileObjectData.addTile(Type);
 
-		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(MapColor, Language.GetText("ItemName.Candle"));
+        AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+        AddMapEntry(MapColor, Language.GetText("ItemName.Candle"));
 
-		AdjTiles = [TileID.Candles];
-		DustType = -1;
+        AdjTiles = [TileID.Candles];
+        DustType = -1;
         Light = Color.Orange.ToVector3();
     }
 

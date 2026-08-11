@@ -27,7 +27,7 @@ internal sealed class WorldSelectionScreenEdits : ModSystem
         bool commonData = self.Data.TryGetHeaderData(ModContent.GetInstance<CommonWorldFlags>(), out var _data);
         var worldIcon = (UIElement)typeof(UIWorldListItem).GetField("_worldIcon", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(self);
         var wldData = (WorldFileData)typeof(AWorldListItem).GetField("_data", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(self);
- 
+
         Debug.Assert(wldData != null);
 
         bool normalWorld = !wldData.RemixWorld
@@ -39,22 +39,23 @@ internal sealed class WorldSelectionScreenEdits : ModSystem
                            && !wldData.NotTheBees
                            && !wldData.NoTrapsWorld
                            && wldData.IsHardMode;
-        
+
         if (commonData)
         {
             #region RegularSeedIcon
-            
+
             if (_data.GetBool("CalamityVanilla:HasAstro") && normalWorld)
             {
                 var icon = worldIcon;
-                var element = new UIImage(ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/UI/IconAstro_Default")) {
+                var element = new UIImage(ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/UI/IconAstro_Default"))
+                {
                     Top = new StyleDimension(0f, 0f),
                     Left = new StyleDimension(1f, 0f),
                     IgnoresMouseInteraction = true
                 };
-                
+
                 Debug.Assert(icon != null);
-                
+
                 icon.Append(element);
             }
             #endregion

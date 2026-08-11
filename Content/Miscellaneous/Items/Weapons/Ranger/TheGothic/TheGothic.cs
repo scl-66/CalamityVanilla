@@ -172,7 +172,7 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
             Projectile.Center = Main.npc[(int)Projectile.ai[1]].Center + Projectile.velocity * 0.8f;
             if (Main.rand.NextBool(13))
             {
-                Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(6,0).RotatedBy(Projectile.rotation), DustID.Blood, (Projectile.rotation + Main.rand.NextFloat(-0.5f,0.5f)).ToRotationVector2() * Main.rand.NextFloat(-4,-1));
+                Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(6, 0).RotatedBy(Projectile.rotation), DustID.Blood, (Projectile.rotation + Main.rand.NextFloat(-0.5f, 0.5f)).ToRotationVector2() * Main.rand.NextFloat(-4, -1));
                 d.noGravity = Main.rand.NextBool();
             }
             if (!Main.npc[(int)Projectile.ai[1]].active)
@@ -182,8 +182,8 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
         }
         for (int i = 1; i < Projectile.oldPos.Length; i++)
         {
-            if(Projectile.oldPos[i] != Projectile.oldPos[i - 1])
-            Projectile.oldRot[i] = Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]).ToRotation();
+            if (Projectile.oldPos[i] != Projectile.oldPos[i - 1])
+                Projectile.oldRot[i] = Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]).ToRotation();
         }
     }
     public override bool ShouldUpdatePosition()
@@ -227,7 +227,7 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, type);
             d.noGravity = !Main.rand.NextBool(7);
-            if(Projectile.localAI[0] == 0)
+            if (Projectile.localAI[0] == 0)
                 d.velocity += Projectile.oldVelocity * -0.2f;
         }
         if (Projectile.localAI[0] == 1)
@@ -259,7 +259,7 @@ public class TheGothicTooth : ModProjectile // Example Mod Jumpscare
         }
 
         //Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, Projectile.ai[0] == 0 ? lightColor : Color.Lerp(lightColor, Color.Red, Main.masterColor), Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None);
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, tex.Frame(1,2,0,0), lightColor, Projectile.rotation, new Vector2(13,7), 1f, SpriteEffects.None);
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, tex.Frame(1, 2, 0, 0), lightColor, Projectile.rotation, new Vector2(13, 7), 1f, SpriteEffects.None);
         if (Projectile.ai[0] == 1)
         {
             float interval = 100;

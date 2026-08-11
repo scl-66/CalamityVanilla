@@ -18,7 +18,7 @@ public class SporeBomb : ModProjectile
     private static SoundStyle _spawn;
     public override void SetStaticDefaults()
     {
-        DeathSound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_SporeBombPop", [1,2]) { PitchVariance = 0.1f };
+        DeathSound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_SporeBombPop", [1, 2]) { PitchVariance = 0.1f };
         _spawn = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_SporeBombLaunch") { PitchVariance = 0.1f };
         Main.projFrames[Type] = 4;
         ProjectileID.Sets.TrailCacheLength[Type] = 3;

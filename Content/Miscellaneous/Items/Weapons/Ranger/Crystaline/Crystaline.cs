@@ -142,7 +142,7 @@ public class CrystalineProjectile : ModProjectile
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, lightColor * Projectile.Opacity, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
         if (Projectile.ai[1] < 1f)
         {
-            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(1f,1f,1f,0f) * Projectile.Opacity * (1f - Projectile.ai[1]) * 2, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0f) * Projectile.Opacity * (1f - Projectile.ai[1]) * 2, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
             Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, new Color(0.5f, 0.5f, 0.5f, 0.3f) * Projectile.Opacity * (1f - Projectile.ai[1]), Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, Projectile.scale * 1.5f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None);
         }
         return false;
@@ -184,7 +184,7 @@ public class CrystalineShard : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        if(timeLeft > 0)
+        if (timeLeft > 0)
         {
 
         }

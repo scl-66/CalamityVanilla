@@ -30,7 +30,7 @@ public class IceDeathBeam : ModProjectile
         Projectile.ai[1]++;
         Projectile.Opacity = Projectile.ai[1] / 150;
         float oldRot = Projectile.rotation;
-        Projectile.rotation = MathHelper.SmoothStep(0, MathHelper.TwoPi * 2, Utils.Remap(Projectile.ai[1] - 300,0,4000,0,1));
+        Projectile.rotation = MathHelper.SmoothStep(0, MathHelper.TwoPi * 2, Utils.Remap(Projectile.ai[1] - 300, 0, 4000, 0, 1));
         //Projectile.velocity = Vector2.UnitY.RotatedBy(Projectile.rotation) * 100;
 
         float[] samples = new float[3];
@@ -50,7 +50,7 @@ public class IceDeathBeam : ModProjectile
                 Dust d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustID.FrostHydra);
                 d.noGravity = true;
             }
-            for(int i = 0; i < Projectile.velocity.Length() / 64; i++)
+            for (int i = 0; i < Projectile.velocity.Length() / 64; i++)
             {
                 Dust d2 = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(), DustID.FrostHydra);
                 d2.noGravity = true;
@@ -60,7 +60,7 @@ public class IceDeathBeam : ModProjectile
     public override bool ShouldUpdatePosition() => false;
     public override bool PreDraw(ref Color lightColor)
     {
-        Utils.DrawLaser(Main.spriteBatch, TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, Projectile.Center + Projectile.velocity - Main.screenPosition, new Vector2(Projectile.Opacity,1f), LaserDraw);
+        Utils.DrawLaser(Main.spriteBatch, TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, Projectile.Center + Projectile.velocity - Main.screenPosition, new Vector2(Projectile.Opacity, 1f), LaserDraw);
         return false;
     }
     public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

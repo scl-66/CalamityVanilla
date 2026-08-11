@@ -26,7 +26,7 @@ public class HiveShieldBreaker : ModProjectile
         Projectile.Center = Projectile.Center.MoveTowards(target.Center, 3);
         if (Projectile.Hitbox.Intersects(target.Hitbox))
         {
-            for(int i = 0; i < 15; i++)
+            for (int i = 0; i < 15; i++)
             {
                 Dust d2 = Dust.NewDustPerfect(Projectile.Center, DustID.RainbowMk2);
                 d2.velocity *= 5;

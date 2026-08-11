@@ -58,11 +58,11 @@ public class BlacklightScepter : ModItem
             int randType = Main.rand.Next(0, 3);
             if (rand == 2)
             {
-                randRotation = spread + (i * spread*2);
+                randRotation = spread + (i * spread * 2);
             }
             if (randType == 2)
             {
-                randRotation += MathHelper.Pi/16 * -player.direction;
+                randRotation += MathHelper.Pi / 16 * -player.direction;
                 velocity *= 1.5f;
             }
             Projectile.NewProjectile(source, position + new Vector2(35, 0).RotatedBy(position.DirectionTo(Main.MouseWorld).ToRotation()), (velocity.RotatedBy(randRotation) * randVel).LengthClamp(19), type, damage, knockback, player.whoAmI, randType, 0, Item.shootSpeed);
@@ -146,7 +146,7 @@ public class BlacklightEnergy : ModProjectile
     {
 
         float mult = Utils.Remap(Projectile.velocity.Length(), 0, 20, 0.5f, 3f);
-        Projectile.scale = 1 + (MathF.Sin(Projectile.timeLeft * 0.45f) * mult/10);
+        Projectile.scale = 1 + (MathF.Sin(Projectile.timeLeft * 0.45f) * mult / 10);
         Projectile.rotation = Projectile.velocity.ToRotation();
         if (Projectile.alpha > 25)
         {
@@ -171,7 +171,8 @@ public class BlacklightEnergy : ModProjectile
                 Projectile.position = spawnPos + offset;
                 Projectile.rotation = (Projectile.position - Projectile.oldPosition).ToRotation();
             }
-        } else if (Projectile.ai[0] == 2)
+        }
+        else if (Projectile.ai[0] == 2)
         {
             Projectile.velocity.Y += 0.5f;
             Projectile.velocity.X *= 0.99f;
@@ -276,7 +277,7 @@ public class BlacklightEnergy : ModProjectile
 
         if (Projectile.ai[0] == 2)
         {
-            for (int i = 0; i < Main.rand.Next(2,4); i++)
+            for (int i = 0; i < Main.rand.Next(2, 4); i++)
             {
                 Vector2 speed = (Main.rand.NextVector2Unit(-MathHelper.PiOver4, MathHelper.PiOver2) * 5 * Main.rand.NextFloat(0, 2)).RotatedBy(Projectile.velocity.ToRotation()).RotatedBy(0);
                 speed = Main.rand.NextVector2Circular(8, 8);
@@ -315,7 +316,7 @@ public class BlacklightEnergy : ModProjectile
             }
         }
         Main.EntitySpriteDraw(glowTex.Value, Projectile.Center - Main.screenPosition, null, col * Projectile.Opacity * 2f, Projectile.rotation + MathHelper.PiOver2, glowTex.Size() / 2, 0.65f * Projectile.scale, SpriteEffects.None);
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation + MathHelper.PiOver2, tex.Size() / 2 - new Vector2(tex.Width()/3, 0), Projectile.scale, SpriteEffects.None);
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation + MathHelper.PiOver2, tex.Size() / 2 - new Vector2(tex.Width() / 3, 0), Projectile.scale, SpriteEffects.None);
         //Asset<Texture2D> tex = TextureAssets.Projectile[Type];
         //Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, 
         //    tex.Frame(3, Main.projFrames[Type], (int)Projectile.ai[0], Projectile.frame), 

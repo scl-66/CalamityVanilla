@@ -201,7 +201,8 @@ public class CandleSentry : ModProjectile
                         // See Projectile.ContinuouslyUpdateDamageStats docs for more information.
                     }
                 }
-            } else if (ShootTimer <= 0)
+            }
+            else if (ShootTimer <= 0)
             {
                 ShootTimer = ShootFrequency;
             }
@@ -301,7 +302,8 @@ public class CandleSentryFlame : ModProjectile
         if (Projectile.ai[0] < 60)
         {
             target = -1;
-        } else
+        }
+        else
         {
             float closestTargetDistance = CandleSentry.TargetingRange;
             target = Projectile.FindTargetWithLineOfSight(CandleSentry.TargetingRange);
@@ -317,7 +319,8 @@ public class CandleSentryFlame : ModProjectile
         {
             Projectile.velocity += Projectile.DirectionTo(Main.npc[target].Center) * 0.5f;
             Projectile.velocity = Projectile.velocity.LengthClamp(5f);
-        } else
+        }
+        else
         {
             Projectile.velocity *= 0.96f;
         }

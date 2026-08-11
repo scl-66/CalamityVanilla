@@ -29,7 +29,7 @@ public class IcePlacingBeam : ModProjectile
             Projectile.Kill();
         Projectile.Center = owner.Center;
         Vector2 ep = EndPoint();
-        for(int i = 0; i < 12; i++)
+        for (int i = 0; i < 12; i++)
         {
             //Dust d = Dust.NewDustPerfect(ep + Main.rand.NextVector2Circular(16,16),DustID.FrostStaff);
             //d.noGravity = true;
@@ -40,9 +40,9 @@ public class IcePlacingBeam : ModProjectile
             d.noGravity = true;
             d.fadeIn = Main.rand.NextFloat(1.5f);
         }
-        foreach(Player p in Main.ActivePlayers)
+        foreach (Player p in Main.ActivePlayers)
         {
-            if(p.Center.Distance(ep) < 16 * 3)
+            if (p.Center.Distance(ep) < 16 * 3)
             {
                 Vector2 dir = p.Center.DirectionTo(Projectile.velocity);
                 p.velocity = dir * 5;
@@ -68,7 +68,7 @@ public class IcePlacingBeam : ModProjectile
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        Utils.DrawLaser(Main.spriteBatch, TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, EndPoint() - Main.screenPosition, new Vector2(0.5f,1f), LaserDraw);
+        Utils.DrawLaser(Main.spriteBatch, TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, EndPoint() - Main.screenPosition, new Vector2(0.5f, 1f), LaserDraw);
         return false;
     }
     public static void LaserDraw(int stage, Vector2 currentPosition, float distanceLeft, Rectangle lastFrame, out float distCovered, out Rectangle frame, out Vector2 origin, out Color color)

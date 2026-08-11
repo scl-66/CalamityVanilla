@@ -16,7 +16,7 @@ public class HiveVineSpawner : ModProjectile
     private static SoundStyle _sound;
     public override void SetStaticDefaults()
     {
-        _sound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineEmerge", [1,2]) { PitchVariance = 0.1f, MaxInstances = 10 };
+        _sound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineEmerge", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
     }
     public override void SetDefaults()
     {
@@ -27,13 +27,13 @@ public class HiveVineSpawner : ModProjectile
     public override bool PreDraw(ref Color lightColor)
     {
         Texture2D tex = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
-        Vector2 scale = new Vector2(1f,2f) * (0.9f + (MathF.Sin(Projectile.timeLeft * 0.1f + Projectile.identity * 7) * 0.1f));
-        Main.EntitySpriteDraw(tex,Projectile.Center - Main.screenPosition,null,new Color(0.25f,0.5f,0f,0.5f) * Projectile.Opacity,MathHelper.PiOver2, tex.Size() / 2, scale * new Vector2(scale.Y, 1f), SpriteEffects.None);
-        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, new Color(0.4f, 0.4f, 0.4f, 0f) * Projectile.Opacity, MathHelper.PiOver2, tex.Size() / 2, scale * new Vector2(1f,0.6f), SpriteEffects.None);
+        Vector2 scale = new Vector2(1f, 2f) * (0.9f + (MathF.Sin(Projectile.timeLeft * 0.1f + Projectile.identity * 7) * 0.1f));
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, new Color(0.25f, 0.5f, 0f, 0.5f) * Projectile.Opacity, MathHelper.PiOver2, tex.Size() / 2, scale * new Vector2(scale.Y, 1f), SpriteEffects.None);
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, new Color(0.4f, 0.4f, 0.4f, 0f) * Projectile.Opacity, MathHelper.PiOver2, tex.Size() / 2, scale * new Vector2(1f, 0.6f), SpriteEffects.None);
 
         tex = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
         scale.X *= Math.Min(1, Projectile.timeLeft * 0.1f);
-        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0,0,tex.Width,tex.Height / 2), new Color(0.25f, 0.5f, 0f, 0f) * Projectile.Opacity * 0.5f, 0, tex.Size() / 2, new Vector2(scale.X,4 * Projectile.Opacity), SpriteEffects.None);
+        Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, tex.Width, tex.Height / 2), new Color(0.25f, 0.5f, 0f, 0f) * Projectile.Opacity * 0.5f, 0, tex.Size() / 2, new Vector2(scale.X, 4 * Projectile.Opacity), SpriteEffects.None);
         return false;
     }
     public override void AI()
@@ -55,7 +55,7 @@ public class HiveVineSpawner : ModProjectile
         Projectile.Opacity += 0.075f;
         for (int i = 0; i < 20; i++)
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0), DustID.RainbowMk2, Main.rand.NextVector2Circular(6,5));
+            Dust d = Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0), DustID.RainbowMk2, Main.rand.NextVector2Circular(6, 5));
             d.color = new Color(0.25f, 0.5f, 0f, 0.8f) * Projectile.Opacity;
             d.noGravity = true;
             d.scale += Main.rand.NextFloat();
@@ -97,7 +97,7 @@ public class HiveVineSpawner : ModProjectile
 
         if (Projectile.owner != Main.myPlayer)
             return;
-        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + new Vector2(0,4), Vector2.Zero, ModContent.ProjectileType<HiveVine>(), Projectile.damage, 1, -1, 0, Projectile.ai[1]);
+        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + new Vector2(0, 4), Vector2.Zero, ModContent.ProjectileType<HiveVine>(), Projectile.damage, 1, -1, 0, Projectile.ai[1]);
     }
     public override string Texture => ModContent.GetInstance<HiveVine>().Texture;
     public override bool? CanDamage()
@@ -132,31 +132,31 @@ public class HiveVine : ModProjectile
     {
         Asset<Texture2D> tex = TextureAssets.Projectile[Type];
         int adjustedHeight = (Projectile.height / 2) * 2;
-        Rectangle rect = new Rectangle(0,0,42,Math.Min(adjustedHeight, 54));
+        Rectangle rect = new Rectangle(0, 0, 42, Math.Min(adjustedHeight, 54));
 
         Color colorTint = Color.White;
         Vector2 jitter = Vector2.Zero;
         ulong randSeed = Main.TileFrameSeed ^ (ulong)(((long)Projectile.position.X << 32) | (uint)Projectile.position.Y);
         if (Projectile.ai[0] > 200)
         {
-            jitter.X = Utils.RandomInt(ref randSeed,-20, 21) * 0.1f;
+            jitter.X = Utils.RandomInt(ref randSeed, -20, 21) * 0.1f;
             jitter.Y = Utils.RandomInt(ref randSeed, -20, 21) * 0.1f;
-            colorTint = Color.Lerp(Color.White,new Color(0.8f,0.7f,1f),(Projectile.ai[0] - 200) / 40f);
+            colorTint = Color.Lerp(Color.White, new Color(0.8f, 0.7f, 1f), (Projectile.ai[0] - 200) / 40f);
         }
         Main.EntitySpriteDraw(tex.Value, Projectile.Top - Main.screenPosition + jitter, rect, new Color(Lighting.GetSubLight(Projectile.Top + new Vector2(rect.Height / 2))).MultiplyRGB(colorTint) * Projectile.Opacity, 0, new Vector2(rect.Width / 2, 0), 1, SpriteEffects.None);
-        for(int i = 1; i < Math.Ceiling((adjustedHeight - 22) / 32f); i++)
+        for (int i = 1; i < Math.Ceiling((adjustedHeight - 22) / 32f); i++)
         {
             if (Projectile.ai[0] > 200)
             {
                 jitter.X = Utils.RandomInt(ref randSeed, -20, 21) * 0.1f;
             }
 
-            rect = new Rectangle(0, i % 2 == 0? 56 : 90, 42, Math.Min((adjustedHeight - 18) - (i * 32), 32));
+            rect = new Rectangle(0, i % 2 == 0 ? 56 : 90, 42, Math.Min((adjustedHeight - 18) - (i * 32), 32));
             Vector2 drawPos = Projectile.Top + new Vector2(0, (i * 32) + 22);
             Main.EntitySpriteDraw(tex.Value, drawPos - Main.screenPosition + jitter, rect, new Color(Lighting.GetSubLight(drawPos + new Vector2(rect.Height / 2))).MultiplyRGB(colorTint) * Projectile.Opacity, 0, new Vector2(rect.Width / 2, 0), 1, SpriteEffects.None);
         }
 
-        Main.EntitySpriteDraw(_platform.Value,Projectile.Bottom - Main.screenPosition,_platform.Frame(1,2,0,Projectile.frame), new Color(Lighting.GetSubLight(Projectile.Bottom)) * Projectile.Opacity,0,new Vector2(_platform.Width() / 2,4),1,Projectile.spriteDirection == 1? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+        Main.EntitySpriteDraw(_platform.Value, Projectile.Bottom - Main.screenPosition, _platform.Frame(1, 2, 0, Projectile.frame), new Color(Lighting.GetSubLight(Projectile.Bottom)) * Projectile.Opacity, 0, new Vector2(_platform.Width() / 2, 4), 1, Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
         return false;
     }
     public override void OnKill(int timeLeft)
@@ -174,13 +174,13 @@ public class HiveVine : ModProjectile
         }
         for (int i = 0; i < 15; i++)
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Bottom + new Vector2(Main.rand.NextFloat(-24,24),Main.rand.NextFloat(16)), DustID.Dirt);
+            Dust d = Dust.NewDustPerfect(Projectile.Bottom + new Vector2(Main.rand.NextFloat(-24, 24), Main.rand.NextFloat(16)), DustID.Dirt);
             Dust d2 = Dust.NewDustPerfect(Projectile.Bottom + new Vector2(Main.rand.NextFloat(-24, 24), Main.rand.NextFloat(16)), DustID.Corruption);
         }
     }
     public override void AI()
     {
-        for(int i = 0; i < Projectile.height / 32; i++)
+        for (int i = 0; i < Projectile.height / 32; i++)
         {
             if (Main.rand.NextBool(15))
             {
@@ -215,7 +215,7 @@ public class HiveVine : ModProjectile
         }
         if (Projectile.ai[0] == 0)
         {
-            int speed = (int)Utils.Remap(Projectile.timeLeft,3600 - 30,3600,4,48);
+            int speed = (int)Utils.Remap(Projectile.timeLeft, 3600 - 30, 3600, 4, 48);
             //int speed = 1;
             Projectile.height += speed;
             Projectile.position.Y -= speed;

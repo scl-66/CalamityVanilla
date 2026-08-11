@@ -50,7 +50,7 @@ public class DicerFeather : ModProjectile
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 20;
         ProjectileID.Sets.TrailingMode[Type] = 2;
-        Main.projFrames[Projectile.type] = 8; 
+        Main.projFrames[Projectile.type] = 8;
     }
     public override void SetDefaults()
     {
@@ -81,7 +81,7 @@ public class DicerFeather : ModProjectile
             Projectile.frame = 0;
             Projectile.rotation = Projectile.velocity.ToRotation(); // projectile sprite faces up
         }
-        else 
+        else
         {
             if (++Projectile.frameCounter >= 8)
             {

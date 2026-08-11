@@ -1,7 +1,5 @@
-﻿using CalamityVanilla.Common.Items;
-using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Content.Dusts;
 using Microsoft.Xna.Framework;
-using ReLogic.Localization.IME;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -33,7 +31,7 @@ public class CheckerBlock : ModTile, ILoadItem
 
     public override bool CreateDust(int i, int j, ref int type)
     {
-        if((i + j) % 2 == 0)
+        if ((i + j) % 2 == 0)
         {
             type = ModContent.DustType<WhiteCheckerDust>();
         }

@@ -44,7 +44,7 @@ public partial class Cryogen : ModNPC
         }
         ulong seed = Utils.RandomNextSeed((ulong)(NPC.whoAmI + _currentAttack));
         //ulong seed2 = Utils.RandomNextSeed((ulong)(NPC.whoAmI * _currentAttack));
-        bool predictableRand = Utils.RandomInt(ref seed,2) == 0;
+        bool predictableRand = Utils.RandomInt(ref seed, 2) == 0;
         //bool predictableRand2 = Utils.RandomInt(ref seed, 2) == 0;
 
         NPC.localAI[3]++;
@@ -76,7 +76,7 @@ public partial class Cryogen : ModNPC
         switch (_currentAttack)
         {
             default:
-                if(_currentAttack > 19 && predictableRand)
+                if (_currentAttack > 19 && predictableRand)
                     IcicleDash();
                 else
                     Fly();
@@ -109,9 +109,9 @@ public partial class Cryogen : ModNPC
                 break;
             case 23:
                 //if (predictableRand2)
-                    SnowflakesOrBombs(predictableRand);
+                SnowflakesOrBombs(predictableRand);
                 //else
-                    //IceMines();
+                //IceMines();
                 break;
             case 25:
                 SnowflakesOrBombs(predictableRand);
@@ -124,9 +124,9 @@ public partial class Cryogen : ModNPC
                 break;
             case 29:
                 //if (predictableRand2)
-                    SnowflakesOrBombs(predictableRand);
+                SnowflakesOrBombs(predictableRand);
                 //else
-                    //IceMines();
+                //IceMines();
                 break;
             case 30:
                 SnowflakesOrBombs(predictableRand);
@@ -524,7 +524,7 @@ public partial class Cryogen : ModNPC
             }
         }
         if (NPC.ai[1] > chargeUpTime && Main.netMode != NetmodeID.MultiplayerClient)
-        {   
+        {
             if ((NPC.ai[1] - chargeUpTime - 1) is 0 or 8 or 16 or 24 or 32)
             {
                 Vector2 randomPoint = Vector2.Zero;
@@ -541,7 +541,7 @@ public partial class Cryogen : ModNPC
             {
                 Vector2 vect = Main.rand.NextVector2Unit() * Main.rand.NextFloat(128, 160);
                 var p = VanillaParticles.RequestFadingParticle();
-                p.ColorTint = Color.LightCyan with { A = 0};
+                p.ColorTint = Color.LightCyan with { A = 0 };
                 float time = Main.rand.NextFloat(25, 45);
                 p.SetTypeInfo(time);
                 Main.instance.LoadProjectile(ProjectileID.NorthPoleSnowflake);

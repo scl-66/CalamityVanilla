@@ -73,11 +73,11 @@ public class FlareBoltProjectile : ModProjectile
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        for(int i = Projectile.oldPos.Length - 1; i > 0; i--)
+        for (int i = Projectile.oldPos.Length - 1; i > 0; i--)
         {
             float percent = i / (float)Projectile.oldPos.Length;
-            Color c = Color.Lerp(new Color(1f, 1f, 1f, 0.4f), new Color(0.5f, 0f, 0f, 0f), Math.Clamp(percent * 3,0,1));
-            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2,null,c, Projectile.oldRot[i],new Vector2(7,14),Projectile.scale * (1f - (percent * 0.75f)),SpriteEffects.None);
+            Color c = Color.Lerp(new Color(1f, 1f, 1f, 0.4f), new Color(0.5f, 0f, 0f, 0f), Math.Clamp(percent * 3, 0, 1));
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, null, c, Projectile.oldRot[i], new Vector2(7, 14), Projectile.scale * (1f - (percent * 0.75f)), SpriteEffects.None);
         }
         return false;
     }
@@ -170,16 +170,16 @@ public class FlareBoltProjectile : ModProjectile
             d.scale *= 1.3f;
             d.noGravity = true;
         }
-        for(int i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++)
         {
-            Gore g = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.position, Main.rand.NextVector2Circular(3, 2), Main.rand.Next(GoreID.Smoke1,GoreID.Smoke3 + 1));
+            Gore g = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.position, Main.rand.NextVector2Circular(3, 2), Main.rand.Next(GoreID.Smoke1, GoreID.Smoke3 + 1));
             g.velocity += Projectile.velocity * 0.25f;
             g.scale = Main.rand.NextFloat(0.5f, 1f);
         }
 
-        for(int i = 0; i < 25; i++)
+        for (int i = 0; i < 25; i++)
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Center,DustID.Torch, Main.rand.NextVector2Circular(3,3));
+            Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(3, 3));
             d.scale += Main.rand.NextFloat();
             if (Main.rand.NextBool())
             {
@@ -198,7 +198,7 @@ public class FlareBoltProjectile : ModProjectile
         p.SetTypeInfo(5, Main.rand.Next(10, 15), TextureAssets.Projectile[ProjectileID.Volcano], Color.White);
         p.LocalPosition = Projectile.Center;
         p.ScaleVelocity = Vector2.One * Main.rand.NextFloat(-0.01f, 0.01f);
-        p.Scale = Vector2.One * Main.rand.NextFloat(1f,1.3f);
+        p.Scale = Vector2.One * Main.rand.NextFloat(1f, 1.3f);
         Main.ParticleSystem_World_OverPlayers.Add(p);
 
         SoundEngine.PlaySound(SoundID.Item62 with

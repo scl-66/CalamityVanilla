@@ -219,5 +219,3 @@ public class FruitPunchBowl : ModItem
         Item.value = Item.buyPrice(0, 0, 15, 0);
     }
 }
-
-
