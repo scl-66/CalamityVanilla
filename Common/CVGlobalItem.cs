@@ -1,6 +1,4 @@
-﻿using CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
-using CalamityVanilla.Content.Underworld.Items.FleshLauncher;
-using CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
+﻿using CalamityVanilla.Content.Underworld.Items.WallOfFleshDrops;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent;

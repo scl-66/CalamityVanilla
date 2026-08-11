@@ -10,10 +10,12 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Underworld.Items.FlareBolt;
+namespace CalamityVanilla.Content.Underworld.Items;
 
 public class FlareBolt : ModItem
 {
+    public override string Texture => Assets.Textures.Underworld.Items.FlareBolt.FlareBoltItem.KEY;
+
     public override void SetDefaults()
     {
         Item.width = 28;
@@ -53,6 +55,8 @@ public class FlareBolt : ModItem
 
 public class FlareBoltProjectile : ModProjectile
 {
+    public override string Texture => Assets.Textures.Underworld.Items.FlareBolt.FlareBoltProjectile.KEY;
+
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 35;

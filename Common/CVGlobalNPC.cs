@@ -5,9 +5,7 @@ using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.BouncingEyeball
 using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
-using CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
-using CalamityVanilla.Content.Underworld.Items.FleshLauncher;
-using CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
+using CalamityVanilla.Content.Underworld.Items.WallOfFleshDrops;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;

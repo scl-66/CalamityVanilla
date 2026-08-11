@@ -13,6 +13,8 @@ namespace CalamityVanilla.Content.Underworld.Items;
 
 public class HavocSoul : ModItem // thanks example mod lmao
 {
+    public override string Texture => Assets.Textures.Underworld.Items.HavocSoul.KEY;
+
     public override Color? GetAlpha(Color lightColor)
     {
         return new Color(255, 255, 255, 100);

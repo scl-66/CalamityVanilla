@@ -1,7 +1,7 @@
 ﻿using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Tundra.Items.Frostbolt;
-using CalamityVanilla.Content.Underworld.Items.FlareBolt;
+using CalamityVanilla.Content.Underworld.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
