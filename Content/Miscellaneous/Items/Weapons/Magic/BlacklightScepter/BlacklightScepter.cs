@@ -2,8 +2,7 @@
 using CalamityVanilla.Content.Crimson.Items.DentataWand;
 using CalamityVanilla.Content.Dusts;
 using CalamityVanilla.Content.Particles;
-using CalamityVanilla.Content.Underground.Items.GraniteTome;
-using CalamityVanilla.Content.Underground.Items.MarbleTome;
+using CalamityVanilla.Content.Underground.Items.Tomes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

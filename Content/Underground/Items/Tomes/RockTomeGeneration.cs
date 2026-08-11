@@ -10,7 +10,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
-namespace CalamityVanilla.Content.Underground.Items;
+namespace CalamityVanilla.Content.Underground.Items.Tomes;
 
 public class RockTomeGeneration : GenPass
 {

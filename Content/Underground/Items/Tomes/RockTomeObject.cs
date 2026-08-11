@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Mono.Cecil.Rocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Underground.Items;
+namespace CalamityVanilla.Content.Underground.Items.Tomes;
 
 public class GraniteTomeObjectItem : ModItem
 {
@@ -23,9 +24,11 @@ public class GraniteTomeObjectItem : ModItem
 
 public class GraniteTomeObject : ModTile
 {
+    public override string Texture => Assets.Textures.Underground.Items.GraniteTome.GraniteTomeObject.KEY;
+
     public override IEnumerable<Item> GetItemDrops(int i, int j)
     {
-        yield return new Item(ModContent.ItemType<GraniteTome.GraniteTome>());
+        yield return new Item(ModContent.ItemType<GraniteTome>());
     }
     public override void SetStaticDefaults()
     {
@@ -45,7 +48,7 @@ public class GraniteTomeObject : ModTile
         TileObjectData.addTile(Type);
 
         DustType = DustID.Granite;
-        AddMapEntry(new Color(78, 73, 145), ModContent.GetInstance<GraniteTome.GraniteTome>().DisplayName);
+        AddMapEntry(new Color(78, 73, 145), ModContent.GetInstance<GraniteTome>().DisplayName);
         // Set other values here
     }
 }
@@ -62,14 +65,14 @@ public class MarbleTomeObjectItem : ModItem
 
 public class MarbleTomeObject : ModTile
 {
+    public override string Texture => Assets.Textures.Underground.Items.MarbleTome.MarbleTomeObject.KEY;
+
     public override IEnumerable<Item> GetItemDrops(int i, int j)
     {
-        yield return new Item(ModContent.ItemType<MarbleTome.MarbleTome>());
+        yield return new Item(ModContent.ItemType<MarbleTome>());
     }
     public override void SetStaticDefaults()
     {
-        RegisterItemDrop(ModContent.ItemType<MarbleTome.MarbleTome>());
-
         Main.tileNoAttach[Type] = true;
         Main.tileSolid[Type] = false;
         Main.tileBlockLight[Type] = false;
@@ -86,7 +89,7 @@ public class MarbleTomeObject : ModTile
         TileObjectData.addTile(Type);
 
         DustType = DustID.Marble;
-        AddMapEntry(new Color(189, 200, 223), ModContent.GetInstance<MarbleTome.MarbleTome>().DisplayName);
+        AddMapEntry(new Color(189, 200, 223), ModContent.GetInstance<MarbleTome>().DisplayName);
         // Set other values here
     }
 }

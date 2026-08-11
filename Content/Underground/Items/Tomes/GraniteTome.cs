@@ -12,14 +12,15 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
-namespace CalamityVanilla.Content.Underground.Items.GraniteTome;
+namespace CalamityVanilla.Content.Underground.Items.Tomes;
 
 public class GraniteTome : ModItem
 {
-    public static readonly SoundStyle UseSound = new("CalamityVanilla/Assets/Sounds/ItemElectricZap");
+    public override string Texture => Assets.Textures.Underground.Items.GraniteTome.GraniteTomeItem.KEY;
+
     public override void SetStaticDefaults()
     {
-        ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<MarbleTome.MarbleTome>();
+        ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<MarbleTome>();
     }
     public override void SetDefaults()
     {
@@ -33,7 +34,7 @@ public class GraniteTome : ModItem
         Item.useStyle = ItemUseStyleID.Shoot;
         Item.noMelee = true;
         Item.knockBack = 5f;
-        Item.UseSound = UseSound with
+        Item.UseSound = Assets.Sounds.ItemElectricZap.Asset with
         {
             Pitch = -0.3f,
             PitchVariance = 0.2f,
@@ -58,6 +59,8 @@ public class GraniteTome : ModItem
 
 public class GraniteTomeBolt : ModProjectile
 {
+    public override string Texture => Assets.Textures.Underground.Items.GraniteTome.GraniteTomeBolt.KEY;
+
     private static VertexStrip _vertexStrip = new VertexStrip();
 
     // to ensure that the trail mesh fades out smoothly, the projectile lives twice as long and after its timeLeft goes below TotalTimeLeft the mesh length starts to shrink
@@ -75,7 +78,7 @@ public class GraniteTomeBolt : ModProjectile
 
     public override void Load()
     {
-#pragma warning disable CS0618 // we're not in 1.4.5 yet (but almost there!)
+#pragma warning disable CS0618 // we're in 1.4.5 but tmod isn't
         GameShaders.Misc["GraniteTome"] = new MiscShaderData(Main.VertexPixelShaderRef, "MagicMissile").UseProjectionMatrix(true);
 #pragma warning restore CS0618
         GameShaders.Misc["GraniteTome"].UseImage0("Images/Extra_197");
