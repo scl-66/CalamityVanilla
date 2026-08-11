@@ -8,10 +8,12 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Ocean.Items.UrchinSpine;
+namespace CalamityVanilla.Content.Ocean.Items;
 
 public class UrchinSpine : ModItem
 {
+    public override string Texture => Assets.Textures.Ocean.Items.UrchinSpine.KEY;
+
     public override void SetDefaults()
     {
         Item.DefaultToThrownWeapon(ModContent.ProjectileType<UrchinSpineProj>(), 18, 5, true);
