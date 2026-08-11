@@ -14,10 +14,12 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Space.Items.WyvernsWrath;
+namespace CalamityVanilla.Content.Space.Items;
 
 public class WyvernsWrath : ModItem
 {
+    public override string Texture => Assets.Textures.Space.Items.WyvernsWrath.WyvernsWrathItem.KEY;
+
     public override void SetStaticDefaults()
     {
         Item.staff[Type] = true;
@@ -53,7 +55,7 @@ public class WyvernsWrath : ModItem
     public override void AddRecipes()
     {
         CreateRecipe().AddTile(TileID.MythrilAnvil)
-            .AddIngredient(ModContent.ItemType<FeatherDicer.FeatherDicer>())
+            .AddIngredient(ModContent.ItemType<FeatherDicer>())
             .AddIngredient(ItemID.Feather, 25)
             .AddIngredient(ItemID.SoulofFlight, 12)
             .AddIngredient(ItemID.SoulofMight, 15)
@@ -63,6 +65,8 @@ public class WyvernsWrath : ModItem
 
 public class WyvernsWrathFeather : ModProjectile
 {
+    public override string Texture => Assets.Textures.Space.Items.WyvernsWrath.WyvernsWrathFeather.KEY;
+
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 20;
@@ -158,13 +162,15 @@ public class WyvernsWrathFeather : ModProjectile
         MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
         shader.UseImage2(TextureAssets.MagicPixel);
         shader.UseImage0(TextureAssets.MagicPixel);
-        shader.UseImage1(ModContent.Request<Texture2D>(Texture + "Shape"));
+        shader.UseImage1(Assets.Textures.Space.Items.WyvernsWrath.WyvernsWrathFeatherShape.Asset);
         GameShaders.Misc.Add("WyvernsWrathFeather", shader);
     }
 }
 
 public class WyvernsWrathEnergyFeather : ModProjectile
 {
+    public override string Texture => Assets.Textures.Space.Items.WyvernsWrath.WyvernsWrathEnergyFeather.KEY;
+
     // Store the target NPC using Projectile.ai[0]
     private NPC HomingTarget
     {
