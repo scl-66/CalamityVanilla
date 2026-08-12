@@ -1,6 +1,6 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Common.AIStyles;
-using CalamityVanilla.Content.Ocean.Items;
+using CalamityVanilla.Content.Ocean.Items.UrchinSpine;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,12 +13,10 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Ocean.NPCs;
+namespace CalamityVanilla.Content.Ocean.NPCs.SeaUrchin;
 
 public class SeaUrchin : ModNPCWithBanner
 {
-    public override string Texture => Assets.Textures.Ocean.NPCs.SeaUrchin.SeaUrchinNPC.KEY;
-
     public override void SetStaticDefaults()
     {
         Main.npcFrameCount[Type] = 5;
