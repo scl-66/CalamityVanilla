@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.TownNPCs.Priest.Items.CheckerBlocks;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using TileHelper.Common;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.ChessPieces;
 
 public enum Colors
 {
@@ -42,9 +42,9 @@ public class GenerateChessPieces : ModSystem
             {
                 string itemName = c.ToString() + p.ToString();
                 string tileName = itemName + "Tile";
-                Mod.AddContent(new ChessTileTemplate("CalamityVanilla/Assets/Textures/TownNPCs/Priest/Items/ChessPieces/" + tileName, tileName, c, (int)p < 3));
+                Mod.AddContent(new ChessTileTemplate("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/ChessPieces/" + tileName, tileName, c, (int)p < 3));
                 int chessTile = Mod.Find<ModTile>(tileName).Type;
-                Mod.AddContent(new ChessItemTemplate(chessTile, itemName, "CalamityVanilla/Assets/Textures/TownNPCs/Priest/Items/ChessPieces/" + itemName, c, p));
+                Mod.AddContent(new ChessItemTemplate(chessTile, itemName, "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/ChessPieces/" + itemName, c, p));
             }
         }
     }

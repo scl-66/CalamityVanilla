@@ -5,12 +5,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using TileHelper.Common;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items.CheckerBlocks;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
 public class CheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.CheckerBlock.KEY;
-
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
 
     public override void SetStaticDefaults()
@@ -48,7 +46,7 @@ public class CheckerBlock : ModTile, ILoadItem
 //flat color versions
 public class WhiteCheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.WhiteCheckerBlock.KEY;
+    //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
 
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
 
@@ -65,8 +63,7 @@ public class WhiteCheckerBlock : ModTile, ILoadItem
 }
 public class BlackCheckerBlock : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.BlackCheckerBlock.KEY;
-
+    //public override string Texture => "CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CheckerBlock/CheckerBlock";
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 20);
 
     public override void SetStaticDefaults()

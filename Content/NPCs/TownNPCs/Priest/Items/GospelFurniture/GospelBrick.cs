@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Common.Items;
 using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,10 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using TileHelper.Common;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items.GospelFurniture;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 
 public class GospelBrick : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelBrick.KEY;
-
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 50);
 
     public override void SetStaticDefaults()
@@ -51,8 +50,6 @@ public class GospelBrick : ModTile, ILoadItem
 }
 public class GospelBrickWall : ModWall, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelBrickWall.KEY;
-
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 12);
     public void AddItemRecipes(ModItem item)
     {
@@ -72,8 +69,6 @@ public class GospelBrickWall : ModWall, ILoadItem
 
 public class GospelPlatform : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelPlatform.KEY;
-
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 25);
     public void AddItemRecipes(ModItem modItem)
     {

@@ -15,8 +15,9 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
 
 public class FruitPunchBowlEntity : ModTileEntity
 {
@@ -49,8 +50,6 @@ public class FruitPunchBowlEntity : ModTileEntity
 }
 public class FruitPunchBowlTile : ModTile
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.FruitPunchBowl.FruitPunchBowlTile.KEY;
-
     public bool heldItemIsPotionable;
 
     public override void SetStaticDefaults()
@@ -186,7 +185,7 @@ public class FruitPunchBowlTile : ModTile
     {
         if (TileEntity.TryGet(i, j, out FruitPunchBowlEntity entity) && entity.filled)
         {
-            var tex = Assets.Textures.TownNPCs.Priest.Items.FruitPunchBowl.FruitPunchBowlTile_Juice.Asset.Value;
+            var tex = ModContent.Request<Texture2D>("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/FruitPunchBowlTile_Juice").Value;
             if (entity.juiceColor == null)
             {
                 entity.juiceColor = Color.White;
@@ -214,8 +213,6 @@ public class FruitPunchBowlTile : ModTile
 
 public class FruitPunchBowl : ModItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.FruitPunchBowl.FruitPunchBowlItem.KEY;
-
     public override void SetDefaults()
     {
         Item.DefaultToPlaceableTile(ModContent.TileType<FruitPunchBowlTile>());

@@ -1,4 +1,6 @@
 ﻿using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -12,7 +14,7 @@ using TileHelper.Common;
 using TileHelper.Content.Tiles;
 using static TileHelper.Autoloader;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items.GospelFurniture;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 
 public class GospelSet : ILoadable
 {
@@ -21,7 +23,7 @@ public class GospelSet : ILoadable
 
     private static void LoadGospelFurniture()
     {
-        string gospelName = "CalamityVanilla/Assets/Textures/TownNPCs/Priest/Items/GospelFurniture/Gospel";
+        string gospelName = typeof(GospelSet).Namespace + ".Gospel";
         TileHelper.ArgumentCollection args = AllArgs(DustID.Gold, Color.Orange.ToVector3())
             - new BarrelTile()
             - new CandleTile()
@@ -48,7 +50,6 @@ public class GospelSet : ILoadable
 
 public class GospelCandle : CandleTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelCandle.KEY;
 
     public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<GospelBrick>());
 
@@ -84,8 +85,6 @@ public class GospelCandle : CandleTile, ILoadItem
 }
 public class GospelClothWorkBench : WorkBenchTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelClothWorkBench.KEY;
-
     public void AddItemRecipes(ModItem modItem)
     {
         modItem.CreateRecipe()
@@ -101,8 +100,6 @@ public class GospelClothWorkBench : WorkBenchTile, ILoadItem
 }
 public class GospelClothTable : TableTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelClothTable.KEY;
-
     public void AddItemRecipes(ModItem modItem)
     {
         modItem.CreateRecipe()
@@ -119,8 +116,6 @@ public class GospelClothTable : TableTile, ILoadItem
 }
 public class GospelOrgan : PianoTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.GospelFurniture.GospelOrgan.KEY;
-
     public void AddItemRecipes(ModItem modItem)
     {
         modItem.CreateRecipe()

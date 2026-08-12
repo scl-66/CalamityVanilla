@@ -12,7 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
 
 public class CruetBottleEntity : ModTileEntity
 {
@@ -45,8 +45,6 @@ public class CruetBottleEntity : ModTileEntity
 }
 public class CruetBottleTile : ModTile
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CruetBottle.CruetBottleTile.KEY;
-
     public bool heldItemIsPotionable;
 
     public override void SetStaticDefaults()
@@ -187,7 +185,7 @@ public class CruetBottleTile : ModTile
     {
         if (TileEntity.TryGet(i, j, out CruetBottleEntity entity) && entity.filled)
         {
-            var tex = Assets.Textures.TownNPCs.Priest.Items.CruetBottle.CruetBottleTile_Juice.Asset.Value;
+            var tex = ModContent.Request<Texture2D>("CalamityVanilla/Content/NPCs/TownNPCs/Priest/Items/CruetBottleTile_Juice").Value;
             if (entity.juiceColor == null)
             {
                 entity.juiceColor = Color.White;
@@ -215,8 +213,6 @@ public class CruetBottleTile : ModTile
 
 public class CruetBottle : ModItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CruetBottle.CruetBottleItem.KEY;
-
     public override void SetDefaults()
     {
         Item.DefaultToPlaceableTile(ModContent.TileType<CruetBottleTile>());

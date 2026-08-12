@@ -7,12 +7,10 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using TileHelper.Common;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest.Items.CheckerBlocks;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 
 public class WhiteCheckerPlatform : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.WhiteCheckerPlatform.KEY;
-
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 10);
     public void AddItemRecipes(ModItem modItem)
     {
@@ -57,8 +55,6 @@ public class WhiteCheckerPlatform : ModTile, ILoadItem
 }
 public class BlackCheckerPlatform : ModTile, ILoadItem
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.Items.CheckerBlocks.BlackCheckerPlatform.KEY;
-
     public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(0, 0, 0, 10);
     public void AddItemRecipes(ModItem modItem)
     {

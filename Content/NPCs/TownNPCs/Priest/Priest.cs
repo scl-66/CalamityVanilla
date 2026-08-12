@@ -2,8 +2,8 @@
 using CalamityVanilla.Common.Items;
 using CalamityVanilla.Common.UI;
 using CalamityVanilla.Content;
-using CalamityVanilla.Content.TownNPCs.Priest.Items.CheckerBlocks;
-using CalamityVanilla.Content.TownNPCs.Priest.Items.GospelFurniture;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
+using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -18,14 +18,12 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 using TileHelper.Common;
 
-namespace CalamityVanilla.Content.TownNPCs.Priest;
+namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 
 // [AutoloadHead] and NPC.townNPC are extremely important and absolutely both necessary for any Town NPC to work at all.
 [AutoloadHead]
 public class Priest : ModNPC
 {
-    public override string Texture => Assets.Textures.TownNPCs.Priest.PriestNPC.KEY;
-
     public const string ShopName = "Shop";
     private static int ShimmerHeadIndex;
     private static Profiles.StackedNPCProfile NPCProfile;
