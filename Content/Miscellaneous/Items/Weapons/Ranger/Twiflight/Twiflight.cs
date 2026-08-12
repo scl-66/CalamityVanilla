@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Content.Particles;
-using CalamityVanilla.Content.Space.Items;
+using CalamityVanilla.Content.Space.Items.Cloudfall;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

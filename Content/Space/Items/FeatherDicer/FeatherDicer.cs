@@ -12,12 +12,10 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Space.Items;
+namespace CalamityVanilla.Content.Space.Items.FeatherDicer;
 
 public class FeatherDicer : ModItem
 {
-    public override string Texture => Assets.Textures.Space.Items.FeatherDicer.FeatherDicerItem.KEY;
-
     public override void SetStaticDefaults()
     {
         Item.staff[Type] = true;
@@ -46,8 +44,6 @@ public class FeatherDicer : ModItem
 
 public class DicerFeather : ModProjectile
 {
-    public override string Texture => Assets.Textures.Space.Items.FeatherDicer.DicerFeather.KEY;
-
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.TrailCacheLength[Type] = 20;
@@ -138,7 +134,7 @@ public class DicerFeather : ModProjectile
         MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
         shader.UseImage2(TextureAssets.MagicPixel);
         shader.UseImage0(TextureAssets.MagicPixel);
-        shader.UseImage1(Assets.Textures.Space.Items.FeatherDicer.DicerFeatherShape.Asset);
+        shader.UseImage1(ModContent.Request<Texture2D>(Texture + "Shape"));
         GameShaders.Misc.Add("DicerFeather", shader);
     }
 }

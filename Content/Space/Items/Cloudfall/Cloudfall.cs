@@ -3,12 +3,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Space.Items;
+namespace CalamityVanilla.Content.Space.Items.Cloudfall;
 
 public class Cloudfall : ModItem
 {
-    public override string Texture => Assets.Textures.Space.Items.Cloudfall.CloudfallItem.KEY;
-
     public override void SetDefaults()
     {
         Item.DefaultToBow(16, 7, true);
@@ -36,8 +34,6 @@ public class Cloudfall : ModItem
 
 public class CloudArrow : ModProjectile
 {
-    public override string Texture => Assets.Textures.Space.Items.Cloudfall.CloudArrow.KEY;
-
     public override void SetDefaults()
     {
         Projectile.QuickDefaults();
