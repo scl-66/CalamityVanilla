@@ -10,12 +10,10 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Tundra.Items;
+namespace CalamityVanilla.Content.Tundra.Items.Frostbolt;
 
 public class FrostBolt : ModItem
 {
-    public override string Texture => Assets.Textures.Tundra.Items.FrostBolt.FrostBoltItem.KEY;
-
     public override void SetDefaults()
     {
         Item.width = 28;
@@ -58,8 +56,6 @@ public class FrostBolt : ModItem
 
 public class FrostBoltProjectile : ModProjectile
 {
-    public override string Texture => Assets.Textures.Tundra.Items.FrostBolt.FrostBoltProjectile.KEY;
-
     private ref float HomingStrength => ref Projectile.ai[0];
     private NPC HomingTarget
     {
@@ -217,9 +213,9 @@ public class FrostBoltProjectile : ModProjectile
     public override void Load()
     {
         MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
-        shader.UseImage2(Assets.Textures.Tundra.Items.FrostBolt.FrostBoltProjectileErosion.Asset);
-        shader.UseImage1(Assets.Textures.Tundra.Items.FrostBolt.FrostBoltProjectileShape.Asset);
-        shader.UseImage0(Assets.Textures.Tundra.Items.FrostBolt.FrostBoltProjectileGradient.Asset);
+        shader.UseImage2(ModContent.Request<Texture2D>(Texture + "Erosion"));
+        shader.UseImage1(ModContent.Request<Texture2D>(Texture + "Shape"));
+        shader.UseImage0(ModContent.Request<Texture2D>(Texture + "Gradient"));
         GameShaders.Misc.Add("FrostBolt", shader);
     }
 }

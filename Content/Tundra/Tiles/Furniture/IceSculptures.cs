@@ -12,46 +12,30 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityVanilla.Content.Tundra.Tiles;
+namespace CalamityVanilla.Content.Tundra.Tiles.Furniture;
 
-public abstract class IceSculptureGeneric : ModItem
+public class IceSculptureAngel : ModItem
 {
-    public abstract int Style { get; }
+    public virtual int Style => 0;
     public override void SetDefaults()
     {
         Item.DefaultToPlaceableTile(ModContent.TileType<IceSculptures>(), Style);
     }
 }
-
-public class IceSculptureAngel : IceSculptureGeneric
+public class IceSculptureArmor : IceSculptureAngel
 {
-    public override string Texture => Assets.Textures.Tundra.Tiles.Furniture.IceSculptures.IceSculptureAngel.KEY;
-
-    public override int Style => 0;
-}
-public class IceSculptureArmor : IceSculptureGeneric
-{
-    public override string Texture => Assets.Textures.Tundra.Tiles.Furniture.IceSculptures.IceSculptureArmor.KEY;
-
     public override int Style => 1;
 }
-public class IceSculptureHelix : IceSculptureGeneric
+public class IceSculptureHelix : IceSculptureAngel
 {
-    public override string Texture => Assets.Textures.Tundra.Tiles.Furniture.IceSculptures.IceSculptureHelix.KEY;
-
     public override int Style => 2;
 }
-public class IceSculptureHorse : IceSculptureGeneric
+public class IceSculptureHorse : IceSculptureAngel
 {
-    public override string Texture => Assets.Textures.Tundra.Tiles.Furniture.IceSculptures.IceSculptureHorse.KEY;
-
     public override int Style => 3;
 }
-
 public class IceSculptures : ModTile
 {
-    public override string Texture => Assets.Textures.Tundra.Tiles.Furniture.IceSculptures.IceSculptureTiles.KEY;
-
     public override void SetStaticDefaults()
     {
         Main.tileFrameImportant[Type] = true;

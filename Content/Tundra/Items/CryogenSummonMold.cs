@@ -8,8 +8,6 @@ namespace CalamityVanilla.Content.Tundra.Items;
 
 public class CryogenSummonMold : ModItem
 {
-    public override string Texture => Assets.Textures.Tundra.Items.CryogenSummonMold.KEY;
-
     public override void SetStaticDefaults()
     {
         Item.ResearchUnlockCount = 1;
