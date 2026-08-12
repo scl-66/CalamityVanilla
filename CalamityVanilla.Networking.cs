@@ -1,6 +1,6 @@
 ﻿using CalamityVanilla.Common.Interfaces;
 using CalamityVanilla.Common.Players;
-using CalamityVanilla.Content.Underground.Items.Tomes;
+using CalamityVanilla.Content.Underground.Items.GraniteTome;
 using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;

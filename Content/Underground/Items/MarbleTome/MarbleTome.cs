@@ -10,15 +10,13 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Underground.Items.Tomes;
+namespace CalamityVanilla.Content.Underground.Items.MarbleTome;
 
 public class MarbleTome : ModItem
 {
-    public override string Texture => Assets.Textures.Underground.Items.MarbleTome.MarbleTomeItem.KEY;
-
     public override void SetStaticDefaults()
     {
-        ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GraniteTome>();
+        ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GraniteTome.GraniteTome>();
     }
     public override void SetDefaults()
     {
@@ -85,8 +83,6 @@ public class MarbleTome : ModItem
 
 public class MarbleTomePillar : ModProjectile, ISyncedOnHitEffect
 {
-    public override string Texture => Assets.Textures.Underground.Items.MarbleTome.MarbleTomePillar.KEY;
-
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
