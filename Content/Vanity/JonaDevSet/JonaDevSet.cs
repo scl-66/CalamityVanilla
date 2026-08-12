@@ -14,19 +14,15 @@ namespace CalamityVanilla.Content.Vanity.JonaDevSet;
 [AutoloadEquip(EquipType.Head)]
 public class JonaWig : ModItem
 {
-    public override string Texture => Assets.Textures.Vanity.JonaDevSet.JonaWig.KEY;
-
     public override void SetStaticDefaults()
     {
         ArmorIDs.Head.Sets.FrontToBackID[Item.headSlot] = EquipLoader.GetEquipSlot(Mod, "JonaWigBack", EquipType.Head);
         ArmorIDs.Head.Sets.IsTallHat[Item.headSlot] = true;
     }
-
     public override void Load()
     {
         EquipLoader.AddEquipTexture(Mod, Texture + "_HeadBack", EquipType.Head, null, "JonaWigBack");
     }
-
     public override void SetDefaults()
     {
         Item.width = 18;
@@ -36,15 +32,16 @@ public class JonaWig : ModItem
         Item.value = Item.sellPrice(0, 5);
     }
 }
-
 public class JonaWigEyesAndHairTip : PlayerDrawLayer
 {
-    private static Asset<Texture2D> Texture => Assets.Textures.Vanity.JonaDevSet.JonaWig_Extra.Asset;
-
+    private static Asset<Texture2D> _tex;
     public override bool IsHeadLayer => true;
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<JonaWig>()].headSlot;
     public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Head);
-
+    public override void Load()
+    {
+        _tex = ModContent.Request<Texture2D>(ModContent.GetInstance<JonaWig>().Texture + "_Extra");
+    }
     protected override void Draw(ref PlayerDrawSet drawInfo)
     {
         Rectangle earFrame = new(20, 12, 8, 8);
@@ -55,7 +52,7 @@ public class JonaWigEyesAndHairTip : PlayerDrawLayer
         offset += Main.OffsetsPlayerHeadgear[drawInfo.drawPlayer.bodyFrame.Y / drawInfo.drawPlayer.bodyFrame.Height];
         offset *= new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
         Vector2 center = drawInfo.drawPlayer.MountedCenter + new Vector2(0, drawInfo.drawPlayer.gfxOffY);
-        DrawData face = new(Texture.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + offset, frame, drawInfo.colorArmorHead, drawInfo.drawPlayer.headRotation, frame.Size() / 2, 1f, drawInfo.playerEffect);
+        DrawData face = new(_tex.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + offset, frame, drawInfo.colorArmorHead, drawInfo.drawPlayer.headRotation, frame.Size() / 2, 1f, drawInfo.playerEffect);
         face.position = drawInfo.drawPlayer.RotatedRelativePoint(face.position, addGfxOffY: false);
         drawInfo.DrawDataCache.Add(face);
 
@@ -66,7 +63,7 @@ public class JonaWigEyesAndHairTip : PlayerDrawLayer
         offset = new Vector2(-10, -13);
         offset += Main.OffsetsPlayerHeadgear[drawInfo.drawPlayer.bodyFrame.Y / drawInfo.drawPlayer.bodyFrame.Height];
         offset *= new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
-        DrawData ear = new(Texture.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + offset, earFrame, drawInfo.colorBodySkin, drawInfo.drawPlayer.headRotation, earFrame.Size() / 2, 1f, drawInfo.playerEffect);
+        DrawData ear = new(_tex.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + offset, earFrame, drawInfo.colorBodySkin, drawInfo.drawPlayer.headRotation, earFrame.Size() / 2, 1f, drawInfo.playerEffect);
         ear.position = drawInfo.drawPlayer.RotatedRelativePoint(ear.position, addGfxOffY: false);
         drawInfo.DrawDataCache.Add(ear);
 
@@ -74,7 +71,7 @@ public class JonaWigEyesAndHairTip : PlayerDrawLayer
         offset = new Vector2(2, -34);
         offset += Main.OffsetsPlayerHeadgear[drawInfo.drawPlayer.bodyFrame.Y / drawInfo.drawPlayer.bodyFrame.Height];
         offset *= new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
-        DrawData hair = new(Texture.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + offset, hairFrame, drawInfo.colorArmorHead, drawInfo.drawPlayer.headRotation, hairFrame.Size() / 2, 1f, drawInfo.playerEffect);
+        DrawData hair = new(_tex.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + offset, hairFrame, drawInfo.colorArmorHead, drawInfo.drawPlayer.headRotation, hairFrame.Size() / 2, 1f, drawInfo.playerEffect);
         hair.position = drawInfo.drawPlayer.RotatedRelativePoint(hair.position, addGfxOffY: false);
         hair.shader = drawInfo.cHead;
         drawInfo.DrawDataCache.Add(hair);
@@ -108,14 +105,15 @@ public class JonaWigEyesAndHairTip : PlayerDrawLayer
         //}
     }
 }
-
 public class JonaWigOverShoulderHair : PlayerDrawLayer
 {
-    public static Asset<Texture2D> Texture => Assets.Textures.Vanity.JonaDevSet.JonaWig_Extra.Asset;
-
+    private static Asset<Texture2D> _tex;
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.head == ContentSamples.ItemsByType[ModContent.ItemType<JonaWig>()].headSlot && drawInfo.drawPlayer.bodyFrame.Y is > 335 or 0;
     public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.ArmOverItem);
-
+    public override void Load()
+    {
+        _tex = ModContent.Request<Texture2D>(ModContent.GetInstance<JonaWig>().Texture + "_Extra");
+    }
     protected override void Draw(ref PlayerDrawSet drawInfo)
     {
         Rectangle frame = new(20, 0, 10, drawInfo.drawPlayer.bodyFrame.Y == 0 ? 10 : 6);
@@ -125,7 +123,7 @@ public class JonaWigOverShoulderHair : PlayerDrawLayer
         headOffset *= new Vector2(drawInfo.playerEffect.HasFlag(SpriteEffects.FlipHorizontally) ? -1 : 1, drawInfo.playerEffect.HasFlag(SpriteEffects.FlipVertically) ? -1 : 1);
 
         Vector2 center = drawInfo.drawPlayer.MountedCenter + new Vector2(0, drawInfo.drawPlayer.gfxOffY);
-        DrawData face = new(Texture.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + headOffset, frame, drawInfo.colorArmorHead, drawInfo.drawPlayer.headRotation, new Vector2(5), 1f, drawInfo.playerEffect);
+        DrawData face = new(_tex.Value, new Vector2((int)center.X, (int)center.Y) - Main.screenPosition + headOffset, frame, drawInfo.colorArmorHead, drawInfo.drawPlayer.headRotation, new Vector2(5), 1f, drawInfo.playerEffect);
         face.position = drawInfo.drawPlayer.RotatedRelativePoint(face.position, addGfxOffY: false);
         face.shader = drawInfo.cHead;
         drawInfo.DrawDataCache.Add(face);
@@ -135,8 +133,6 @@ public class JonaWigOverShoulderHair : PlayerDrawLayer
 [AutoloadEquip(EquipType.Body)]
 public class JonaBody : ModItem
 {
-    public override string Texture => Assets.Textures.Vanity.JonaDevSet.JonaBody.KEY;
-
     public override void SetDefaults()
     {
         Item.width = 18;
@@ -150,8 +146,6 @@ public class JonaBody : ModItem
 [AutoloadEquip(EquipType.Legs)]
 public class JonaLegs : ModItem
 {
-    public override string Texture => Assets.Textures.Vanity.JonaDevSet.JonaLegs.KEY;
-
     public override void SetStaticDefaults()
     {
         ArmorIDs.Legs.Sets.HidesBottomSkin[Item.legSlot] = true;
@@ -165,7 +159,6 @@ public class JonaLegs : ModItem
         Item.value = Item.sellPrice(0, 5);
     }
 }
-
 public class JonaLegsLayer : PlayerDrawLayer
 {
     public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.legs == ContentSamples.ItemsByType[ModContent.ItemType<JonaLegs>()].legSlot;
@@ -174,7 +167,8 @@ public class JonaLegsLayer : PlayerDrawLayer
     {
         if (drawInfo.isSitting)
         {
-            PlayerDrawLayers.DrawSittingLegs(ref drawInfo, TextureAssets.Players[0, 10].Value, drawInfo.colorArmorLegs, drawInfo.cLegs, false);
+            var method = typeof(PlayerDrawLayers).GetMethod("DrawSittingLegs", BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, [drawInfo, TextureAssets.Players[0, 10].Value, drawInfo.colorArmorLegs, drawInfo.cLegs, false]);
             return;
         }
 

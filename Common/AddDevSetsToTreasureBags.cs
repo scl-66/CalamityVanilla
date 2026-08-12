@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Content.Vanity.JonaDevSet;
-using CalamityVanilla.Content.Vanity;
+using CalamityVanilla.Content.Vanity.SixtyDevSet;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
