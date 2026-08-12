@@ -10,15 +10,13 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Underworld.Items.WallOfFleshDrops;
+namespace CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
 
 // ExampleStaff is a typical staff. Staffs and other shooting weapons are very similar, this example serves mainly to show what makes staffs unique from other items.
 // Staff sprites, by convention, are angled to point up and to the right. "Item.staff[Type] = true;" is essential for correctly drawing staffs.
 // Staffs use mana and shoot a specific projectile instead of using ammo. Item.DefaultToStaff takes care of that.
 public class PyrobatStaff : ModItem
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.PyrobatStaffItem.KEY;
-
     public override void SetStaticDefaults()
     {
         Item.staff[Type] = true; // This makes the useStyle animate as a staff instead of as a gun.
@@ -51,10 +49,7 @@ public class PyrobatStaff : ModItem
 
 public class PyrobatStaffHeldProjectile : ModProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.PyrobatStaffHeldProjectile.KEY;
-
-    public static Asset<Texture2D> TextureGlow => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.PyrobatStaffHeldProjectile_Glow.Asset;
-
+    private static Asset<Texture2D> _glow;
     public ref float ShootTimer => ref Projectile.ai[0];
     public int ShootCount = 0;
 
@@ -62,6 +57,7 @@ public class PyrobatStaffHeldProjectile : ModProjectile
     const int FULL_CHARGE_TIME = 60;
     public override void SetStaticDefaults()
     {
+        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Type] = 2;
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
     }
@@ -173,7 +169,6 @@ public class PyrobatStaffHeldProjectile : ModProjectile
         player.direction = Projectile.spriteDirection;
         Projectile.Center = player.RotatedRelativePoint(player.MountedCenter + new Vector2(25 * player.direction, -16)).Floor();
     }
-
     public override bool PreDraw(ref Color lightColor)
     {
         Texture2D tex = TextureAssets.Projectile[Type].Value;
@@ -188,10 +183,10 @@ public class PyrobatStaffHeldProjectile : ModProjectile
         if (Projectile.frame == 1)
             return false;
 
-        Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, effect);
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, effect);
         float percent = Utils.Remap(Projectile.ai[0], 0, FULL_CHARGE_TIME, 0, 1);
 
-        Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 0 } * percent, Projectile.rotation, origin, Projectile.scale + MathF.Pow(1f - percent, 2) * 2, effect);
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 0 } * percent, Projectile.rotation, origin, Projectile.scale + MathF.Pow(1f - percent, 2) * 2, effect);
 
         if (Projectile.ai[0] < FULL_CHARGE_TIME)
             return false;
@@ -200,19 +195,17 @@ public class PyrobatStaffHeldProjectile : ModProjectile
         for (int i = 0; i < 4; i++)
         {
             Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2, 3), Utils.RandomInt(ref seed4, -2, 3));
-            Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition + new Vector2(0, 2).RotatedBy(i * MathHelper.PiOver2) + rand, frame, Color.White with { A = 0 } * percent * sin, Projectile.rotation, origin, Projectile.scale, effect);
+            Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition + new Vector2(0, 2).RotatedBy(i * MathHelper.PiOver2) + rand, frame, Color.White with { A = 0 } * percent * sin, Projectile.rotation, origin, Projectile.scale, effect);
         }
         return false;
     }
 }
 public class PyrobatSmall : ModProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.PyrobatSmall.KEY;
-
-    public static Asset<Texture2D> TextureGlow => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.PyrobatSmall_Glow.Asset;
-
+    private static Asset<Texture2D> _glow;
     public override void SetStaticDefaults()
     {
+        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Projectile.type] = 5;
     }
     public override void SetDefaults()
@@ -275,13 +268,13 @@ public class PyrobatSmall : ModProjectile
         SpriteEffects effect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
-        Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 128 }, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 128 }, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
         ulong seed4 = Main.TileFrameSeed;
         for (int i = 0; i < 5; i++)
         {
             Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2 + (i * -2), 3 + (i * 2)), Utils.RandomInt(ref seed4, -2 + (i * -2), 3 + (i * 2)));
-            //Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition - Projectile.velocity * i, frame, Color.White with { A = 0 } * ((1f - (i / 5f)) * 0.5f), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
-            Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition - Projectile.velocity * i + rand, frame, Color.Lerp(Color.White, Color.Red, i / 5f) with { A = 64 } * (1f - (i / 5f)), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+            //Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition - Projectile.velocity * i, frame, Color.White with { A = 0 } * ((1f - (i / 5f)) * 0.5f), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+            Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition - Projectile.velocity * i + rand, frame, Color.Lerp(Color.White, Color.Red, i / 5f) with { A = 64 } * (1f - (i / 5f)), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
         }
 
         return false;
@@ -298,12 +291,10 @@ public class PyrobatSmall : ModProjectile
 }
 public class Pyrobat : ModProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.Pyrobat.KEY;
-
-    public virtual Asset<Texture2D> TextureGlow => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.Pyrobat_Glow.Asset;
-
+    private static Asset<Texture2D> _glow;
     public override void SetStaticDefaults()
     {
+        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Projectile.type] = 6;
         ProjectileID.Sets.TrailCacheLength[Type] = 5;
         ProjectileID.Sets.TrailingMode[Type] = 0;
@@ -433,29 +424,22 @@ public class Pyrobat : ModProjectile
         Rectangle frame = tex.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
         SpriteEffects effect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
-        Main.EntitySpriteDraw(TextureGlow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 128 }, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+        Main.EntitySpriteDraw(_glow.Value, Projectile.Center - Main.screenPosition, frame, Color.White with { A = 128 }, Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
         ulong seed4 = Main.TileFrameSeed;
         for (int i = 0; i < 5; i++)
         {
             Vector2 rand = new Vector2(Utils.RandomInt(ref seed4, -2, 3), Utils.RandomInt(ref seed4, -2, 3));
-            Main.EntitySpriteDraw(TextureGlow.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2 + rand, frame, Color.Lerp(Color.White, Color.Red, i / 5f) with { A = 64 } * (1f - (i / 5f)), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
-            //Main.EntitySpriteDraw(TextureGlow.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.White with { A = 0 } * ((1f - (i / 5f)) * 0.5f), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+            Main.EntitySpriteDraw(_glow.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2 + rand, frame, Color.Lerp(Color.White, Color.Red, i / 5f) with { A = 64 } * (1f - (i / 5f)), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
+            //Main.EntitySpriteDraw(_glow.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, frame, Color.White with { A = 0 } * ((1f - (i / 5f)) * 0.5f), Projectile.rotation, frame.Size() / 2, Projectile.scale, effect);
         }
         return false;
     }
 }
 
-public class Pyrobat2 : Pyrobat // functionally identical to Pyrobat, except for the sprite
-{
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.Pyrobat2.KEY;
-
-    public override Asset<Texture2D> TextureGlow => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.Pyrobat2_Glow.Asset;
-}
+public class Pyrobat2 : Pyrobat { } // functionally identical to Pyrobat, except for the sprite
 
 public class PyrobatFlame : ModProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.PyrobatStaff.PyrobatFlame.KEY;
-
     public override void SetStaticDefaults()
     {
         Main.projFrames[Projectile.type] = 3;

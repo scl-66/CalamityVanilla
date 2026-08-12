@@ -4,12 +4,10 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Underworld.Items.WallOfFleshDrops;
+namespace CalamityVanilla.Content.Underworld.Items.FleshLauncher;
 
 public class FleshLauncher : ModItem
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FleshLauncher.FleshLauncherItem.KEY;
-
     public override void SetDefaults()
     {
         Item.DefaultToRangedWeapon(ProjectileID.PurificationPowder, ItemID.Grenade, singleShotTime: 30, shotVelocity: 4f, hasAutoReuse: true);
@@ -49,8 +47,6 @@ public class FleshLauncher : ModItem
 
 public class Fleshnade : ModProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FleshLauncher.Fleshnade.KEY;
-
     public override void SetDefaults()
     {
         Projectile.width = 18;
@@ -127,8 +123,6 @@ public class Fleshnade : ModProjectile
 
 public class FleshnadeSticky : Fleshnade
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FleshLauncher.FleshnadeSticky.KEY;
-
     public bool touchingTile = false;
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
@@ -187,8 +181,6 @@ public class FleshnadeSticky : Fleshnade
 
 public class FleshnadeBouncy : Fleshnade
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FleshLauncher.FleshnadeBouncy.KEY;
-
     public override void AI()
     {
         Projectile.ai[0]++;
@@ -254,8 +246,6 @@ public class FleshnadeBouncy : Fleshnade
 
 public class FleshnadeBee : Fleshnade
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FleshLauncher.FleshnadeBee.KEY;
-
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
         if (Projectile.velocity.Y != Projectile.oldVelocity.Y)

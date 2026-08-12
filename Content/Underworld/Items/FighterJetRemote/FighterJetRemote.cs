@@ -9,12 +9,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
-namespace CalamityVanilla.Content.Underworld.Items.WallOfFleshDrops;
+namespace CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
 
 public class FighterJetRemote : ModItem
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FighterJetRemote.FighterJetRemoteItem.KEY;
-
     public override void SetDefaults()
     {
         Item.width = 26;
@@ -85,8 +83,6 @@ public class FighterJetRemote : ModItem
 
 public class FighterJetBuff : ModBuff
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FighterJetRemote.FighterJetBuff.KEY;
-
     public override void SetStaticDefaults()
     {
         Main.buffNoSave[Type] = true;
@@ -109,8 +105,6 @@ public class FighterJetBuff : ModBuff
 
 public class FighterJetMinion : ModProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.FighterJetRemote.FighterJetMinion.KEY;
-
     private enum State
     {
         Idle,
@@ -120,7 +114,7 @@ public class FighterJetMinion : ModProjectile
     public ref float AI_Timer => ref Projectile.ai[0];
     public ref float AI_State => ref Projectile.ai[1];
 
-    SoundStyle EmptyReload = Assets.Sounds.EmptyReload.Asset;
+    SoundStyle EmptyReload = new SoundStyle("CalamityVanilla/Assets/Sounds/EmptyReload_", 2);
     private static readonly int skinCount = 6; // nunber of skins
 
     public override void SetStaticDefaults()

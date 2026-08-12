@@ -10,12 +10,10 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Content.Underworld.Items.WallOfFleshDrops;
+namespace CalamityVanilla.Content.Underworld.Items.CarnageFlail;
 
 public class CarnageFlail : ModItem
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.CarnageFlail.CarnageFlailItem.KEY;
-
     public override void SetStaticDefaults()
     {
         ItemID.Sets.ToolTipDamageMultiplier[Type] = 2f;
@@ -50,10 +48,6 @@ public class CarnageFlail : ModItem
 
 public class CarnageFlailProjectile : BaseFlailProjectile
 {
-    public override string Texture => Assets.Textures.Underworld.Items.WallOfFleshDrops.CarnageFlail.CarnageFlailProjectile.KEY;
-
-    public override string ChainTexture => Assets.Textures.Underworld.Items.WallOfFleshDrops.CarnageFlail.CarnageFlailProjectile_Chain.KEY;
-
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
