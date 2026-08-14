@@ -485,12 +485,10 @@ public class BlessingButton : UIElement
         _uiPanelGradient.OnDraw += DrawGradient;
         _uiPanel.Append(_uiPanelGradient);
 
-        /*
         _uiText = new UIText("");
         _uiText.VAlign = 0.5f;
         _uiText.Left.Set(15, 0.08f);
-        _uiPanel.Append(_uiText);
-        */
+        _uiPanel.Append(_uiText);  
 
         image = new UIElement();
         image.Width.Set(34, 0f);
