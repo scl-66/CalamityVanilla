@@ -189,9 +189,12 @@ public class MushroomBomberShotLarge : ModProjectile
     private static Asset<Texture2D> _babiesTexture;
 
     public override void SetStaticDefaults()
-    {
-        _explosionTexture = ModContent.Request<Texture2D>(Texture + "Explosion");
-        _babiesTexture = ModContent.Request<Texture2D>(Texture + "Babies");
+    {   
+        if (!Main.dedServ)
+        {
+            _explosionTexture = ModContent.Request<Texture2D>(Texture + "Explosion");
+            _babiesTexture = ModContent.Request<Texture2D>(Texture + "Babies");
+        }
     }
     public override void SetDefaults()
     {

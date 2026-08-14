@@ -18,8 +18,9 @@ public class CatastropheClaymore : ModItem
 {
     private static Asset<Texture2D> Glow;
     public override void SetStaticDefaults()
-    {
-        Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
+    {   
+        if (!Main.dedServ)
+            Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
     }
     public override void SetDefaults()
     {

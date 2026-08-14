@@ -65,8 +65,9 @@ public partial class Cryogen : ModNPC
         }
     }
     public override void SetStaticDefaults()
-    {
-        backTexture = ModContent.Request<Texture2D>(Texture + "Flake");
+    {   
+        if (!Main.dedServ)
+            backTexture = ModContent.Request<Texture2D>(Texture + "Flake");
         Main.npcFrameCount[Type] = 3;
         NPCID.Sets.MPAllowedEnemies[Type] = true;
         NPCID.Sets.BossBestiaryPriority.Add(Type);

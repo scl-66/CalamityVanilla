@@ -49,8 +49,9 @@ public class PermafrostHookProjectile : ModProjectile
     private static Asset<Texture2D> chainTexture;
 
     public override void SetStaticDefaults()
-    {
-        chainTexture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Bosses/Cryogen/Drops/PermafrostHook/PermafrostHookChain");
+    {   
+        if (!Main.dedServ)
+            chainTexture = ModContent.Request<Texture2D>("CalamityVanilla/Content/Bosses/Cryogen/Drops/PermafrostHook/PermafrostHookChain");
         ProjectileID.Sets.SingleGrappleHook[Type] = true;
     }
 

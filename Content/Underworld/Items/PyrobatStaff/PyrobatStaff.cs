@@ -56,8 +56,9 @@ public class PyrobatStaffHeldProjectile : ModProjectile
     SlotId hissSound;
     const int FULL_CHARGE_TIME = 60;
     public override void SetStaticDefaults()
-    {
-        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
+    {   
+        if (!Main.dedServ)
+            _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Type] = 2;
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
     }
@@ -204,8 +205,9 @@ public class PyrobatSmall : ModProjectile
 {
     private static Asset<Texture2D> _glow;
     public override void SetStaticDefaults()
-    {
-        _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
+    {   
+        if (!Main.dedServ)
+            _glow = ModContent.Request<Texture2D>(Texture + "_Glow");
         Main.projFrames[Projectile.type] = 5;
     }
     public override void SetDefaults()

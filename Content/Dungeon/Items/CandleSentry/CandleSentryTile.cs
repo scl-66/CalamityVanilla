@@ -35,7 +35,8 @@ public class CandleSentryTile : ModTile
         DustType = DustID.WaterCandle;
         AddMapEntry(new Color(89, 201, 255), ModContent.GetInstance<CandleSentryItem>().DisplayName);
 
-        flameTexture = ModContent.Request<Texture2D>(Texture + "_Flame");
+        if (!Main.dedServ)
+            flameTexture = ModContent.Request<Texture2D>(Texture + "_Flame");
     }
     public override IEnumerable<Item> GetItemDrops(int i, int j)
     {

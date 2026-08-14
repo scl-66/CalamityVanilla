@@ -164,7 +164,9 @@ public class FrigidflashColdBoltProjectile : FrigidflashBoltProjectile
     public override void SetStaticDefaults()
     {
         base.SetStaticDefaults();
-        _explosion = ModContent.Request<Texture2D>(Texture + "Effect");
+
+        if (!Main.dedServ)
+            _explosion = ModContent.Request<Texture2D>(Texture + "Effect");
     }
     public override void SetDefaults()
     {

@@ -15,8 +15,9 @@ public class HiveVineSpawner : ModProjectile
 {
     private static SoundStyle _sound;
     public override void SetStaticDefaults()
-    {
-        _sound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineEmerge", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
+    {   
+        if (!Main.dedServ)
+            _sound = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineEmerge", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
     }
     public override void SetDefaults()
     {
@@ -112,8 +113,11 @@ public class HiveVine : ModProjectile
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
-        _platform = ModContent.Request<Texture2D>(Texture + "Platform");
-        _death = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineDestroy", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
+        if (!Main.dedServ)
+        {
+            _platform = ModContent.Request<Texture2D>(Texture + "Platform");
+            _death = new SoundStyle(Mod.Name + "/Assets/Sounds/HiveMind_VineDestroy", [1, 2]) { PitchVariance = 0.1f, MaxInstances = 10 };
+        }
     }
     public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
     {
