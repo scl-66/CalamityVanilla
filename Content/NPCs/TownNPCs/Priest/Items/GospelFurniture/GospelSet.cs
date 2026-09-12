@@ -1,6 +1,4 @@
 ﻿using CalamityVanilla.Common.Items;
-using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.CheckerBlock;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;

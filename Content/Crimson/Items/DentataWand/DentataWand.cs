@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
 using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,5 +1,5 @@
-﻿using CalamityVanilla.Common.Items;
-using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Items;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

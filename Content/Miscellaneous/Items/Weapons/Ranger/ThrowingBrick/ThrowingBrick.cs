@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Content.Achievements;
-using CalamityVanilla.Content.Bosses.Cryogen;
+using CalamityVanilla.Content.Tundra.Cryogen;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;

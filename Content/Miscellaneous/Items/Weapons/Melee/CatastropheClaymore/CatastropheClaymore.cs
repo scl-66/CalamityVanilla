@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
 using CalamityVanilla.Content.Tundra.Items;
 using CalamityVanilla.Content.Underworld.Items;
 using Microsoft.Xna.Framework;

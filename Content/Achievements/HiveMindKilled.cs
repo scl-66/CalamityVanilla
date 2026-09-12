@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Bosses.HiveMind;
+﻿using CalamityVanilla.Content.Corruption.HiveMind;
 using Terraria.Achievements;
 using Terraria.ModLoader;
 

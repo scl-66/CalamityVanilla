@@ -1,21 +1,16 @@
 ﻿using CalamityVanilla.Common;
-using CalamityVanilla.Content.Dusts;
 using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items;
 

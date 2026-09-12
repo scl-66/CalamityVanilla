@@ -1,6 +1,6 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Common.AIStyles;
-using CalamityVanilla.Content.Dusts;
+using CalamityVanilla.Common.Dusts;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

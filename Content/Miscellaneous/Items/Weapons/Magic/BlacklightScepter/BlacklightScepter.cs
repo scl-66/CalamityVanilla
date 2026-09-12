@@ -1,7 +1,7 @@
-﻿using CalamityVanilla.Content.Corruption.Items.DarkPrismStaff;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Particles;
+using CalamityVanilla.Content.Corruption.Items.DarkPrismStaff;
 using CalamityVanilla.Content.Crimson.Items.DentataWand;
-using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Particles;
 using CalamityVanilla.Content.Underground.Items.GraniteTome;
 using CalamityVanilla.Content.Underground.Items.MarbleTome;
 using Microsoft.Xna.Framework;

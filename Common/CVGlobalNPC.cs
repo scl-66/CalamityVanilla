@@ -1,5 +1,5 @@
-﻿using CalamityVanilla.Common.ItemDropRules.DropConditions;
-using CalamityVanilla.Content.Emotes;
+﻿using CalamityVanilla.Common.Emotes;
+using CalamityVanilla.Common.ItemDropRules.DropConditions;
 using CalamityVanilla.Content.Miscellaneous.Items;
 using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.BouncingEyeball;
 using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;

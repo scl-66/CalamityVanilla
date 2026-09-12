@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

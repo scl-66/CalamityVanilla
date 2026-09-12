@@ -1,5 +1,5 @@
-﻿using CalamityVanilla.Content.Dusts;
-using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Particles;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;

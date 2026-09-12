@@ -1,5 +1,4 @@
-﻿using CalamityVanilla.Content.Bosses.Cryogen;
-using CalamityVanilla.Content.Bosses.GutOfCthulhu;
+﻿using CalamityVanilla.Content.Crimson.GutOfCthulhu;
 using Terraria.Achievements;
 using Terraria.ModLoader;
 

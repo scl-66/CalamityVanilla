@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Common.Particles;
 using Microsoft.Xna.Framework;
 using System;
 using System.IO;

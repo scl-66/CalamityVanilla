@@ -1,6 +1,4 @@
-﻿using CalamityVanilla.Content.Bosses.Cryogen;
-using Terraria;
-using Terraria.Audio;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 

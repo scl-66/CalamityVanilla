@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Bosses.Cryogen;
+﻿using CalamityVanilla.Content.Tundra.Cryogen;
 using Terraria.Achievements;
 using Terraria.ModLoader;
 

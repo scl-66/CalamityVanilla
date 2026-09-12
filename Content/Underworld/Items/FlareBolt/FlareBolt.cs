@@ -1,6 +1,6 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Particles;
 using CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TheGothic;
-using CalamityVanilla.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

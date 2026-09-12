@@ -1,4 +1,4 @@
-<Project Sdk="Tomat.Terraria.ModLoader.Sdk/2.1.1">
+﻿<Project Sdk="Tomat.Terraria.ModLoader.Sdk/2.1.1">
 	<ItemGroup>
 	  <AdditionalFiles Remove="Localization\en-US\Mods.CalamityVanilla.GameTitles.hjson" />
 	</ItemGroup>

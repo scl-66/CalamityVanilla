@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Particles;
+﻿using CalamityVanilla.Common.Particles;
 using Daybreak.Common.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

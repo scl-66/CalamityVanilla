@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -47,7 +47,7 @@ public class PrismPiercer : ModItem
     public override void AddRecipes()
     {
         CreateRecipe().AddTile(TileID.MythrilAnvil)
-            .AddIngredient(ModContent.ItemType<WindowPain.WindowPain>())
+            .AddIngredient(ModContent.ItemType<Space.Items.WindowPain.WindowPain>())
             .AddIngredient(ItemID.Starfury)
             .AddIngredient(ItemID.Ectoplasm, 15)
             .Register();

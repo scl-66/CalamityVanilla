@@ -1,5 +1,5 @@
-﻿using CalamityVanilla.Common.Items;
-using CalamityVanilla.Content.Dusts;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Items;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest.Items.GospelFurniture;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

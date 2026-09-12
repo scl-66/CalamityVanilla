@@ -1,5 +1,5 @@
 ﻿using CalamityVanilla.Common.Interfaces;
-using CalamityVanilla.Content.Particles;
+using CalamityVanilla.Common.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

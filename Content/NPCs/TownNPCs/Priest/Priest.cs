@@ -60,7 +60,7 @@ public class Priest : ModNPC
         // Connects this NPC with a custom emote.
         // This makes it when the NPC is in the world, other NPCs will "talk about him".
         // By setting this you don't have to override the PickEmote method for the emote to appear.
-        NPCID.Sets.FaceEmote[Type] = ModContent.EmoteBubbleType<Emotes.PriestEmote>();
+        NPCID.Sets.FaceEmote[Type] = ModContent.EmoteBubbleType<Common.Emotes.PriestEmote>();
 
         // Influences how the NPC looks in the Bestiary
         NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -384,7 +384,7 @@ public class Priest : ModNPC
             //.Add(Mod.Find<ModItem>("BlackQueen").Type)
             //.Add(Mod.Find<ModItem>("BlackKing").Type)
             ;
-        //.Add(new Item(ModContent.ItemType<Bosses.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
+        //.Add(new Item(ModContent.ItemType<Tundra.Cryogen.Drops.FrostGuardStaff.FrostGuardStaff>()) { shopCustomPrice = Item.buyPrice(gold: 15) }) // This example sets a custom price, ExampleNPCShop.cs has more info on custom prices and currency.
         //.Add(ItemID.AcornAxe); // Here is an example of how to sell an existing vanilla item.
         //.Add<Items.Consumables.ExampleHealingPotion>(new Condition("Mods.ExampleMod.Conditions.PlayerHasLifeforceBuff", () => Main.LocalPlayer.HasBuff(BuffID.Lifeforce)))
         //.Add<Items.Weapons.ExampleSword>(Condition.MoonPhasesQuarter0)
@@ -480,7 +480,7 @@ public class Priest : ModNPC
     public override int? PickEmote(Player closestPlayer, List<int> emoteList, WorldUIAnchor otherAnchor)
     {
         // By default this NPC will have a chance to use the Minion Boss Emote even if Minion Boss is not downed yet
-        int type = ModContent.EmoteBubbleType<Emotes.CryogenEmote>();
+        int type = ModContent.EmoteBubbleType<Common.Emotes.CryogenEmote>();
         // If the NPC is talking to the TaxCollector, it will be more likely to react with angry emote
         if (otherAnchor.entity is NPC { type: NPCID.TaxCollector })
         {
