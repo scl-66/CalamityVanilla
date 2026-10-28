@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Common.AIStyles;
+using CalamityVanilla.Common.Templates;
 using CalamityVanilla.Content.Ocean.Items.UrchinSpine;
 using Microsoft.Xna.Framework;
 using System;
@@ -114,6 +115,6 @@ public class SeaUrchin : ModNPCWithBanner
     }
     public override float SpawnChance(NPCSpawnInfo spawnInfo)
     {
-        return spawnInfo.Player.ZoneBeach && Main.hardMode ? 0.1f : 0;
+        return SpawnHelper.Ocean(ref spawnInfo) && Main.hardMode ? 0.1f : 0;
     }
 }

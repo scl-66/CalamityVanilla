@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Content.Tundra.Buffs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -84,12 +85,14 @@ public class IcebreakerProjectile : ModProjectile
     }
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
+        target.AddBuff(ModContent.BuffType<ChilledCV>(), 60 * 8);
         if (Projectile.penetrate != 100)
             return;
         OnHitAnything();
     }
     public override void OnHitPlayer(Player target, Player.HurtInfo info)
     {
+        target.AddBuff(BuffID.Chilled, 60 * 8);
         if (Projectile.penetrate != 100)
             return;
         OnHitAnything();

@@ -33,7 +33,7 @@ CryogenSummonMold: {
 
 Icebreaker: {
 	DisplayName: Icebreaker
-	Tooltip: ""
+	Tooltip: Breaks into icicles and chills enemies on hit
 }
 
 BileBelcher: {
@@ -68,7 +68,7 @@ PerforatorsMask: {
 
 HoarfrostBow: {
 	DisplayName: Hoarfrost Bow
-	Tooltip: Converts wooden arrows into mist arrows
+	Tooltip: Converts wooden arrows into mist arrows that chill enemies
 }
 
 CatastropheClaymore: {
@@ -875,4 +875,9 @@ TerraGlobe: {
 CandleSentryTileItem: {
 	DisplayName: Candle Sentry Tile Item
 	Tooltip: ""
+}
+
+FlaskOfCold: {
+	DisplayName: Flask Of Cold
+	Tooltip: Melee and Whip attacks chill enemies
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Content.Tundra.Buffs;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -66,6 +67,14 @@ public class MistArrow : ModProjectile
         {
             Projectile.velocity.Y += 0.1f;
         }
+    }
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        target.AddBuff(ModContent.BuffType<ChilledCV>(), 60 * 5);
+    }
+    public override void OnHitPlayer(Player target, Player.HurtInfo info)
+    {
+        target.AddBuff(BuffID.Chilled, 60 * 5);
     }
     public override void OnKill(int timeLeft)
     {

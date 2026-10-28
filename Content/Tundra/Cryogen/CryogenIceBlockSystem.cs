@@ -51,9 +51,10 @@ public class CryogenIceBlockSystem : ModSystem
             return;
         bool cryogenIsREAL = false;
         int iceBlockType = ModContent.TileType<CryogenIceTile>();
+        int cryogenType = ModContent.NPCType<Cryogen>();
         foreach (var npc in Main.ActiveNPCs)
         {
-            if (npc.type == ModContent.NPCType<Cryogen>())
+            if (npc.type == cryogenType)
             {
                 cryogenIsREAL = true;
                 break;

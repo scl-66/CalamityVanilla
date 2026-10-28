@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Common;
+namespace CalamityVanilla.Common.DataSets;
 
 [ReinitializeDuringResizeArrays]
-public static class CVItemSets
+public static class ItemSets
 {
     public static bool?[] CanBeReflected = ProjectileID.Sets.Factory.CreateNamedSet("CanBeReflected")
         .Description("Makes projectiles with the ID reflectable by Frost Guard Staff.")

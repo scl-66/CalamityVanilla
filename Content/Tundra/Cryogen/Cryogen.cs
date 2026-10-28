@@ -6,6 +6,7 @@ using CalamityVanilla.Content.Tundra.Cryogen.Drops.Icebreaker;
 using CalamityVanilla.Content.Tundra.Cryogen.Drops.MagicChisel;
 using CalamityVanilla.Content.Tundra.Cryogen.Drops.TheSnowman;
 using CalamityVanilla.Content.Vanity.BossMasks;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -31,8 +32,6 @@ public partial class Cryogen : ModNPC
     }
     public Player target
     { get { return Main.player[NPC.target]; } }
-
-    private static Asset<Texture2D> backTexture;
     public override void HitEffect(NPC.HitInfo hit)
     {
         if (NPC.life <= 0)
@@ -62,8 +61,6 @@ public partial class Cryogen : ModNPC
     }
     public override void SetStaticDefaults()
     {   
-        if (!Main.dedServ)
-            backTexture = ModContent.Request<Texture2D>(Texture + "Flake");
         Main.npcFrameCount[Type] = 3;
         NPCID.Sets.MPAllowedEnemies[Type] = true;
         NPCID.Sets.BossBestiaryPriority.Add(Type);
@@ -96,7 +93,8 @@ public partial class Cryogen : ModNPC
     private int _snowOverlaySpinDirection = 1;
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
     {
-        Asset<Texture2D> tex = TextureAssets.Npc[Type];
+        Asset<Texture2D> backTexture = AssetReferences.Content.Tundra.Cryogen.CryogenFlake.Asset;
+        Asset <Texture2D> tex = TextureAssets.Npc[Type];
         Rectangle bigFlake = new Rectangle(0, 0, 270, 270);
         Rectangle smallFlake = new Rectangle(0, 272, 126, 126);
         Rectangle SnowOverlay = new Rectangle(272, 0, 212, 208);

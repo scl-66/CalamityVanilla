@@ -3,4 +3,5 @@ THIS IS NOT AN ADDON. You do not need CalamityMod installed to play this!
 This is a mod that reimagines various bosses and items from the Calamity Mod, and reimplents them in a more vanilla-oriented style. For obvious reasons, not everything from Calamity will be redone.
 
 -- Credits
-Credits to the Calamity Mod team for the OG mod, of course.
+the Calamity Mod team for the OG mod, of course.
+JC Sounds

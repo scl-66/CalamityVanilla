@@ -2,7 +2,7 @@
 using Terraria.Enums;
 using Terraria.ModLoader;
 
-namespace CalamityVanilla.Common;
+namespace CalamityVanilla.Common.Templates;
 
 public abstract class ModNPCWithBanner : ModNPC
 {

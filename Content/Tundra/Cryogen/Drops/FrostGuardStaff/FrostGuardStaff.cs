@@ -1,4 +1,4 @@
-﻿using CalamityVanilla.Common;
+﻿using CalamityVanilla.Common.DataSets;
 using CalamityVanilla.Common.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -404,7 +404,7 @@ public class FrostShield : ModProjectile
     {
         if (!projectile.active) return false;
 
-        if (CVItemSets.CanBeReflected[projectile.type] != null) return CVItemSets.CanBeReflected[projectile.type].Value;
+        if (ItemSets.CanBeReflected[projectile.type] != null) return ItemSets.CanBeReflected[projectile.type].Value;
 
         if (_projectileAiStylesThatCanBeReflected.Contains(projectile.aiStyle)) return true;
 

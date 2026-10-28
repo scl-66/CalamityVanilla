@@ -1,6 +1,7 @@
 ﻿using CalamityVanilla.Common;
 using CalamityVanilla.Common.AIStyles;
 using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Templates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ public class FrostEater : ModNPCWithBanner
     {
         Main.npcFrameCount[Type] = 2;
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, NPCID.Sets.NPCBestiaryDrawOffset[NPCID.EaterofSouls]);
+        NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Frostburn] = true;
     }
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
     {
@@ -132,6 +134,6 @@ public class FrostEater : ModNPCWithBanner
     }
     public override float SpawnChance(NPCSpawnInfo spawnInfo)
     {
-        return Main.hardMode && spawnInfo.Player.ZoneSnow && spawnInfo.Player.ZoneCorrupt ? 0.2f : 0f;
+        return Main.hardMode && SpawnHelper.NotInRestrictedArea(ref spawnInfo) && spawnInfo.SpawnTileType == TileID.CorruptIce ? 0.2f : 0f;
     }
 }

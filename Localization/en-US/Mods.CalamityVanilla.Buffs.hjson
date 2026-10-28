@@ -96,3 +96,13 @@ PriestAttackDebuff: {
 	DisplayName: Priest Attack Debuff
 	Description: Mods.CalamityVanilla.Buffs.PriestAttackDebuff.Description
 }
+
+ChilledCV: {
+	DisplayName: Chilled C V
+	Description: Mods.CalamityVanilla.Buffs.ChilledCV.Description
+}
+
+FlaskOfColdBuff: {
+	DisplayName: Weapon Imbue: Chilled
+	Description: Melee attacks chill enemies
+}

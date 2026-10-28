@@ -64,17 +64,21 @@ public class IceBomb : ModProjectile
     }
     public override void OnKill(int timeLeft)
     {
-        SoundEngine.PlaySound(SoundID.Item122, Projectile.position);
+        SoundEngine.PlaySound(Assets.Sounds.IceBombExplode.Asset with { MaxInstances = 10, pitchVariance = 0.3f}, Projectile.position);
         int iterations = 200;
         for (int i = 0; i < iterations; i++)
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.SnowSpray);
-            d.velocity = Vector2.UnitY.RotatedBy((i / (float)iterations * MathHelper.TwoPi) + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(10, 12);
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, Main.rand.Next([DustID.Ice,DustID.Snow, DustID.Smoke]));
+            d.velocity = Vector2.UnitY.RotatedBy((i / (float)iterations * MathHelper.TwoPi) + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(8, 12);
             d.noGravity = true;
             d.fadeIn = Main.rand.NextFloat(2);
         }
+        for(int i = 0; i < 5; i++)
+        {
+            Gore g = Gore.NewGoreDirect(Projectile.position + Main.rand.NextVector2Circular(64, 64), Main.rand.NextVector2Circular(4, 4), GoreID.Smoke1 + Main.rand.Next(3));
+        }
 
-        int radius = 6;
+        int radius = Main.rand.Next(5,9);
         Point origin = Projectile.Center.ToTileCoordinates();
         int num = (radius + 1) * (radius + 1);
         for (int i = origin.Y - radius; i <= origin.Y + radius; i++)

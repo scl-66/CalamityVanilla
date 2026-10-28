@@ -63,12 +63,11 @@ public class Dentata : ModProjectile
     public override void SetStaticDefaults()
     {
         Main.projFrames[Projectile.type] = 5;
-        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 25;
         ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
     }
     public override void SetDefaults()
     {
-        ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
         Projectile.QuickDefaults(false, 20);
         Projectile.DamageType = DamageClass.Magic;
         Projectile.tileCollide = true;
@@ -304,7 +303,7 @@ public class Dentata : ModProjectile
     {
         if (progressOnStrip is float.NaN)
             return Color.Transparent;
-        return new Color(Lighting.GetSubLight(Projectile.oldPos[(int)Utils.Remap(progressOnStrip, 0, 1, 0, Projectile.oldPos.Length - 1)] + Projectile.Size / 2));
+        return new Color(Lighting.GetSubLight(Projectile.oldPos[(int)Utils.Remap(progressOnStrip, 0, 1, 0, Math.Min(Projectile.ai[1], Projectile.oldPos.Length - 1))] + Projectile.Size / 2));
     }
     private static float StripWidth(float progressOnStrip)
     {
