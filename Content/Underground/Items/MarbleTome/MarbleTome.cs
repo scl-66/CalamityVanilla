@@ -168,16 +168,17 @@ public class MarbleTomePillar : ModProjectile, ISyncedOnHitEffect
         }
     }
 
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    public bool SyncedOnHitNPC(Player player, NPC target, Rectangle attackHitbox, int damage, float knockback, bool crit, int hitDirection, Projectile? projectile)
     {
-        SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.8f });
+        SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.8f }, attackHitbox.Center());
         int rand = Main.rand.Next(2, 6);
         for (int i = 0; i < rand; i++)
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Hitbox.ClosestPointInRect(target.position) + Main.rand.NextVector2Square(-8, 8), DustID.Marble);
+            Dust d = Dust.NewDustPerfect(attackHitbox.ClosestPointInRect(target.position) + Main.rand.NextVector2Square(-8, 8), DustID.Marble);
             d.velocity = Main.rand.NextVector2Circular(1, 1);
             d.scale = Main.rand.NextFloat(0.5f, 1);
             //d.noGravity = !Main.rand.NextBool(3);
         }
+        return true;
     }
 }

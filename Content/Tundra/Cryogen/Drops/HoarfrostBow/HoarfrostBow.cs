@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Tundra.Buffs;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Content.Tundra.Buffs;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -48,11 +49,20 @@ public class MistArrow : ModProjectile
     public override void AI()
     {
         Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-        Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainCloud);
-        d.velocity *= 0.1f;
-        d.velocity += Projectile.velocity * 0.2f;
-        d.alpha = 128;
+
+        Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<CryonicSmokeDust>());
+        d.velocity += Projectile.velocity * Main.rand.NextFloat(0.5f,1);
         d.noGravity = true;
+        d.fadeIn = Main.rand.Next(5,10);
+        d.customData = 0.02f;
+        d.color *= Main.rand.NextFloat(0.5f);
+        d.scale += Main.rand.NextFloat();
+
+        //Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainCloud);
+        //d.velocity *= 0.1f;
+        //d.velocity += Projectile.velocity * 0.2f;
+        //d.alpha = 128;
+        //d.noGravity = true;
 
         if (Main.rand.NextBool(5))
         {
@@ -80,10 +90,16 @@ public class MistArrow : ModProjectile
     {
         for (int i = 0; i < 15; i++)
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainCloud);
-            d.noGravity = true;
-            d.velocity *= 1.5f;
-            d.alpha = 128;
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<CryonicSmokeDust>());
+            d.fadeIn = Main.rand.Next(5, 10);
+            d.customData = 0.02f;
+            d.color *= Main.rand.NextFloat(0.5f);
+            d.scale += Main.rand.NextFloat();
+
+            //Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.RainCloud);
+            //d.noGravity = true;
+            //d.velocity *= 1.5f;
+            //d.alpha = 128;
         }
         for (int i = 0; i < 15; i++)
         {

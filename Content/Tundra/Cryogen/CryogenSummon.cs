@@ -1,4 +1,6 @@
-﻿using CalamityVanilla.Content.Tundra.Items;
+﻿using CalamityVanilla.Common.Items;
+using CalamityVanilla.Content.Tundra.Cryonic.Bar;
+using CalamityVanilla.Content.Tundra.Items;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -39,10 +41,7 @@ public class CryogenSummon : ModItem
 
     public override bool CanUseItem(Player player)
     {
-        // If you decide to use the below UseItem code, you have to include !NPC.AnyNPCs(id), as this is also the check the server does when receiving MessageID.SpawnBoss.
-        // If you want more constraints for the summon item, combine them as boolean expressions:
-        //    return !Main.dayTime && !NPC.AnyNPCs(ModContent.NPCType<MinionBossBody>()); would mean "not daytime and no MinionBossBody currently alive"
-        return !NPC.AnyNPCs(ModContent.NPCType<Cryogen>());
+        return !NPC.AnyNPCs(ModContent.NPCType<Cryogen>()) && player.ZoneSnow;
     }
 
     public override bool? UseItem(Player player)
@@ -77,6 +76,7 @@ public class CryogenSummon : ModItem
         CreateRecipe()
 
             .AddIngredient(ModContent.ItemType<CryogenSummonMold>())
+            .AddIngredient(AutoContent.ItemType<CryonicBar>(), 3)
             .AddIngredient(ModContent.ItemType<EleumSoul>(), 6)
             .AddRecipeGroup("CalamityVanillaAnyIceBlock", 25)
             .AddTile(TileID.MythrilAnvil)

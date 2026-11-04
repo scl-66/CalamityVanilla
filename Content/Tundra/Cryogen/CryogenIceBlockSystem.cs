@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Common.Dusts;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Tundra.Cryogen;
@@ -75,6 +78,19 @@ public class CryogenIceBlockSystem : ModSystem
             CryogenIceBlocks[i] = CryogenIceBlocks[i] with { TimeLeft = (ushort)(CryogenIceBlocks[i].TimeLeft - 1) };
             //if (i == 0)
             //    Main.NewText(CryogenIceBlocks[i].TimeLeft);
+
+            //if(Main.rand.NextFloat() < Utils.Remap(CryogenIceBlocks[i].TimeLeft,0,800,0,0.025f))
+            //{
+            //    Dust d = Dust.NewDustDirect(new Vector2(CryogenIceBlocks[i].X * 16, CryogenIceBlocks[i].Y * 16), 16, 16, ModContent.DustType<CryonicSmokeDust>());
+            //    d.alpha = (int)Utils.Remap(CryogenIceBlocks[i].TimeLeft, 0, 200, 128, 0);
+            //    d.velocity *= 0.2f;
+            //    d.fadeIn = 2;
+            //    if (Main.rand.NextBool(80))
+            //    {
+            //        Gore g = Gore.NewGoreDirect(new Vector2(CryogenIceBlocks[i].X * 16, CryogenIceBlocks[i].Y * 16), Main.rand.NextVector2Circular(1, 1), 11 + Main.rand.Next(3),Main.rand.NextFloat(0.5f,1));
+            //        g.rotation = Main.rand.NextFloatDirection();
+            //    }
+            //}
             if (Main.tile[CryogenIceBlocks[i].X, CryogenIceBlocks[i].Y].TileType != iceBlockType)
             {
                 CryogenIceBlocks.RemoveAt(i);

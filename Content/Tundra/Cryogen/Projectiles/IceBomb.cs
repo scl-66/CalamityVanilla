@@ -1,4 +1,5 @@
-﻿using CalamityVanilla.Content.Tundra.Cryogen;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Content.Tundra.Cryogen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -65,20 +66,29 @@ public class IceBomb : ModProjectile
     public override void OnKill(int timeLeft)
     {
         SoundEngine.PlaySound(Assets.Sounds.IceBombExplode.Asset with { MaxInstances = 10, pitchVariance = 0.3f}, Projectile.position);
+        SoundEngine.PlaySound(Assets.Sounds.IceBurn.Asset with { pitchVariance = 0.3f }, Projectile.position);
         int iterations = 200;
+        int cryonicDust = ModContent.DustType<CryonicSmokeDust>();
         for (int i = 0; i < iterations; i++)
         {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, Main.rand.Next([DustID.Ice,DustID.Snow, DustID.Smoke]));
-            d.velocity = Vector2.UnitY.RotatedBy((i / (float)iterations * MathHelper.TwoPi) + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(8, 12);
+            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, Main.rand.Next([DustID.Ice,DustID.Snow, cryonicDust]));
+            d.velocity = Vector2.UnitY.RotatedBy((i / (float)iterations * MathHelper.TwoPi) + Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(5, 12);
             d.noGravity = true;
+            if(d.type == cryonicDust)
+            {
+                d.fadeIn = Main.rand.Next(4, 8);
+                d.scale *= Main.rand.NextFloat(2,3);
+                d.noLight = true;
+            }
+            else
             d.fadeIn = Main.rand.NextFloat(2);
         }
         for(int i = 0; i < 5; i++)
         {
-            Gore g = Gore.NewGoreDirect(Projectile.position + Main.rand.NextVector2Circular(64, 64), Main.rand.NextVector2Circular(4, 4), GoreID.Smoke1 + Main.rand.Next(3));
+            Gore g = Gore.NewGoreDirect(Projectile.position + Main.rand.NextVector2Circular(64, 64), Main.rand.NextVector2Circular(4, 4), 11 + Main.rand.Next(3));
         }
 
-        int radius = Main.rand.Next(5,9);
+        int radius = Main.rand.Next(5,8);
         Point origin = Projectile.Center.ToTileCoordinates();
         int num = (radius + 1) * (radius + 1);
         for (int i = origin.Y - radius; i <= origin.Y + radius; i++)
@@ -87,7 +97,7 @@ public class IceBomb : ModProjectile
             int num3 = Math.Min(radius, (int)Math.Sqrt((double)num - num2 * num2));
             for (int j = origin.X - num3; j <= origin.X + num3; j++)
             {
-                CryogenIceBlockSystem.PlaceIceBlock(j, i, 1800 / 4);
+                CryogenIceBlockSystem.PlaceIceBlock(j, i, 450);
             }
         }
     }

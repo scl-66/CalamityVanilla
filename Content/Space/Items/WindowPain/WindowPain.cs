@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common.Interfaces;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -8,34 +9,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Space.Items.WindowPain;
-
-public class WindowPainAnimation : DrawAnimation
-{
-    public static bool Active = false;
-    public override Rectangle GetFrame(Texture2D texture, int frameCounterOverride = -1)
-    {
-        return texture.Frame(1, 2, 0, Active ? 1 : 0);
-    }
-    private class WindowPainLayer : PlayerDrawLayer
-    {
-        public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
-
-        protected override void Draw(ref PlayerDrawSet drawInfo)
-        {
-            if (drawInfo.drawPlayer.GetModPlayer<WindowPainPlayer>().Shattered)
-                Active = true;
-        }
-    }
-    private class WindowPainLayer2 : PlayerDrawLayer
-    {
-        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
-
-        protected override void Draw(ref PlayerDrawSet drawInfo)
-        {
-            Active = false;
-        }
-    }
-}
 public class WindowPainPlayer : ModPlayer
 {
     public bool Shattered = false;
@@ -48,9 +21,11 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
         Item.rare = ItemRarityID.Blue;
         Item.value = Item.sellPrice(0, 0, 75);
     }
-    public override void SetStaticDefaults()
+    public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
     {
-        Main.RegisterItemAnimation(Type, new WindowPainAnimation());
+        if(drawInfo.drawPlayer.GetModPlayer<WindowPainPlayer>().Shattered)
+            drawData.texture = AssetReferences.Content.Space.Items.WindowPain.WindowPainShattered.Asset.Value;
+        return true;
     }
     public override bool? UseItem(Player player)
     {
@@ -70,10 +45,10 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
         CreateRecipe().AddTile(TileID.Anvils).AddIngredient(ItemID.PlatinumBroadsword).AddIngredient(ItemID.Glass, 25).AddIngredient(ItemID.SunplateBlock, 10).Register();
     }
 
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    public bool SyncedOnHitNPC(Player player, NPC target, Rectangle attackHitbox, int damage, float knockback, bool crit, int hitDirection, Projectile? projectile)
     {
-        if (target.type == NPCID.TargetDummy)
-            return;
+        if (!target.CanBeChasedBy())
+            return false;
         WindowPainPlayer p = player.GetModPlayer<WindowPainPlayer>();
         if (!p.Shattered)
         {
@@ -89,7 +64,9 @@ public class WindowPain : ModItem, ISyncedOnHitEffect
                 Dust d = Dust.NewDustPerfect(player.Center + new Vector2(player.direction * 17, 0) + Main.rand.NextVector2Circular(24, 12), DustID.Glass, new Vector2(player.direction * Main.rand.NextFloat(1, 3), Main.rand.NextFloat(-3, -1)));
                 d.noGravity = Main.rand.NextBool();
             }
+            return true;
         }
+        return false;
     }
 }
 

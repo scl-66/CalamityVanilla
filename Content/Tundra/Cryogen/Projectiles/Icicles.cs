@@ -30,7 +30,7 @@ public class Icicles : ModProjectile
     {
         if (Projectile.timeLeft == 179)
         {
-            SoundEngine.PlaySound(SoundID.Item88, Projectile.position);
+            SoundEngine.PlaySound(Assets.Sounds.IceShotBig.Asset with { PitchVariance = 0.4f, pitch = 0.2f, volume = 1.2f}, Projectile.position);
         }
         Projectile.frame = Projectile.identity % 3;
         Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
@@ -76,7 +76,7 @@ public class Icicles : ModProjectile
         for (int i = 0; i < Projectile.oldPos.Length; i++)
         {
             float percent = i / (float)Projectile.oldPos.Length;
-            Main.EntitySpriteDraw(tex, Projectile.oldPos[i] - Main.screenPosition + (Projectile.Size / 2), sourceRect, lightColor * (1f - percent) * 0.5f, Projectile.oldRot[i], sourceRect.Size() / 2, Projectile.scale - (i * 0.075f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, Projectile.oldPos[i] - Main.screenPosition + (Projectile.Size / 2), sourceRect, lightColor * (1f - percent) * 0.25f, Projectile.oldRot[i], sourceRect.Size() / 2, Projectile.scale - (i * 0.075f), SpriteEffects.None, 0);
         }
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, sourceRect.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
         //Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, sourceRect, Color.White with { A = 0} * 0.25f, Projectile.rotation, sourceRect.Size() / 2, Projectile.scale * 1.3f, SpriteEffects.None, 0);

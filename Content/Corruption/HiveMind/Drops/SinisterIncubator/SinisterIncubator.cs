@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,41 +11,8 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Corruption.HiveMind.Drops.SinisterIncubator;
 
-public class SinisterIncubatorAnimation : DrawAnimation
-{
-    public static bool Open = false;
-    public override Rectangle GetFrame(Texture2D texture, int frameCounterOverride = -1)
-    {
-        if (Open)
-            return new Rectangle(0, 0, 48, 42);
-        return new Rectangle(0, 44, 34, 36);
-    }
-    private class SinisterPlayerLayer : PlayerDrawLayer
-    {
-        public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
-
-        protected override void Draw(ref PlayerDrawSet drawInfo)
-        {
-            if (drawInfo.drawPlayer.ItemAnimationActive)
-                Open = true;
-        }
-    }
-    private class SinisterPlayerLayer2 : PlayerDrawLayer
-    {
-        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.HeldItem);
-
-        protected override void Draw(ref PlayerDrawSet drawInfo)
-        {
-            Open = false;
-        }
-    }
-}
 public class SinisterIncubator : ModItem
 {
-    public override void SetStaticDefaults()
-    {
-        Main.RegisterItemAnimation(Type, new SinisterIncubatorAnimation());
-    }
     public override void SetDefaults()
     {
         Item.width = 37;
@@ -72,7 +40,7 @@ public class SinisterIncubator : ModItem
     public override void HoldStyle(Player player, Rectangle heldItemFrame)
     {
         player.itemLocation.X += player.direction * -21;
-        player.itemLocation.Y += player.gravDir * -21;
+        player.itemLocation.Y += -21;
     }
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
@@ -82,6 +50,23 @@ public class SinisterIncubator : ModItem
         projectile.originalDamage = Item.damage;
 
         return false;
+    }
+    public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
+    {
+        if (drawInfo.drawPlayer.ItemAnimationActive)
+        {
+            drawData.texture = AssetReferences.Content.Corruption.HiveMind.Drops.SinisterIncubator.SinisterIncubatorOpen.Asset.Value;
+            drawData.sourceRect = drawData.texture.Frame();
+            if (drawInfo.drawPlayer.direction == -1)
+                drawData.position.X += -14;
+        }
+        if(drawInfo.drawPlayer.gravDir == -1)
+        {
+            if (drawInfo.drawPlayer.ItemAnimationActive)
+                drawData.position.Y += -12;
+            drawData.position.Y += 6;
+        }
+        return true;
     }
 }
 public class FungusmiteBuff : ModBuff

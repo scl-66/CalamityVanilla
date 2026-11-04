@@ -1,3 +1,5 @@
+MoltenPickaxe.Tooltip: Can mine cryonic ore
+
 HiveMindSummon: {
 	DisplayName: Sinister Root
 	Tooltip: Summons the Hive Mind
@@ -880,4 +882,14 @@ CandleSentryTileItem: {
 FlaskOfCold: {
 	DisplayName: Flask Of Cold
 	Tooltip: Melee and Whip attacks chill enemies
+}
+
+CryonicOreItem: {
+	DisplayName: Cryonic Ore
+	Tooltip: Freezes you when mined without the proper tools
+}
+
+CryonicBarItem: {
+	DisplayName: Cryonic Bar
+	Tooltip: "'Too cold to melt'"
 }

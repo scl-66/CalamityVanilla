@@ -299,6 +299,7 @@ public partial class Cryogen : ModNPC
     private void IceRing(bool phase2 = false)
     {
         float spinSpeed = 0.015f;
+        int beamType = ModContent.ProjectileType<IcePlacingBeam>();
         Vector2 targetPos = new Vector2(NPC.ai[2], NPC.ai[3]);
         if (targetPos == Vector2.Zero)
         {
@@ -317,12 +318,20 @@ public partial class Cryogen : ModNPC
             NPC.direction = ringSize * (Main.rand.NextBool() ? 1 : -1);
             NPC.ai[1] = NPC.Center.DirectionTo(adjustedTargetPos + new Vector2(16 * 35)).ToRotation() / spinSpeed;
             if (Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, target.Center, ModContent.ProjectileType<IcePlacingBeam>(), 15, 1, -1, NPC.whoAmI, ringSize, Main.rand.NextBool() ? 1 : -1);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, target.Center, beamType, 15, 1, -1, NPC.whoAmI, ringSize, Main.rand.NextBool() ? 1 : -1);
         }
         else
         {
             NPC.localAI[2]++;
             NPC.SimpleFlyMovement(NPC.Center.DirectionTo(targetPos + new Vector2(NPC.direction + (64 * Math.Sign(NPC.direction))).RotatedBy(NPC.ai[1] * spinSpeed)) * 12, 0.2f);
+            foreach(Projectile p in Main.ActiveProjectiles)
+            {
+                if(p.type == beamType)
+                {
+                    NPC.velocity *= 0.5f;
+                    break;
+                }
+            }
             float dist = NPC.Center.Distance(targetPos);
             int abs = Math.Abs(NPC.direction);
             //Main.NewText($"abs: {abs} | dist: {dist}", dist > abs + 64? Color.Green : Color.Red);
@@ -496,11 +505,12 @@ public partial class Cryogen : ModNPC
         }
 
         NPC.velocity *= 0.98f;
-        int chargeUpTime = 31;
+        int chargeUpTime = 61;
         int bigLaserDelay = 150;
-        NPC.rotation += Utils.Remap(NPC.ai[1] - chargeUpTime - bigLaserDelay, 0, 60, 0, 0.1f * NPC.direction);
+        int laserTelegraphTime = 120;
+        NPC.rotation += Utils.Remap(NPC.ai[1] - chargeUpTime - bigLaserDelay, 0, laserTelegraphTime, 0, 0.1f * NPC.direction);
         _snowOverlaySpinDirection = NPC.direction;
-        _snowOverlayOpacity = Utils.Remap(NPC.ai[1] - chargeUpTime - bigLaserDelay, 0, 60, 0, 1);
+        _snowOverlayOpacity = Utils.Remap(NPC.ai[1] - chargeUpTime - bigLaserDelay, 0, laserTelegraphTime, 0, 1);
         if (NPC.ai[1] > 0 || NPC.velocity.Length() < 1f)
         {
             NPC.ai[1]++;
@@ -537,7 +547,7 @@ public partial class Cryogen : ModNPC
                 Vector2 vel = CVUtils.FindVelocityForGravityAffectedThing(NPC.Center, randomPoint, 0.25f, 90);
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, vel.LengthClamp(240), ModContent.ProjectileType<IceBomb>(), 24, 3);
             }
-            else if (NPC.ai[1] > chargeUpTime + bigLaserDelay && NPC.ai[1] < chargeUpTime + bigLaserDelay + 60)
+            else if (NPC.ai[1] > chargeUpTime + bigLaserDelay && NPC.ai[1] < chargeUpTime + bigLaserDelay + laserTelegraphTime)
             {
                 Vector2 vect = Main.rand.NextVector2Unit() * Main.rand.NextFloat(128, 160);
                 var p = VanillaParticles.RequestFadingParticle();
@@ -555,13 +565,13 @@ public partial class Cryogen : ModNPC
                 //p.Rotation = Main.rand.NextFloatDirection();
                 Main.ParticleSystem_World_BehindPlayers.Add(p);
             }
-            if (NPC.ai[1] == chargeUpTime + bigLaserDelay + 60 && Main.netMode != NetmodeID.MultiplayerClient)
+            if (NPC.ai[1] == chargeUpTime + bigLaserDelay + laserTelegraphTime && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<IceDeathBeam>(), 60, 2, -1, NPC.whoAmI);
             }
         }
         // 100 is the time the laser is alive
-        if (NPC.ai[1] > chargeUpTime + bigLaserDelay + 100 + 60)
+        if (NPC.ai[1] > chargeUpTime + bigLaserDelay + 100 + laserTelegraphTime)
             CycleAttack();
     }
 }

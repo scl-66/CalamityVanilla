@@ -42,7 +42,10 @@ public abstract class Flask : ModItem
     public virtual void OnHit(NPC target)
     {
     }
-    public virtual void Effects(Vector2 position, int width, int height)
+    public virtual void ItemEffects(Player player, Vector2 position, int width, int height)
+    {
+    }
+    public virtual void ProjectileEffects(Projectile projectile, Vector2 position, int width, int height)
     {
     }
 }
@@ -56,14 +59,14 @@ public class FlaskPlayer : RDModPlayer
         if (CurrentFlask == null)
             return;
         if (item.DamageType.CountsAsClass<MeleeDamageClass>() && !item.noMelee && !item.noUseGraphic)
-            CurrentFlask.Effects(hitbox.TopLeft(),hitbox.Width,hitbox.Height);
+            CurrentFlask.ItemEffects(Player, hitbox.TopLeft(),hitbox.Width,hitbox.Height);
     }
     public override void EmitEnchantmentVisualsAt(Projectile projectile, Vector2 boxPosition, int boxWidth, int boxHeight)
     {
         if (CurrentFlask == null)
             return;
         if ((projectile.DamageType.CountsAsClass<MeleeDamageClass>() || ProjectileID.Sets.IsAWhip[projectile.type]) && !projectile.noEnchantments)
-            CurrentFlask.Effects(boxPosition,boxWidth,boxHeight);
+            CurrentFlask.ProjectileEffects(projectile, boxPosition,boxWidth,boxHeight);
     }
     public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
     {

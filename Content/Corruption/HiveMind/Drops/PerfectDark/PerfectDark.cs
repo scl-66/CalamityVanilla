@@ -133,13 +133,15 @@ public class PerfectDarkCloud : ModProjectile, ISyncedOnHitEffect
         Projectile.rotation += Projectile.velocity.X * 0.02f;
     }
 
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    public bool SyncedOnHitNPC(Player player, NPC target, Rectangle attackHitbox, int damage, float knockback, bool crit, int hitDirection, Projectile? projectile)
     {
         if (Timer < TotalTime - 30)
         {
             Timer += 15;
             Timer = float.Min(Timer, TotalTime - 30);
+            return true;
         }
+        return false;
     }
 
     public override bool OnTileCollide(Vector2 oldVelocity)

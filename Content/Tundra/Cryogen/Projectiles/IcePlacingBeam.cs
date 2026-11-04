@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,6 +31,10 @@ public class IcePlacingBeam : ModProjectile
             Projectile.Kill();
         Projectile.Center = owner.Center;
         Vector2 ep = EndPoint();
+        if(Projectile.timeLeft % 6 == 0)
+        {
+            SoundEngine.PlaySound(Assets.Sounds.IceBurn.Asset with { pitchVariance = 0.3f }, ep);
+        }
         for (int i = 0; i < 12; i++)
         {
             //Dust d = Dust.NewDustPerfect(ep + Main.rand.NextVector2Circular(16,16),DustID.FrostStaff);

@@ -106,3 +106,13 @@ FlaskOfColdBuff: {
 	DisplayName: Weapon Imbue: Chilled
 	Description: Melee attacks chill enemies
 }
+
+FrozenTool: {
+	DisplayName: Frozen Tool
+	Description: Mods.CalamityVanilla.Buffs.FrozenTool.Description
+}
+
+Terraburn: {
+	DisplayName: Terraburn
+	Description: Mods.CalamityVanilla.Buffs.Terraburn.Description
+}

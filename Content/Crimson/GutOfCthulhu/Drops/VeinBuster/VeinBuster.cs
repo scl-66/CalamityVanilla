@@ -41,10 +41,10 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
         return base.UseItem(player);
     }
 
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    public bool SyncedOnHitNPC(Player player, NPC target, Rectangle attackHitbox, int damage, float knockback, bool crit, int hitDirection, Projectile? projectile)
     {
-        if (target.type == NPCID.TargetDummy)
-            return;
+        if (!target.CanBeChasedBy())
+            return false;
         VeinBusterPlayer modPlayer = player.GetModPlayer<VeinBusterPlayer>();
 
         if (!modPlayer.SpawnedShards)// && (target == null || target.HittableForOnHitRewards()))
@@ -56,7 +56,7 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
                 for (int i = 0; i < shardAmount; i++)
                 {
                     var direction = (hitDirection == 1 ? Vector2.UnitX : -Vector2.UnitX).SafeNormalize(Vector2.UnitX).RotatedByRandom(0.3);
-                    var projectile = Projectile.NewProjectileDirect
+                    var proj = Projectile.NewProjectileDirect
                     (
                         player.GetSource_ItemUse(Item),
                         target.Center + direction * 16,
@@ -65,7 +65,7 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
                         damage / 3, knockback / 2,
                         player.whoAmI
                     );
-                    projectile.localNPCImmunity[target.whoAmI] = projectile.localNPCHitCooldown;
+                    proj.localNPCImmunity[target.whoAmI] = proj.localNPCHitCooldown;
                 }
             }
 
@@ -102,8 +102,9 @@ public class VeinBuster : ModItem, ISyncedOnHitEffect
             }, player.position);
 
             modPlayer.SpawnedShards = true;
+            return true;
         }
-
+        return false;
     }
 }
 

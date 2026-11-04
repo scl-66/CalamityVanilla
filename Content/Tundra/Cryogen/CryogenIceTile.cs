@@ -16,17 +16,12 @@ public class CryogenIceTile : ModTile
         Main.tileLighted[Type] = true;
         Main.tileBlockLight[Type] = false;
         DustType = ModContent.DustType<CryogenIceBlockDust>();
-        HitSound = SoundID.Item27;
+        HitSound = SoundID.Item27 with { MaxInstances = 10, volume = 0.5f, pitch = 0.2f};
         TileID.Sets.ClearedOnWorldLoad[Type] = true;
     }
-    public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+    public override void NumDust(int i, int j, bool fail, ref int num)
     {
-        //if (Main.rand.NextBool(60))
-        //{
-        //    Dust d = Dust.NewDustDirect(new Vector2(i, j) * 16, 16, 16, DustType, 0, 0, 128);
-        //    d.noGravity = false;
-        //    d.velocity *= 0.2f;
-        //}
+        num /= 3;
     }
     public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
     {

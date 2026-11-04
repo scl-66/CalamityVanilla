@@ -1,14 +1,17 @@
-﻿using CalamityVanilla.Common.Interfaces;
-using CalamityVanilla.Common.Particles;
+﻿using CalamityVanilla.Common.Particles;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.Graphics.Renderers;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,6 +19,11 @@ namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Magic.TerraGlobe;
 
 public class TerraGlobe : ModItem
 {
+    public const int DEBUFF_DURATION = 60 * 5;
+    public override Color? GetAlpha(Color lightColor)
+    {
+        return Color.White with { A = 200 };
+    }
     public override void SetDefaults()
     {
         Item.DefaultToMagicWeapon(ModContent.ProjectileType<TerraGlobeProjectile>(), 30, 9, true);
@@ -39,10 +47,20 @@ public class TerraGlobe : ModItem
 
     public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
     {
-        int rand = Main.rand.Next(new int[] { -1, 1 });
+        int rand = Main.rand.Next([-1, 1]);
         velocity = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(5, 12) * rand));
     }
+    public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
+    {
+        Texture2D tex = AssetReferences.Content.Miscellaneous.Items.Weapons.Magic.TerraGlobe.TerraGlobeHeld.Asset.Value;
+        drawData.texture = tex;
 
+        drawData.sourceRect = tex.Frame(1, 17, 0, (int)((Main.timeForVisualEffects / 3) % 17));
+        drawData.origin = new Vector2(11, 12);
+        drawData.position += Vector2.UnitX.RotatedBy(drawInfo.drawPlayer.itemRotation) * 30 * drawInfo.drawPlayer.direction;
+
+        return base.ModifyItemDraw(ref drawInfo, ref drawData, ref coloredDrawData, ref glowMaskDrawData);
+    }
     public override void AddRecipes()
     {
         CreateRecipe()
@@ -55,9 +73,18 @@ public class TerraGlobe : ModItem
     }
 }
 
-public class TerraGlobeProjectile : ModProjectile, ISyncedOnHitEffect
+public class TerraGlobeProjectile : ModProjectile
 {
     public int maxTimeLeft = (int)(60 * 2.23f);
+
+    public override void Load()
+    {
+        MiscShaderData shader = new MiscShaderData(Main.Assets.Request<Effect>("PixelShader"), "MagicMissile").UseProjectionMatrix(doUse: true);
+        shader.UseImage2(TextureAssets.MagicPixel);
+        shader.UseImage1(TextureAssets.MagicPixel);
+        shader.UseImage0(TextureAssets.MagicPixel);
+        GameShaders.Misc.Add("TerraGlobeOrb", shader);
+    }
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.TrailingMode[Type] = 3;
@@ -65,6 +92,8 @@ public class TerraGlobeProjectile : ModProjectile, ISyncedOnHitEffect
     }
     public override void SetDefaults()
     {
+        ProjectileID.Sets.TrailingMode[Type] = 3;
+        ProjectileID.Sets.TrailCacheLength[Type] = 30;
         Projectile.QuickDefaults(false, 24);
         Projectile.timeLeft = maxTimeLeft;
         Projectile.penetrate = 5;
@@ -72,24 +101,26 @@ public class TerraGlobeProjectile : ModProjectile, ISyncedOnHitEffect
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
         Projectile.ignoreWater = true;
+        Projectile.Opacity = 0;
     }
-
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        target.AddBuff(ModContent.BuffType<Terraburn>(), TerraGlobe.DEBUFF_DURATION);
+    }
     public override void AI()
     {
+        Projectile.Opacity += 0.1f;
         Projectile.ai[1]++;
-        if (Projectile.ai[1] == 1) // summon orbiting orbs
+        if (Projectile.ai[1] == 1 && Main.myPlayer == Projectile.owner) // summon orbiting orbs
         {
-            if (Main.myPlayer == Projectile.owner)
+            for (int i = 0; i < Main.rand.Next(2, 4); i++)
             {
-                for (int i = 0; i < Main.rand.Next(2, 4); i++)
-                {
-                    Vector2 rand = Main.rand.NextVector2CircularEdge(Projectile.width * 2, Projectile.height * 2);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + rand, rand.SafeNormalize(Vector2.UnitX) * 5f,
-                    ModContent.ProjectileType<TerraGlobeOrb>(), 0, 0.5f, Projectile.owner, Projectile.whoAmI, Projectile.damage / 3);
-                }
+                Vector2 rand = Main.rand.NextVector2CircularEdge(Projectile.width * 2, Projectile.height * 2);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + rand, rand.SafeNormalize(Vector2.UnitX) * 5f,
+                ModContent.ProjectileType<TerraGlobeOrb>(), 0, 0.5f, Projectile.owner, Projectile.identity, Projectile.damage / 3);
             }
         }
-
+        Projectile.rotation += 0.1f;
         if (Projectile.ai[1] == 3) // spawn dust when first fired (this code is messy i knowww)
         {
             for (int i = 0; i < 30; i++)
@@ -131,10 +162,10 @@ public class TerraGlobeProjectile : ModProjectile, ISyncedOnHitEffect
             d2.fadeIn = 0.3f;
         }
     }
-    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-    {
-        Projectile.damage = (int)(Projectile.damage * 0.8f);
-    }
+    //public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    //{
+    //Projectile.damage = (int)(Projectile.damage * 0.8f);
+    //}
 
     public override bool OnTileCollide(Vector2 oldVelocity)
     {
@@ -162,96 +193,53 @@ public class TerraGlobeProjectile : ModProjectile, ISyncedOnHitEffect
 
     public override void OnKill(int timeLeft)
     {
-        if (timeLeft > 40)
-        {
-            int length = ProjectileID.Sets.TrailCacheLength[Type];
-            int t = DustID.Terra;
-            for (int i = 1; i < length; i++)
-            {
-                Dust d = Dust.NewDustDirect(Projectile.oldPos[i], Projectile.width, Projectile.height, t);
-                d.color = Color.White * Projectile.Opacity * (1f - i / (float)length);
-                d.noGravity = d.noLight = true;
-                d.scale = 1.5f;
-                d.velocity += Projectile.oldPos[i].DirectionTo(Projectile.oldPos[i - 1]) * 3;
-                d.velocity *= 0.4f;
-            }
-        }
-        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-        sparkle.LocalPosition = Projectile.Center;
-        sparkle.Scale = new Vector2(Main.rand.NextFloat(2.7f, 3.3f), Main.rand.NextFloat(0.9f, 1.1f));
-        sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.1f, 0.1f);
-        sparkle.DrawVerticalAxis = true;
-        sparkle.ColorTint = Color.Lime;
-        sparkle.FadeInEnd = 5;
-        sparkle.FadeOutStart = 5;
-        sparkle.FadeOutEnd = 40;
-        Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-
-        for (int i = 0; i < 15; i++)
-        {
-            Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Terra);
-            d.velocity += Projectile.velocity * 0.1f;
-            d.noGravity = true;
-        }
-
         if (Main.myPlayer == Projectile.owner)
         {
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TerraGlobeExplosion>(), (int)(Projectile.damage * 2.5f), Projectile.knockBack);
         }
     }
-
+    private VertexStrip _vertexStrip = new();
     public override bool PreDraw(ref Color lightColor)
     {
         Asset<Texture2D> tex = TextureAssets.Projectile[Type];
-        float glowOpacity = MathF.Pow(Projectile.Opacity, 8);
-        for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
+        Rectangle grayFrame = new Rectangle(0, tex.Height() / 2, tex.Width(), tex.Height() / 2);
+        Rectangle frame = new Rectangle(0, 0, tex.Width(), tex.Height() / 2);
+        float outerScale = Utils.Remap(Projectile.timeLeft, 0, 60, 0, 3) * Projectile.Opacity;
+        for (int i = 0; i < 3; i++)
         {
-            float multiply = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Type];
-            Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, null, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2] / 3), multiply * multiply) * multiply * glowOpacity, Projectile.oldRot[i], TextureAssets.Projectile[Type].Size() / 2, 1f + multiply * 0.2f, SpriteEffects.None);
+            float amount = 1f - (int)((Main.timeForVisualEffects - 10 * i) % 30) / 30f;
+            Color c = new Color(45, 123, 204, 0) * 0.5f;
+            Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, grayFrame, c * Projectile.Opacity * (1f - amount), Projectile.rotation, frame.Size() / 2, 1f + (amount) * outerScale, SpriteEffects.None);
         }
 
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 1f) * Projectile.Opacity, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, 1f, SpriteEffects.None);
+        MiscShaderData miscShaderData = GameShaders.Misc["TerraGlobeOrb"];
+        miscShaderData.UseOpacity(Projectile.Opacity);
+        miscShaderData.UseSaturation(-1);
+        miscShaderData.Apply();
+        _vertexStrip.PrepareStripWithProceduralPadding(Projectile.oldPos, Projectile.oldRot, StripColors, StripWidth, -Main.screenPosition + Projectile.Size / 2f);
+        _vertexStrip.DrawTrail();
+        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+
+        //for (int i = Projectile.oldPos.Length - 1; i >= 0; i--)
+        //{
+        //    float mult = 1f - (i / (float)Projectile.oldPos.Length);
+        //    Color c = Color.Lerp(new Color(45, 123, 204, 200), new Color(147,216,45,100), mult * mult) * mult;
+        //    Main.EntitySpriteDraw(tex.Value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, grayFrame, c * Projectile.Opacity, Projectile.oldRot[i], frame.Size() / 2, 0.5f + mult * 0.5f, SpriteEffects.None);
+        //}
+
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, new Color(255, 255, 255, 200) * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.None);
+        outerScale = Utils.Remap(Projectile.timeLeft, 0, 30, 0, 1) * Projectile.Opacity;
+        if (outerScale > 0)
+            Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, grayFrame, Color.White with { A = 0 } * Projectile.Opacity * (1f - outerScale), Projectile.rotation, frame.Size() / 2, 1, SpriteEffects.None);
         return false;
     }
-
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    private Color StripColors(float progressOnStrip)
     {
-        for (int i = -1; i < 2; i += 2)
-        {
-            var p = VanillaParticles.RequestPrettySparkleParticle();
-            p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
-            p.LocalPosition = Projectile.Center;
-            p.Rotation = Projectile.velocity.ToRotation();
-            p.Scale = new Vector2(3, 0.75f);
-            p.FadeInNormalizedTime = 0.95f;
-            p.FadeOutNormalizedTime = 0.95f;
-            p.TimeToLive = 20;
-            p.AdditiveAmount = 0.35f;
-            p.DrawVerticalAxis = false;
-            p.Velocity = Projectile.velocity * 0.05f * (i + 0.25f);
-            Main.ParticleSystem_World_OverPlayers.Add(p);
-
-            var p2 = VanillaParticles.RequestPrettySparkleParticle();
-            p2.ColorTint = p.ColorTint;
-            p2.LocalPosition = p.LocalPosition;
-            p2.Rotation = p.Rotation + MathHelper.PiOver2;
-            p2.Scale = new Vector2(3, 0.5f);
-            p2.FadeInNormalizedTime = p.FadeInNormalizedTime;
-            p2.FadeOutNormalizedTime = p.FadeOutNormalizedTime;
-            p2.TimeToLive = p.TimeToLive;
-            p2.AdditiveAmount = p.AdditiveAmount;
-            p2.DrawVerticalAxis = false;
-            p2.Velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2) * 0.02f * i;
-            Main.ParticleSystem_World_OverPlayers.Add(p2);
-
-            for (int y = 0; y < 2; y++)
-            {
-                Dust d = Dust.NewDustPerfect(p.LocalPosition, DustID.Terra, p.Velocity.RotatedByRandom(1) * Main.rand.NextFloat(4));
-                d.noGravity = true;
-                Dust d2 = Dust.NewDustPerfect(p2.LocalPosition, DustID.Terra, p2.Velocity.RotatedByRandom(1) * Main.rand.NextFloat(4));
-                d2.noGravity = true;
-            }
-        }
+        return Color.Lerp(new Color(147, 216, 45, 100), new Color(45, 123, 204, 200), progressOnStrip * 2) * (1f - progressOnStrip);
+    }
+    private float StripWidth(float progressOnStrip)
+    {
+        return (20 - progressOnStrip * 20) * Utils.Remap(Projectile.timeLeft, 0, 60, 0, 1);
     }
 }
 
@@ -259,7 +247,7 @@ public class TerraGlobeOrb : ModProjectile
 {
     private Projectile ParentProjectile
     {
-        get => Main.projectile[(int)Projectile.ai[0]];
+        get => Main.projectile.FirstOrDefault(x => x.identity == (int)Projectile.ai[0] && x.owner == Projectile.owner);
         set => Projectile.ai[0] = value.whoAmI;
     }
     public ref float BaseDamage => ref Projectile.ai[1];
@@ -268,8 +256,8 @@ public class TerraGlobeOrb : ModProjectile
     public bool canFollow = true;
     public override void SetStaticDefaults()
     {
-        ProjectileID.Sets.TrailCacheLength[Type] = 10;
-        ProjectileID.Sets.TrailingMode[Type] = 2;
+        ProjectileID.Sets.TrailCacheLength[Type] = 20;
+        ProjectileID.Sets.TrailingMode[Type] = 3;
     }
 
     public override void SetDefaults()
@@ -282,18 +270,33 @@ public class TerraGlobeOrb : ModProjectile
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 15;
         Projectile.ignoreWater = true;
+        Projectile.Opacity = 0;
         //Projectile.extraUpdates = 1;
     }
-
+    public override void SendExtraAI(BinaryWriter writer)
+    {
+        writer.WriteVector2(startOffset);
+        writer.WriteVector2(offsetVel);
+        writer.Write(canFollow);
+    }
+    public override void ReceiveExtraAI(BinaryReader reader)
+    {
+        startOffset = reader.ReadVector2();
+        offsetVel = reader.ReadVector2();
+        canFollow = reader.ReadBoolean();
+    }
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        target.AddBuff(ModContent.BuffType<Terraburn>(), TerraGlobe.DEBUFF_DURATION);
+    }
     public override void OnSpawn(IEntitySource source)
     {
         startOffset = new(Projectile.Center.X - ParentProjectile.Center.X, Projectile.Center.Y - ParentProjectile.Center.Y);
     }
     public override void AI()
     {
-        ProjectileID.Sets.TrailCacheLength[Type] = 10;
-
-        if (canFollow)
+        Projectile.Opacity += 0.1f;
+        if (canFollow && ParentProjectile != null)
         {
             //Vector2 dir = Projectile.Center.DirectionTo(ParentProjectile.Center);
             //Projectile.velocity += (dir);
@@ -354,52 +357,61 @@ public class TerraGlobeOrb : ModProjectile
 
     public override void OnKill(int timeLeft)
     {
-        PrettySparkleParticle sparkle = VanillaParticles.RequestPrettySparkleParticle();
-        sparkle.LocalPosition = Projectile.Center;
-        sparkle.Scale = new Vector2(Main.rand.NextFloat(2.7f, 3.3f), Main.rand.NextFloat(0.9f, 1.1f));
-        sparkle.Rotation = MathHelper.PiOver2 + Main.rand.NextFloat(-0.1f, 0.1f);
-        sparkle.DrawVerticalAxis = true;
-        sparkle.ColorTint = Color.Lime;
-        sparkle.FadeInEnd = 5;
-        sparkle.FadeOutStart = 5;
-        sparkle.FadeOutEnd = 40;
-        Main.ParticleSystem_World_OverPlayers.Add(sparkle);
-
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 5; i++)
         {
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Terra);
             d.velocity += Projectile.velocity * 0.1f;
-            d.noGravity = true;
         }
     }
-
+    private static VertexStrip _vertexStrip = new VertexStrip();
     public override bool PreDraw(ref Color lightColor)
     {
-        Asset<Texture2D> tex = TextureAssets.Projectile[Type];
-        float glowOpacity = MathF.Pow(Projectile.Opacity, 8);
+        MiscShaderData miscShaderData = GameShaders.Misc["TerraGlobeOrb"];
+        miscShaderData.UseOpacity(Projectile.Opacity);
+        miscShaderData.UseSaturation(-1);
+        miscShaderData.Apply();
+        _vertexStrip.PrepareStripWithProceduralPadding(Projectile.oldPos, Projectile.oldRot, StripColors, StripWidth, -Main.screenPosition + Projectile.Size / 2f);
+        _vertexStrip.DrawTrail();
+        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
 
-        for (int i = Projectile.oldPos.Length - 1; i > 0; i--)
+        Asset<Texture2D> tex = TextureAssets.Projectile[Type];
+        //Rectangle grayFrame = new Rectangle(0, tex.Height() / 2, tex.Width(), tex.Height() / 2);
+        Rectangle frame = new Rectangle(0, 0, tex.Width(), tex.Height());
+        //for (int i = Projectile.oldPos.Length - 1; i >= 0; i--)
+        //{
+        //    float mult = 1f - (i / (float)Projectile.oldPos.Length);
+        //    Color c = Color.Lerp(new Color(45, 123, 204, 128), new Color(147, 216, 45, 32), mult * mult) * mult;
+        //    Main.EntitySpriteDraw(tex.Value, Vector2.Lerp(Projectile.oldPos[i],Projectile.position,0.5f) - Main.screenPosition + Projectile.Size / 2, grayFrame, c * Projectile.Opacity, Projectile.oldRot[i], frame.Size() / 2, 0.5f + mult * 0.5f, SpriteEffects.None);
+        //}
+        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, frame, new Color(255, 255, 255, 255) * Projectile.Opacity, Projectile.rotation, frame.Size() / 2, 1f, SpriteEffects.None);
+
+        Asset<Texture2D> glow = TextureAssets.Extra[ExtrasID.ThePerfectGlow];
+        float glowFade = Utils.Remap(Projectile.timeLeft, 0, 60, 0, 1);
+        float glowScale = ((float)Math.Sin((Main.timeForVisualEffects + Projectile.identity * 10) * 0.15f) * 0.25f + 1f) * glowFade;
+        Color c2 = Color.Lerp(new Color(45, 123, 204, 64), new Color(113, 186, 98, 128), (float)Math.Sin((Main.timeForVisualEffects + Projectile.identity * 10) * 0.05f) * 0.5f + 0.5f) * glowFade;
+        for (int i = 0; i < 2; i++)
         {
-            float inbetween = 3;
-            for (int j = 0; j < inbetween; j++)
-            {
-                float percent = 1f - ((MathHelper.Lerp(i, i - 1 >= 0 ? i - 1 : 0, j)) / (float)Projectile.oldPos.Length);
-                Vector2 drawPos = (Vector2.Lerp(Projectile.oldPos[i], Projectile.oldPos[(i - 1) >= 0 ? i - 1 : 0], j / inbetween) + Projectile.Size / 2 - Main.screenPosition);
-                Main.EntitySpriteDraw(tex.Value, drawPos, null, Color.Lerp(new Color(30, 150, 255, 0), Color.Lerp(new Color(255, 210, 50, 64), new Color(180, 255, 55, 64), Projectile.ai[2] / 3), percent) * (percent / 2) * glowOpacity, Projectile.oldRot[i], TextureAssets.Projectile[Type].Size() / 2, 1f + percent * 0.2f, SpriteEffects.None);
-            }
+            Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition, null, c2 * Projectile.Opacity * 0.75f, MathHelper.PiOver2 * i, glow.Size() / 2, new Vector2(1.2f, 1f) * glowScale, SpriteEffects.None);
+            Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0f) * 0.5f * Projectile.Opacity * 0.5f, MathHelper.PiOver2 * i, glow.Size() / 2, new Vector2(1f, 0.8f) * glowScale, SpriteEffects.None);
         }
 
-        Main.EntitySpriteDraw(tex.Value, Projectile.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 1f) * Projectile.Opacity, Projectile.rotation, TextureAssets.Projectile[Type].Size() / 2, 1f, SpriteEffects.None);
         return false;
+    }
+    private Color StripColors(float progressOnStrip)
+    {
+        return Color.Lerp(new Color(45, 123, 204, 128), new Color(113, 186, 98, 128), (float)Math.Sin((Main.timeForVisualEffects + Projectile.identity * 10) * 0.05f) * 0.5f + 0.5f) * (1f - progressOnStrip);
+    }
+    private float StripWidth(float progressOnStrip)
+    {
+        return (10 - progressOnStrip * 10) * Utils.Remap(Projectile.velocity.Length(), 1, 3, 0, 1) * Utils.Remap(Projectile.timeLeft, 0, 60, 0, 1); ;
     }
 }
 
-public class TerraGlobeExplosion : ModProjectile, ISyncedOnHitEffect
+public class TerraGlobeExplosion : ModProjectile
 {
     public override string Texture => ModContent.GetModProjectile(ModContent.ProjectileType<TerraGlobeProjectile>()).Texture;
     public override void SetDefaults()
     {
-        //Projectile.arrow = true;
         Projectile.QuickDefaults(false, 150);
         Projectile.DamageType = DamageClass.Magic;
         Projectile.timeLeft = 9;
@@ -407,59 +419,54 @@ public class TerraGlobeExplosion : ModProjectile, ISyncedOnHitEffect
         Projectile.tileCollide = false;
         Projectile.Opacity = 0f;
     }
+    public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        target.AddBuff(ModContent.BuffType<Terraburn>(), TerraGlobe.DEBUFF_DURATION);
+    }
     public override void AI()
     {
         Lighting.AddLight(Projectile.Center, new Vector3(0.9f, 1f, 0f) * Projectile.timeLeft / 14f); // R G B values from 0 to 1f.
-    }
-    public override void OnSpawn(IEntitySource source)
-    {
-        SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.3f, PitchVariance = 0.2f, Volume = 0.6f }, Projectile.position);
-        for (int i = 0; i < 50; i++)
+        if (Projectile.timeLeft == 8)
         {
-            Vector2 speed = Main.rand.NextVector2Circular(15f, 15f);
-            Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Terra, speed);
-            d.noGravity = true;
-            d.scale = Main.rand.NextFloat(0.8f, 1.2f);
-            d.fadeIn = Main.rand.NextFloat(1.4f);
-        }
-    }
-
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
-    {
-        for (int i = -3; i < 4; i += 2)
-        {
-            var p = VanillaParticles.RequestPrettySparkleParticle();
-            p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
-            p.LocalPosition = target.Center + Main.rand.NextVector2Circular(15, 15);
-            p.Rotation = Projectile.velocity.ToRotation();
-            p.Scale = new Vector2(3, 0.75f);
-            p.FadeInNormalizedTime = 0.95f;
-            p.FadeOutNormalizedTime = 0.95f;
-            p.TimeToLive = 20;
-            p.AdditiveAmount = 0.35f;
-            p.DrawVerticalAxis = false;
-            p.Velocity = Projectile.velocity * 0.05f * (i + 0.25f);
-            Main.ParticleSystem_World_OverPlayers.Add(p);
-
-            var p2 = VanillaParticles.RequestPrettySparkleParticle();
-            p2.ColorTint = p.ColorTint;
-            p2.LocalPosition = p.LocalPosition;
-            p2.Rotation = p.Rotation + MathHelper.PiOver2;
-            p2.Scale = new Vector2(3, 0.5f);
-            p2.FadeInNormalizedTime = p.FadeInNormalizedTime;
-            p2.FadeOutNormalizedTime = p.FadeOutNormalizedTime;
-            p2.TimeToLive = p.TimeToLive;
-            p2.AdditiveAmount = p.AdditiveAmount;
-            p2.DrawVerticalAxis = false;
-            p2.Velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2) * 0.02f * i;
-            Main.ParticleSystem_World_OverPlayers.Add(p2);
-
-            for (int y = 0; y < 2; y++)
+            for (int i = 0; i < 7; i++)
             {
-                Dust d = Dust.NewDustPerfect(p.LocalPosition, DustID.Terra, p.Velocity.RotatedByRandom(1) * Main.rand.NextFloat(4));
-                d.noGravity = true;
-                Dust d2 = Dust.NewDustPerfect(p2.LocalPosition, DustID.Terra, p2.Velocity.RotatedByRandom(1) * Main.rand.NextFloat(4));
-                d2.noGravity = true;
+                var p = VanillaParticles.RequestPrettySparkleParticle();
+                p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
+                p.Velocity = Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(5, 7);
+                p.LocalPosition = Projectile.Center;
+                p.Rotation = p.Velocity.ToRotation();
+                p.Scale = new Vector2(6, 0.75f);
+                p.FadeInNormalizedTime = 0.95f;
+                p.FadeOutNormalizedTime = 0.95f;
+                p.TimeToLive = Main.rand.Next(10, 20);
+                p.AdditiveAmount = 0.35f;
+                p.DrawVerticalAxis = false;
+                Main.ParticleSystem_World_OverPlayers.Add(p);
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                var p2 = VanillaParticles.RequestFadingParticle();
+                p2.ColorTint = i == 0 ? new Color(0.2f, 0.85f, 0.4f, 0.5f) : new Color(45, 123, 204, 128);
+                p2.SetBasicInfo(TextureAssets.Extra[ExtrasID.KeybrandRing], null, Vector2.Zero, Projectile.Center);
+                int time = Main.rand.Next(10, 15);
+                p2.SetTypeInfo(time);
+                p2.Rotation = Main.rand.NextFloatDirection();
+                p2.RotationVelocity = Main.rand.NextFloat(-0.1f, 0.1f);
+                p2.ScaleVelocity = Vector2.One.RotatedByRandom(0.6f) / time;
+                p2.Scale = p2.ScaleVelocity * time / 2f;
+                p2.FadeInNormalizedTime = 0.2f;
+                p2.FadeOutNormalizedTime = 0.5f;
+                Main.ParticleSystem_World_OverPlayers.Add(p2);
+            }
+
+            SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.3f, PitchVariance = 0.2f, Volume = 0.6f }, Projectile.position);
+            for (int i = 0; i < 25; i++)
+            {
+                Vector2 speed = Main.rand.NextVector2Circular(15f, 15f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Terra, speed);
+                d.noGravity = !Main.rand.NextBool(10);
+                d.scale = Main.rand.NextFloat(0.8f, 1.2f);
+                d.fadeIn = Main.rand.NextFloat(1.4f);
             }
         }
     }

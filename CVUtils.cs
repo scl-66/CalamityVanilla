@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -320,10 +322,8 @@ public static class CVUtils
 
     public static void DrawPixel(SpriteBatch spriteBatch, Vector2 pos, Color color)
     {
-        var tex = ModContent.Request<Texture2D>("CalamityVanilla/Assets/Textures/Pixel");
-
         spriteBatch.Draw(
-            tex.Value,
+            Assets.Textures.Pixel.Asset.Value,
             pos,
             new Rectangle(0, 0, 10, 10),
             color,
@@ -351,6 +351,114 @@ public static class CVUtils
                 }
                 totalIndexesInGroup++;
             }
+        }
+    }
+    public static TileDrawInfo GetTileDrawInfo(int i, int j)
+    {
+        Main.instance.TilesRenderer.GetTileDrawData(i, j, Main.tile[i,j], Main.tile[i,j].TileType, ref Main.tile[i,j].TileFrameX, ref Main.tile[i, j].TileFrameY, out int tileWidth, out int tileHeight, out int tileTop, out int halfBrickHeight, out int addFrX, out int addFrY, out SpriteEffects tileSpriteEffect, out Texture2D glowTexture, out Rectangle glowSourceRect, out Color glowColor);
+        return new TileDrawInfo
+        {
+            tileCache = Main.tile[i, j],
+            tileWidth = tileWidth,
+            tileHeight = tileHeight,
+            tileTop = tileTop,
+            halfBrickHeight = halfBrickHeight,
+            addFrX = addFrX,
+            addFrY = addFrY,
+            tileSpriteEffect = tileSpriteEffect,
+            glowTexture = glowTexture,
+            glowSourceRect = glowSourceRect,
+            glowColor = glowColor,
+            drawTexture = TextureAssets.Tile[Main.tile[i, j].TileType].Value,
+            tileFrameX = Main.tile[i,j].TileFrameX,
+            tileFrameY = Main.tile[i, j].TileFrameY
+        };
+    }
+    public static void DrawTileGlow(Color glowColor, Texture2D glowTexture, int i, int j)
+    {
+        DrawTileGlow(GetTileDrawInfo(i, j), glowColor, i, j);
+    }
+    public static void DrawTileGlow(TileDrawInfo drawData, Color color2, int tileX, int tileY)
+    {
+        Tile tile = Main.tile[tileX, tileY];
+        Vector2 screenPosition = Main.Camera.UnscaledPosition;
+        Vector2 screenOffset = new Vector2(Main.offScreenRange, Main.offScreenRange);
+        Vector2 _zero = Vector2.Zero;
+        Rectangle rectangle = new Rectangle(drawData.tileFrameX + drawData.addFrX, drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight - drawData.halfBrickHeight);
+        Vector2 vector = new Vector2((float)(tileX * 16 - (int)screenPosition.X) - ((float)drawData.tileWidth - 16f) / 2f, tileY * 16 - (int)screenPosition.Y + drawData.tileTop + drawData.halfBrickHeight) + screenOffset;
+        if (drawData.tileCache.slope() == 0 && !drawData.tileCache.halfBrick())
+        {
+            Main.spriteBatch.Draw(drawData.drawTexture, vector, new Rectangle(drawData.tileFrameX + drawData.addFrX, drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight), color2, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+        }
+        else if (drawData.tileCache.halfBrick())
+        {
+            Main.spriteBatch.Draw(drawData.drawTexture, vector, rectangle, color2, 0f, _zero, 1f, SpriteEffects.None, 0f);
+        }
+        else if (TileID.Sets.Platforms[drawData.tileCache.type])
+        {
+            Main.spriteBatch.Draw(drawData.drawTexture, vector, rectangle, color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
+            if (drawData.tileCache.slope() == 1 && Main.tile[tileX + 1, tileY + 1].active() && Main.tileSolid[Main.tile[tileX + 1, tileY + 1].type] && Main.tile[tileX + 1, tileY + 1].slope() != 2 && !Main.tile[tileX + 1, tileY + 1].halfBrick() && (!Main.tile[tileX, tileY + 1].active() || (Main.tile[tileX, tileY + 1].blockType() != 0 && Main.tile[tileX, tileY + 1].blockType() != 5) || (!TileID.Sets.BlocksStairs[Main.tile[tileX, tileY + 1].type] && !TileID.Sets.BlocksStairsAbove[Main.tile[tileX, tileY + 1].type])))
+            {
+                Rectangle value = new Rectangle(198, drawData.tileFrameY, 16, 16);
+                if (TileID.Sets.Platforms[Main.tile[tileX + 1, tileY + 1].type] && Main.tile[tileX + 1, tileY + 1].slope() == 0)
+                {
+                    value.X = 324;
+                }
+
+                Main.spriteBatch.Draw(drawData.drawTexture, vector + new Vector2(0f, 16f), value, color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
+            }
+            else if (drawData.tileCache.slope() == 2 && Main.tile[tileX - 1, tileY + 1].active() && Main.tileSolid[Main.tile[tileX - 1, tileY + 1].type] && Main.tile[tileX - 1, tileY + 1].slope() != 1 && !Main.tile[tileX - 1, tileY + 1].halfBrick() && (!Main.tile[tileX, tileY + 1].active() || (Main.tile[tileX, tileY + 1].blockType() != 0 && Main.tile[tileX, tileY + 1].blockType() != 4) || (!TileID.Sets.BlocksStairs[Main.tile[tileX, tileY + 1].type] && !TileID.Sets.BlocksStairsAbove[Main.tile[tileX, tileY + 1].type])))
+            {
+                Rectangle value2 = new Rectangle(162, drawData.tileFrameY, 16, 16);
+                if (TileID.Sets.Platforms[Main.tile[tileX - 1, tileY + 1].type] && Main.tile[tileX - 1, tileY + 1].slope() == 0)
+                {
+                    value2.X = 306;
+                }
+
+                Main.spriteBatch.Draw(drawData.drawTexture, vector + new Vector2(0f, 16f), value2, color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
+            }
+        }
+        else if (TileID.Sets.HasSlopeFrames[drawData.tileCache.type])
+        {
+            Main.spriteBatch.Draw(drawData.drawTexture, vector, new Rectangle(drawData.tileFrameX + drawData.addFrX, drawData.tileFrameY + drawData.addFrY, 16, 16), color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
+        }
+        else
+        {
+            int num11 = drawData.tileCache.slope();
+            int num12 = 2;
+            for (int i = 0; i < 8; i++)
+            {
+                int num13 = i * -2;
+                int num14 = 16 - i * 2;
+                int num15 = 16 - num14;
+                int num16;
+                switch (num11)
+                {
+                    case 1:
+                        num13 = 0;
+                        num16 = i * 2;
+                        num14 = 14 - i * 2;
+                        num15 = 0;
+                        break;
+                    case 2:
+                        num13 = 0;
+                        num16 = 16 - i * 2 - 2;
+                        num14 = 14 - i * 2;
+                        num15 = 0;
+                        break;
+                    case 3:
+                        num16 = i * 2;
+                        break;
+                    default:
+                        num16 = 16 - i * 2 - 2;
+                        break;
+                }
+
+                Main.spriteBatch.Draw(drawData.drawTexture, vector + new Vector2(num16, i * num12 + num13), new Rectangle(drawData.tileFrameX + drawData.addFrX + num16, drawData.tileFrameY + drawData.addFrY + num15, num12, num14), color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
+            }
+
+            int num17 = ((num11 <= 2) ? 14 : 0);
+            Main.spriteBatch.Draw(drawData.drawTexture, vector + new Vector2(0f, num17), new Rectangle(drawData.tileFrameX + drawData.addFrX, drawData.tileFrameY + drawData.addFrY + num17, 16, 2), color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
         }
     }
 }

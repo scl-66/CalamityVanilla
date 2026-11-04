@@ -1,5 +1,6 @@
 ﻿using CalamityVanilla.Common.Dusts;
 using CalamityVanilla.Content.Tundra.Buffs;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,11 +16,11 @@ public class Icebreaker : ModItem
 {
     public override void SetDefaults()
     {
-        Item.DefaultToSword(80, 8, 5);
+        Item.DefaultToSword(80, 20, 5);
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(0, 3, 0, 0);
         Item.shoot = ModContent.ProjectileType<IcebreakerProjectile>();
-        Item.shootSpeed = 11;
+        Item.shootSpeed = 9;
         Item.noMelee = true;
         Item.noUseGraphic = true;
     }
@@ -40,20 +41,21 @@ public class IcebreakerProjectile : ModProjectile
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 7; i >= 0; i--)
         {
             float percent = 1f - i / 8f;
-            Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)Main.timeForVisualEffects + i * 15) with { A = 0 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale * (0.8f + percent * 0.3f), SpriteEffects.None);
+            Main.EntitySpriteDraw(AssetReferences.Content.Tundra.Cryogen.Drops.Icebreaker.IceBreaker_Trail.Asset.Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)Main.timeForVisualEffects + i * 15) with { A = 128 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale * (0.5f + percent * 1f), SpriteEffects.None);
         }
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(21, 17), Projectile.scale, SpriteEffects.None);
         return false;
     }
     public override void AI()
     {
-        if (Main.rand.NextBool(3))
+        if (Main.rand.NextBool())
         {
             Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.width / 2), ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.1f));
-            d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 0 };
+            d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 64 };
+            d.fadeIn = Main.rand.NextFloat(-3, 2);
             d.noGravity = true;
         }
         if (Main.rand.NextBool())
@@ -61,11 +63,12 @@ public class IcebreakerProjectile : ModProjectile
             Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Snow, Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f));
             d.noGravity = true;
         }
+        Projectile.position += Projectile.velocity * 1.5f;
+        Projectile.ai[1]+= 3;
     }
     public override void SetDefaults()
     {
         Projectile.CloneDefaults(ProjectileID.ThornChakram);
-        Projectile.extraUpdates = 1;
         Projectile.penetrate = 100;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;

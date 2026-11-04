@@ -1,7 +1,9 @@
 ﻿using CalamityVanilla.Content.Underworld.Items.FighterJetRemote;
 using CalamityVanilla.Content.Underworld.Items.FleshLauncher;
 using CalamityVanilla.Content.Underworld.Items.PyrobatStaff;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
@@ -27,6 +29,15 @@ public class CVGlobalItem : GlobalItem
     public static float Lerp;
     public static float Style = 1;
 
+    public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+    {
+        switch (item.type)
+        {
+            case ItemID.MoltenPickaxe:
+                tooltips.Add(new TooltipLine("tooltip0", Mods.CalamityVanilla.Items.MoltenPickaxe.Tooltip.GetTextValue()));
+                    break;
+        }
+    }
     public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
     {
         //Replaces instances of ENNWAY! in tooltip lines with custom drawing to have fancy color swapping.

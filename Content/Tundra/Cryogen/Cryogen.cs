@@ -176,9 +176,17 @@ public partial class Cryogen : ModNPC
     public static Color[] AuroraColors = [Color.GreenYellow, Color.MediumSpringGreen, Color.Magenta, Color.MediumSlateBlue, Color.DodgerBlue];
     public static Color GetAuroraColor(int Time)
     {
+        if (Main.ActiveWorldFileData.RemixWorld)
+        {
+            return Color.Lerp(new Color(1,0.3f,0.25f), new Color(0.25f, 0.4f, 1), MathF.Sin(Time / 20f) * 0.5f + 0.5f);
+        }
+        else if (Main.ActiveWorldFileData.Anniversary)
+        {
+            return Color.Lerp(Main.DiscoColor,Color.White,0.5f);
+        }
         int fadeTime = 60;
         int index = (int)((Time / fadeTime) % AuroraColors.Length);
         int nextIndex = (index + 1) % AuroraColors.Length;
-        return Color.Lerp(AuroraColors[index], AuroraColors[nextIndex], (Time % fadeTime) / (float)fadeTime);
+        return Color.Lerp(Color.Lerp(AuroraColors[index], AuroraColors[nextIndex], (Time % fadeTime) / (float)fadeTime),Color.White,0.25f);
     }
 }

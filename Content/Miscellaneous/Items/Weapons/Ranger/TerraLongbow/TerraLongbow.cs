@@ -17,9 +17,9 @@ namespace CalamityVanilla.Content.Miscellaneous.Items.Weapons.Ranger.TerraLongbo
 public class TerraLongbow : ModItem
 {
     public const int HoldoutDistance = 16;
-    public override void SetStaticDefaults()
+    public override Color? GetAlpha(Color lightColor)
     {
-        base.SetStaticDefaults();
+        return Color.White with { A = 200 };
     }
     public override void SetDefaults()
     {
@@ -580,14 +580,13 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
         Main.EntitySpriteDraw(glow.Value, Projectile.Center - Main.screenPosition + velocityNormal * frame.Height / 2, null, new Color(1f, 1f, 1f, 0f) * 0.5f * glowOpacity, Projectile.rotation + MathHelper.PiOver2, glow.Size() / 2, new Vector2(0.2f, 0.5f * sin), SpriteEffects.FlipVertically);
         return false;
     }
-
-    public void SyncedOnHitNPC(Player player, NPC target, int damage, float knockback, bool crit, int hitDirection)
+    public bool SyncedOnHitNPC(Player player, NPC target, Rectangle attackHitbox, int damage, float knockback, bool crit, int hitDirection, Projectile? projectile)
     {
         for (int i = -1; i < 2; i += 2)
         {
             var p = VanillaParticles.RequestPrettySparkleParticle();
             p.ColorTint = new Color(0.2f, 0.85f, 0.4f, 0.5f);
-            p.LocalPosition = Projectile.Center;
+            p.LocalPosition = attackHitbox.Center();
             p.Rotation = Projectile.velocity.ToRotation();
             p.Scale = new Vector2(3, 0.75f);
             p.FadeInNormalizedTime = 0.95f;
@@ -619,5 +618,6 @@ public class TerraBolt : ModProjectile, ISyncedOnHitEffect
                 d2.noGravity = true;
             }
         }
+        return true;
     }
 }
