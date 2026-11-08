@@ -893,3 +893,8 @@ CryonicBarItem: {
 	DisplayName: Cryonic Bar
 	Tooltip: "'Too cold to melt'"
 }
+
+CryonicBrickItem: {
+	DisplayName: Cryonic Brick
+	Tooltip: ""
+}

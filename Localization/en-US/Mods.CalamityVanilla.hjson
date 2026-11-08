@@ -15,7 +15,10 @@ AuthorTags: {
 	Math2Tag.DisplayName: math2
 }
 
-WorldGen.RockTomeMessage: Mods.CalamityVanilla.WorldGen.RockTomeMessage
+WorldGen: {
+	CryonicGen: Adding extra frosting
+	RockTomeGeneration: Conjuring mystical rock formations
+}
 
 ChessPiece: {
 	White: White

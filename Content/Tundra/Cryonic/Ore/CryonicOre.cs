@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.World;
 using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,8 +8,10 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
+using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 using TileHelper.Common;
 
 namespace CalamityVanilla.Content.Tundra.Cryonic.Ore;
@@ -82,11 +85,27 @@ public class CryonicOre : ModTile, ILoadItem
     {
         return false;
     }
+    public override bool IsTileDangerous(int i, int j, Player player)
+    {
+        return player.iceSkate;
+    }
+    public override void FloorVisuals(Player player)
+    {
+        if (!player.iceSkate)
+        {
+            player.slippy2 = true;
+            player.AddBuff(BuffID.Chilled, 60 * 5);
+        }
+    }
     public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
     {
         if (!TileDrawing.IsVisible(Main.tile[i, j]))
             return;
-        CVUtils.DrawTileGlow(Color.White with { A = 64 } * (float)(Math.Sin(Main.timeForVisualEffects * 0.01f) * 0.25f + 0.25f), AssetReferences.Content.Tundra.Cryonic.Ore.CryonicOre_Glow.Asset.Value, i, j);
+        CVUtils.DrawTileGlow(Color.White with { A = 64 } * (float)(Math.Sin(Main.timeForVisualEffects * 0.01f) * 0.15f + 0.35f), AssetReferences.Content.Tundra.Cryonic.Ore.CryonicOre_Glow.Asset.Value, i, j);
+    }
+    public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
+    {
+        WorldGen.TileMergeAttempt(-2, TileID.Sets.IcesSnow, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
     }
     public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
     {
@@ -110,7 +129,7 @@ public class CryonicOre : ModTile, ILoadItem
     }
     public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
     {
-        if (Main.rand.NextBool(4))
+        if (Main.rand.NextBool(4) && WorldGen.TileIsExposedToAir(i,j))
         {
             Dust d = Dust.NewDustDirect(new Vector2(i * 16, j * 16), 16, 16, ModContent.DustType<CryonicSmokeDust>());
             d.fadeIn = 5;
@@ -121,6 +140,24 @@ public class CryonicOre : ModTile, ILoadItem
             d.velocity.Y -= Main.rand.NextFloat();
             d.color *= Main.rand.NextFloat();
             d.color.A = 0;
+        }
+    }
+}
+internal class CryonicGen : CVGenPass
+{
+    public override string Name => base.Name;
+    public override string Parent => "Ice";
+    protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
+    {
+        progress.Message = ProgressMessage.Value;
+
+        int Veins = (int)(30 * (Main.maxTilesX / 4200f));
+        for (int i = 0; i < Veins; i++)
+        {
+            int y = WorldGen.genRand.Next((int)Main.rockLayer, GenVars.snowBottom);
+            int x = WorldGen.genRand.Next(GenVars.snowMinX[y], GenVars.snowMaxX[y]);
+            if (TileID.Sets.IcesSnow[Main.tile[x,y].TileType])
+                WorldGen.TileRunner(x,y, WorldGen.genRand.Next(4,9), WorldGen.genRand.Next(10, 30), (ushort)ModContent.TileType<CryonicOre>());
         }
     }
 }

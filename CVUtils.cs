@@ -376,7 +376,9 @@ public static class CVUtils
     }
     public static void DrawTileGlow(Color glowColor, Texture2D glowTexture, int i, int j)
     {
-        DrawTileGlow(GetTileDrawInfo(i, j), glowColor, i, j);
+        var t = GetTileDrawInfo(i, j);
+        t.drawTexture = glowTexture;
+        DrawTileGlow(t, glowColor, i, j);
     }
     public static void DrawTileGlow(TileDrawInfo drawData, Color color2, int tileX, int tileY)
     {
