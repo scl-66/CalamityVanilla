@@ -57,7 +57,7 @@ public class TerraGlobe : ModItem
 
         drawData.sourceRect = tex.Frame(1, 17, 0, (int)((Main.timeForVisualEffects / 3) % 17));
         drawData.origin = new Vector2(11, 12);
-        drawData.position += Vector2.UnitX.RotatedBy(drawInfo.drawPlayer.itemRotation) * 30 * drawInfo.drawPlayer.direction;
+        drawData.position += Vector2.UnitX.RotatedBy(drawInfo.drawPlayer.itemRotation) * 20 * drawInfo.drawPlayer.direction;
 
         return base.ModifyItemDraw(ref drawInfo, ref drawData, ref coloredDrawData, ref glowMaskDrawData);
     }

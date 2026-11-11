@@ -1,5 +1,7 @@
-﻿using CalamityVanilla.Content.Tundra.Cryogen;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Content.Tundra.Cryogen;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -35,16 +38,15 @@ public class IcePlacingBeam : ModProjectile
         {
             SoundEngine.PlaySound(Assets.Sounds.IceBurn.Asset with { pitchVariance = 0.3f }, ep);
         }
+        int cryonicDust = ModContent.DustType<CryonicSmokeDust>();
         for (int i = 0; i < 12; i++)
         {
-            //Dust d = Dust.NewDustPerfect(ep + Main.rand.NextVector2Circular(16,16),DustID.FrostStaff);
-            //d.noGravity = true;
-            //d.velocity *= 2;
-            //d.scale = 1.25f;
-            Dust d = Dust.NewDustPerfect(ep + Main.rand.NextVector2Circular(16, 16), DustID.SnowSpray);
+            Dust d = Dust.NewDustPerfect(ep + Main.rand.NextVector2Circular(16, 16), cryonicDust);
             d.velocity = Main.rand.NextVector2Circular(3, 5);
             d.noGravity = true;
-            d.fadeIn = Main.rand.NextFloat(1.5f);
+            d.fadeIn = Main.rand.Next(4, 8);
+            d.scale *= Main.rand.NextFloat(2, 3);
+            d.noLight = true;
         }
         foreach (Player p in Main.ActivePlayers)
         {
@@ -75,6 +77,17 @@ public class IcePlacingBeam : ModProjectile
     public override bool PreDraw(ref Color lightColor)
     {
         Utils.DrawLaser(Main.spriteBatch, TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, EndPoint() - Main.screenPosition, new Vector2(0.5f, 1f), LaserDraw);
+
+        var tex = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
+        DrawData d = new(tex, Projectile.Center - Main.screenPosition, null, Color.DodgerBlue with { A = 0 } * Projectile.Opacity, (float)(Main.timeForVisualEffects * 0.025f), tex.Size() / 2, new Vector2(1, 1.5f) * (float)(Math.Sin(Main.timeForVisualEffects * 0.1f) * 0.2f + 1f), SpriteEffects.None);
+
+        for (int i = 0; i < 3; i++)
+        {
+            d.rotation += MathHelper.Pi / 3f;
+            Main.EntitySpriteDraw(d);
+            Main.EntitySpriteDraw(d with { color = d.color * 0.25f, scale = d.scale * new Vector2(3, 1.5f) });
+        }
+
         return false;
     }
     public static void LaserDraw(int stage, Vector2 currentPosition, float distanceLeft, Rectangle lastFrame, out float distCovered, out Rectangle frame, out Vector2 origin, out Color color)

@@ -31,6 +31,13 @@ public class Icicles : ModProjectile
         if (Projectile.timeLeft == 179)
         {
             SoundEngine.PlaySound(Assets.Sounds.IceShotBig.Asset with { PitchVariance = 0.4f, pitch = 0.2f, volume = 1.2f}, Projectile.position);
+            for(int i = 0; i < 25; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position, 30, 30, Main.rand.Next([DustID.FrostStaff,DustID.Snow]));
+                d.noGravity = true;
+                d.scale += Main.rand.NextFloat();
+                d.velocity += Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3);
+            }
         }
         Projectile.frame = Projectile.identity % 3;
         Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);

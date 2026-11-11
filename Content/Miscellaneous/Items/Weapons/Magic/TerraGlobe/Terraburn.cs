@@ -24,6 +24,6 @@ public class Terraburn : ModBuff
         d.velocity *= 0.5f;
         d.velocity.Y -= 1;
         d.fadeIn = Main.rand.NextFloat(1.5f);
-        npc.AddDOT(50, 25, new Color(0.45f,0.8f,0.55f,0.85f));
+        npc.AddDOT(50, 25, new Color(0.7f,1,0.85f,1));
     }
 }

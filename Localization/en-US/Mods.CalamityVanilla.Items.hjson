@@ -34,7 +34,7 @@ CryogenSummonMold: {
 }
 
 Icebreaker: {
-	DisplayName: Icebreaker
+	DisplayName: The Icebreaker
 	Tooltip: Breaks into icicles and chills enemies on hit
 }
 

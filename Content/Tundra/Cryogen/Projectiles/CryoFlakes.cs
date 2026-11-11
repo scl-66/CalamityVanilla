@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,15 +23,15 @@ public class CryoFlake1 : ModProjectile
     }
     public override void SetStaticDefaults()
     {
-        ProjectileID.Sets.TrailCacheLength[Type] = 16;
-        ProjectileID.Sets.TrailingMode[Type] = 0;
+        ProjectileID.Sets.TrailCacheLength[Type] = 44;
+        ProjectileID.Sets.TrailingMode[Type] = 3;
     }
     public override void AI()
     {
         if (Projectile.ai[1] == 0)
         {
             Projectile.ai[1]++;
-            SoundEngine.PlaySound(SoundID.Item28, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item28 with { MaxInstances = 5}, Projectile.Center);
         }
 
         Player target = Main.player[(int)Projectile.ai[0]];
@@ -62,6 +65,26 @@ public class CryoFlake1 : ModProjectile
         {
             Projectile.Opacity = Projectile.timeLeft / 30f;
         }
+    }
+    VertexStrip _vertexStrip = new VertexStrip();
+    public override bool PreDraw(ref Color lightColor)
+    {
+        MiscShaderData miscShaderData = GameShaders.Misc["FrostBolt"];
+        miscShaderData.UseOpacity(Projectile.Opacity);
+        miscShaderData.UseSaturation(-2);
+        miscShaderData.Apply();
+        _vertexStrip.PrepareStripWithProceduralPadding(Projectile.oldPos, Projectile.oldRot, StripColors, StripWidth, -Main.screenPosition + Projectile.Size / 2f);
+        _vertexStrip.DrawTrail();
+        Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+        return base.PreDraw(ref lightColor);
+    }
+    public static Color StripColors(float progressOnStrip)
+    {
+        return Color.White with { A = 64 } * (1f - progressOnStrip * progressOnStrip) * (MathF.Min(progressOnStrip * 3,0.5f));
+    }
+    private float StripWidth(float progressOnStrip)
+    {
+        return Projectile.width * 0.8f * (1f - progressOnStrip * 0.5f);
     }
 }
 public class CryoFlake2 : CryoFlake1

@@ -64,7 +64,7 @@ public class IcebreakerProjectile : ModProjectile
             d.noGravity = true;
         }
         Projectile.position += Projectile.velocity * 1.5f;
-        Projectile.ai[1]+= 3;
+        Projectile.ai[1]+= 2;
     }
     public override void SetDefaults()
     {
@@ -73,6 +73,7 @@ public class IcebreakerProjectile : ModProjectile
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
         Projectile.tileCollide = false;
+        Projectile.extraUpdates = 1;
     }
     private void OnHitAnything()
     {

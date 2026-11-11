@@ -30,7 +30,7 @@ public class IceBomb : ModProjectile
     {
         if (Projectile.timeLeft == 89)
         {
-            SoundEngine.PlaySound(SoundID.Item131, Projectile.position);
+            SoundEngine.PlaySound(SoundID.Item106, Projectile.position);
         }
         Projectile.Opacity += 0.2f;
         if (Projectile.timeLeft <= 1)
@@ -39,7 +39,7 @@ public class IceBomb : ModProjectile
             {
                 if (p.Center.Distance(Projectile.Center) < 16 * 12)
                 {
-                    Projectile.timeLeft++;
+                    Projectile.timeLeft+= 2;
                     break;
                 }
             }
@@ -49,10 +49,26 @@ public class IceBomb : ModProjectile
         Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Snow);
         d.noGravity = true;
         d.velocity += Projectile.velocity;
+        if (Projectile.ai[2] == 1)
+        {
+            Main.tileSolid[ModContent.TileType<CryogenIceTile>()] = false;
+            Vector2 vect = Collision.AnyCollisionWithSpecificTiles(Projectile.position - Projectile.velocity, Projectile.velocity, Projectile.width, Projectile.height, Main.tileSolid);
+            Main.tileSolid[ModContent.TileType<CryogenIceTile>()] = true;
+            if (vect.X != Projectile.velocity.X)
+            {
+                Projectile.velocity.X *= -1;
+            }
+            if (vect.Y != Projectile.velocity.Y)
+                Projectile.velocity.Y *= -1;
+        }
+        else if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+        {
+            Projectile.ai[2] = 1;
+        }
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        Texture2D tex = TextureAssets.Projectile[Type].Value;
+        var tex = TextureAssets.Projectile[Type].Value;
         for (int i = 0; i < Projectile.oldPos.Length; i++)
         {
             float percent = i / (float)Projectile.oldPos.Length;
@@ -61,6 +77,11 @@ public class IceBomb : ModProjectile
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
         float amount = (int)(Main.timeForVisualEffects % 20) / 20f * Projectile.Opacity;
         Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0f) * amount * (1f - amount) * Projectile.Opacity * 2, Projectile.rotation, tex.Size() / 2, Projectile.scale + (amount * 0.5f), SpriteEffects.None, 0);
+        
+        var ring = TextureAssets.Extra[ExtrasID.KeybrandRing].Value;
+        float ringGlow = Math.Max(1f - (Projectile.timeLeft / 90f),0);
+        ringGlow *= ringGlow * ringGlow;
+        Main.EntitySpriteDraw(ring, Projectile.Center - Main.screenPosition, null, Cryogen.GetAuroraColor((int)(Main.timeForVisualEffects + Projectile.identity * 32)) with { A = 64 } * ringGlow, Projectile.rotation, ring.Size() / 2, 1.4f - ringGlow, SpriteEffects.None, 0);
         return false;
     }
     public override void OnKill(int timeLeft)

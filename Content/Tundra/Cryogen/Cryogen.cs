@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -24,14 +25,13 @@ namespace CalamityVanilla.Content.Tundra.Cryogen;
 [AutoloadBossHead]
 public partial class Cryogen : ModNPC
 {
-
-    const bool ForTheWorthy = false;
     private bool IsInPhase2()
     {
         return NPC.life <= (float)NPC.lifeMax * 0.5f;
     }
     public Player target
     { get { return Main.player[NPC.target]; } }
+    private int _attacksCycled = 0;
     public override void HitEffect(NPC.HitInfo hit)
     {
         if (NPC.life <= 0)
@@ -65,8 +65,8 @@ public partial class Cryogen : ModNPC
         NPCID.Sets.MPAllowedEnemies[Type] = true;
         NPCID.Sets.BossBestiaryPriority.Add(Type);
         NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
-        NPCID.Sets.TrailCacheLength[Type] = 8;
-        NPCID.Sets.TrailingMode[Type] = 3;
+        NPCID.Sets.TrailCacheLength[Type] = 6;
+        NPCID.Sets.TrailingMode[Type] = -1;
         NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
         {
             CustomTexturePath = "CalamityVanilla/Assets/Textures/Bestiary/Cryogen_Preview",
@@ -88,39 +88,6 @@ public partial class Cryogen : ModNPC
     public override bool? CanFallThroughPlatforms()
     {
         return true;
-    }
-    private float _snowOverlayOpacity = 0f;
-    private int _snowOverlaySpinDirection = 1;
-    public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-    {
-        Asset<Texture2D> backTexture = AssetReferences.Content.Tundra.Cryogen.CryogenFlake.Asset;
-        Asset <Texture2D> tex = TextureAssets.Npc[Type];
-        Rectangle bigFlake = new Rectangle(0, 0, 270, 270);
-        Rectangle smallFlake = new Rectangle(0, 272, 126, 126);
-        Rectangle SnowOverlay = new Rectangle(272, 0, 212, 208);
-        //Flakes
-
-        Color baseColor = Color.Lerp(Color.White, new Color(0.7f, 0.7f, 0.9f), _snowOverlayOpacity);
-
-        // snow behind
-        spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, SnowOverlay, Color.White * _snowOverlayOpacity * 0.75f, (float)Main.timeForVisualEffects * -0.075f * _snowOverlaySpinDirection, SnowOverlay.Size() / 2, 1.4f, SpriteEffects.None, 0);
-
-        for (int i = 0; i < 4; i++)
-        {
-            spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition + new Vector2((float)Math.Sin(Main.timeForVisualEffects * 0.03f) * 8).RotatedBy(MathHelper.PiOver2 * i), bigFlake, baseColor * 0.2f, NPC.rotation, bigFlake.Size() / 2, !ForTheWorthy ? 1f : 2f, SpriteEffects.None, 0);
-        }
-
-        spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, bigFlake, baseColor * 0.5f, NPC.rotation, bigFlake.Size() / 2, !ForTheWorthy ? 1f : 2f, SpriteEffects.None, 0);
-
-        spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, smallFlake, baseColor * 0.7f, -NPC.rotation, smallFlake.Size() / 2, !ForTheWorthy ? 1f : 2f, SpriteEffects.None, 0);
-
-        // The Hexagon
-        spriteBatch.Draw(tex.Value, NPC.Center - Main.screenPosition, NPC.frame, baseColor, NPC.velocity.X * 0.03f, NPC.frame.Size() / 2, !ForTheWorthy ? 1f : 0.5f, SpriteEffects.None, 0);
-
-        // snow overlay
-        spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, SnowOverlay, Color.White * _snowOverlayOpacity, (float)Main.timeForVisualEffects * -0.1f * _snowOverlaySpinDirection, SnowOverlay.Size() / 2, 1f, SpriteEffects.None, 0);
-        spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, SnowOverlay, Color.White * _snowOverlayOpacity, (float)Main.timeForVisualEffects * -0.05f * _snowOverlaySpinDirection, SnowOverlay.Size() / 2, 1.2f, SpriteEffects.None, 0);
-        return false;
     }
     public override void BossLoot(ref int potionType)
     {
@@ -165,6 +132,16 @@ public partial class Cryogen : ModNPC
         NPC.DeathSound = ContentSamples.NpcsByNetId[NPCID.IceElemental].DeathSound;
         _snowOverlayOpacity = 0f;
         _snowOverlaySpinDirection = 1;
+        _glowAnimation = new(GlowAnimationType.Nothing);
+        _attacksCycled = 0;
+    }
+    public override void SendExtraAI(BinaryWriter writer)
+    {
+        writer.Write(_attacksCycled);
+    }
+    public override void ReceiveExtraAI(BinaryReader reader)
+    {
+        _attacksCycled = reader.ReadInt32();
     }
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
     {
@@ -172,21 +149,5 @@ public partial class Cryogen : ModNPC
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Snow,
             new FlavorTextBestiaryInfoElement($"Mods.CalamityVanilla.NPCs.Cryogen.Bestiary")
         });
-    }
-    public static Color[] AuroraColors = [Color.GreenYellow, Color.MediumSpringGreen, Color.Magenta, Color.MediumSlateBlue, Color.DodgerBlue];
-    public static Color GetAuroraColor(int Time)
-    {
-        if (Main.ActiveWorldFileData.RemixWorld)
-        {
-            return Color.Lerp(new Color(1,0.3f,0.25f), new Color(0.25f, 0.4f, 1), MathF.Sin(Time / 20f) * 0.5f + 0.5f);
-        }
-        else if (Main.ActiveWorldFileData.Anniversary)
-        {
-            return Color.Lerp(Main.DiscoColor,Color.White,0.5f);
-        }
-        int fadeTime = 60;
-        int index = (int)((Time / fadeTime) % AuroraColors.Length);
-        int nextIndex = (index + 1) % AuroraColors.Length;
-        return Color.Lerp(Color.Lerp(AuroraColors[index], AuroraColors[nextIndex], (Time % fadeTime) / (float)fadeTime),Color.White,0.25f);
     }
 }
