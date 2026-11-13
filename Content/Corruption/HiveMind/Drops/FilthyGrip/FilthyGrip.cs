@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityVanilla.Common.Dusts;
+using CalamityVanilla.Common.Particles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -82,6 +84,10 @@ public class FilthyGripSlash : ModProjectile
     {
         modifiers.ScalingArmorPenetration += 1f;
     }
+    public override Color? GetAlpha(Color lightColor)
+    {
+        return Color.Lerp(lightColor,Color.White,0.33f);
+    }
     public override void AI()
     {
         if (++Projectile.frameCounter >= frameSpeed)
@@ -94,13 +100,31 @@ public class FilthyGripSlash : ModProjectile
 
         if (Projectile.ai[0] <= 1)
         {
-            SoundEngine.PlaySound(SoundID.Item71 with
-            {
-                Volume = 0.4f,
-                Pitch = Main.rand.NextFloat(0.7f, 1.1f)
-            });
+            SoundEngine.PlaySound(Assets.Sounds.FilthyGrip.Asset with { Volume = 0.7f, PitchVariance = 0.5f, MaxInstances = 5 }, Projectile.position);
             Projectile.rotation = Main.rand.NextFloat(-MathHelper.Pi, MathHelper.Pi);
-            //Projectile.rotation = 0f;
+            Vector2 speed = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2();
+            for (int i = 0; i < 10; i++)
+            {
+                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(16, 16), ModContent.DustType<SimpleColorableGlowyDust>(), speed * Main.rand.NextFloat(2, 8));
+                d.noGravity = true;
+                d.color = new Color(1f, 0.75f, 0.55f, 0.25f) * 0.75f;
+                d.scale *= 0.8f;
+                d.noLight = true;
+            }
+            //for (int i = -1; i < 2; i++)
+            //{
+            //    var s = VanillaParticles.RequestPrettySparkleParticle();
+            //    s.TimeToLive = Main.rand.Next(10,20);
+            //    s.ColorTint = new Color(1f, 0.55f, 0.55f) * 0.75f;
+            //    s.Scale = new Vector2(2,i == 0? 2.3f : 1.5f);
+            //    s.Rotation = Projectile.rotation;
+            //    s.DrawHorizontalAxis = false;
+            //    s.LocalPosition = Projectile.Center + speed.RotatedBy(MathHelper.PiOver2) * i * Main.rand.NextFloat(5,10);
+            //    s.Velocity = speed * Main.rand.NextFloat(2,4);
+            //    Main.ParticleSystem_World_OverPlayers.Add(s);
+            //    s.FadeInEnd = 1;
+            //    s.FadeOutStart = 1;
+            //}
         }
     }
 }

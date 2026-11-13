@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common;
+using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -38,19 +39,10 @@ public class TheSnowman : ModItem
         Item.channel = true;
     }
 }
-
-
 public class TheSnowmanProjectile : BaseFlailProjectile
 {
-    private static Asset<Texture2D> _hat;
-
     public ref float HatRotation => ref Projectile.localAI[2];
-
-    public override void Load()
-    {
-        _hat = ModContent.Request<Texture2D>(Texture + "_Hat");
-    }
-
+    float actualRotation = 0;
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
@@ -86,17 +78,16 @@ public class TheSnowmanProjectile : BaseFlailProjectile
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 10;
         Projectile.netImportant = true;
+        Projectile.aiStyle = ProjAIStyleID.Flail;
+        actualRotation = 0;
     }
-
-    public override int MaxTimeLaunched => 13;
-    public override float LaunchSpeed => 21;
-    public override float MaxManualRetractionSpeed => 22;
-    public override float MaxForcedRetractionSpeed => 25;
-    public override int SpinningNPCHitCooldown => 12;
-
-    public override bool ShouldFreelyRotate => false;
-
-
+    public override void FlailStats(ref int launchTimeLimit, ref float launchSpeed, ref float maxLaunchLength, ref float retractAcceleration, ref float maxRetractSpeed, ref float forcedRetractAcceleration, ref float maxForcedRetractSpeed, ref int ricochetTimeLimit, ref float spinVisualDistance)
+    {
+        launchSpeed = 21;
+        launchTimeLimit = 13;
+        maxRetractSpeed = 22;
+        maxForcedRetractSpeed = 25;
+    }
     public override void PostAI()
     {
         float intendedRotation = -Projectile.velocity.X / 20;
@@ -104,11 +95,12 @@ public class TheSnowmanProjectile : BaseFlailProjectile
         HatRotation = Math.Clamp(HatRotation, -1f, 1f);
 
         float rotationAmount = (Math.Abs(Projectile.velocity.X) + Math.Abs(Projectile.velocity.Y)) * 0.01f;
-        Projectile.rotation += rotationAmount * Math.Sign(Projectile.velocity.X);
+        actualRotation += rotationAmount * Math.Sign(Projectile.velocity.X);
         if (CurrentAIState == AIState.Spinning)
         {
-            Projectile.rotation += MathHelper.TwoPi / 15f * Main.player[Projectile.owner].direction;
+            actualRotation += MathHelper.TwoPi / 15f * Main.player[Projectile.owner].direction;
         }
+        Projectile.rotation = actualRotation;
     }
 
     private void GenerateChainGores()
@@ -237,7 +229,7 @@ public class TheSnowmanProjectile : BaseFlailProjectile
 
             SoundEngine.PlaySound(SoundID.NPCDeath15, Projectile.Center);
 
-            return true;
+            Projectile.Kill();
         }
 
         return base.OnTileCollide(oldVelocity);
@@ -254,8 +246,8 @@ public class TheSnowmanProjectile : BaseFlailProjectile
     public override void PostDraw(Color lightColor)
     {
         Vector2 hatDirection = (HatRotation - MathHelper.PiOver2).ToRotationVector2();
-
-        Main.spriteBatch.Draw(_hat.Value, Projectile.Center + hatDirection * 12 - Main.screenPosition, null, Projectile.GetAlpha(lightColor), HatRotation, new Vector2(_hat.Width() * 0.5f, _hat.Height() - 2), 1f, SpriteEffects.None, 0);
+        var hat = AssetReferences.Content.Tundra.Cryogen.Drops.TheSnowman.TheSnowmanProjectile_Hat.Asset;
+        Main.spriteBatch.Draw(hat.Value, Projectile.Center + hatDirection * 12 - Main.screenPosition, null, Projectile.GetAlpha(lightColor), HatRotation, new Vector2(hat.Width() * 0.5f, hat.Height() - 2), 1f, SpriteEffects.None, 0);
     }
 }
 

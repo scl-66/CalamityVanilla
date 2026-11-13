@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common;
+using CalamityVanilla.Common.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -53,7 +54,6 @@ public class CarnageFlailProjectile : BaseFlailProjectile
         ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
         Main.projFrames[Type] = 2;
     }
-
     public override void SetDefaults()
     {
         Projectile.Size = new Vector2(30, 30);
@@ -63,37 +63,31 @@ public class CarnageFlailProjectile : BaseFlailProjectile
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 10;
         Projectile.netImportant = true;
+        Projectile.aiStyle = ProjAIStyleID.Flail;
     }
-    public override int MaxTimeLaunched => 13;
-    public override float LaunchSpeed => 15;
-    public override float MaxManualRetractionSpeed => 13;
-    public override float MaxForcedRetractionSpeed => 16;
-    public override int SpinningNPCHitCooldown => 12;
-
-    public override float MaxDistanceLaunched => 300;
-    public override bool ShouldFreelyRotate => false;
+    public override void FlailStats(ref int launchTimeLimit, ref float launchSpeed, ref float maxLaunchLength, ref float retractAcceleration, ref float maxRetractSpeed, ref float forcedRetractAcceleration, ref float maxForcedRetractSpeed, ref int ricochetTimeLimit, ref float spinVisualDistance)
+    {
+        launchTimeLimit = 13;
+        launchSpeed = 15;
+        maxRetractSpeed = 13;
+        maxForcedRetractSpeed = 16;
+        maxLaunchLength = 300;
+    }
     private ref float _targetWhoami => ref Projectile.ai[2];
-    public override void AI()
+    public override bool PreAI()
     {
         Player player = Main.player[Projectile.owner];
-        Vector2 playerArmPosition = Main.GetPlayerArmPosition(Projectile);
-        playerArmPosition -= Vector2.UnitY * player.gfxOffY;
-
-        Projectile.rotation = Projectile.Center.DirectionTo(playerArmPosition).ToRotation() - MathHelper.PiOver4;
-        if (Projectile.spriteDirection == 1)
-            Projectile.rotation -= MathHelper.PiOver2;
         if (_targetWhoami <= -1)
         {
-            base.AI();
-            Projectile.spriteDirection = Projectile.Center.X < player.MountedCenter.X ? -1 : 1;
             if (_targetWhoami == -2)
             {
                 Projectile.frame = 1;
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.LifeDrain);
                 d.noGravity = true;
-                return;
             }
-            Projectile.frame = 0;
+            else
+                Projectile.frame = 0;
+            return true;
         }
         else
         {
@@ -124,7 +118,7 @@ public class CarnageFlailProjectile : BaseFlailProjectile
             CurrentAIState = AIState.UnusedState;
             NPC target = Main.npc[(int)_targetWhoami];
             Projectile.Center = target.Center - Projectile.velocity;
-            if (!target.active || player.controlUseItem || player.Center.Distance(Projectile.Center) > MaxDistanceLaunched)
+            if (!target.active || player.controlUseItem || player.Center.Distance(Projectile.Center) > Projectile.GetFlailMaxLaunchLength())
             {
                 if (!target.active && target.lifeMax > 5 && !target.immortal && !target.SpawnedFromStatue)
                 {
@@ -135,7 +129,20 @@ public class CarnageFlailProjectile : BaseFlailProjectile
                 _targetWhoami = Math.Min(_targetWhoami, -1);
                 CurrentAIState = AIState.ForcedRetracting;
             }
+            AI();
+            return false;
         }
+    }
+    public override void AI()
+    {
+        Player player = Main.player[Projectile.owner];
+        Vector2 playerArmPosition = Main.GetPlayerArmPosition(Projectile);
+        playerArmPosition -= Vector2.UnitY * player.gfxOffY;
+
+        Projectile.spriteDirection = Projectile.Center.X < player.MountedCenter.X ? -1 : 1;
+        Projectile.rotation = Projectile.Center.DirectionTo(playerArmPosition).ToRotation() - MathHelper.PiOver4;
+        if (Projectile.spriteDirection == 1)
+            Projectile.rotation -= MathHelper.PiOver2;
     }
     public override bool ShouldUpdatePosition()
     {

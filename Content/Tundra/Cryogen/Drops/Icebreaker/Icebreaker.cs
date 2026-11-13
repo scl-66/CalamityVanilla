@@ -65,6 +65,11 @@ public class IcebreakerProjectile : ModProjectile
         }
         Projectile.position += Projectile.velocity * 1.5f;
         Projectile.ai[1]+= 2;
+        if(Projectile.soundDelay == 1)
+        {
+            SoundEngine.PlaySound(SoundID.Item7, Projectile.position);
+            Projectile.soundDelay = 15;
+        }
     }
     public override void SetDefaults()
     {
