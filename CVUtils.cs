@@ -463,4 +463,18 @@ public static class CVUtils
             Main.spriteBatch.Draw(drawData.drawTexture, vector + new Vector2(0f, num17), new Rectangle(drawData.tileFrameX + drawData.addFrX, drawData.tileFrameY + drawData.addFrY + num17, 16, 2), color2, 0f, _zero, 1f, drawData.tileSpriteEffect, 0f);
         }
     }
+    public static Vector2 FindNearbySpotOnGround(Vector2 point, int iterations, bool includeLiquid = false)
+    {
+        Point pointInWorld = point.ToTileCoordinates();
+        if (!WorldGen.InWorld(pointInWorld.X, pointInWorld.Y))
+            return Vector2.Zero;
+        for (int i = 0; i < iterations; i++)
+        {
+            Point PointToCheck = pointInWorld + new Point(0, i % 2 == 0 ? i / 2 : (-i + 1) / 2);
+            Vector2 worldCoords = PointToCheck.ToWorldCoordinates();
+            if (!Collision.IsWorldPointSolid(worldCoords) && ((Main.tile[PointToCheck.X, PointToCheck.Y + 1].LiquidAmount > 0 && includeLiquid) || Collision.IsWorldPointSolid(new Vector2(worldCoords.X, worldCoords.Y + 16))))
+                return worldCoords + Vector2.UnitY * 16;
+        }
+        return Vector2.Zero;
+    }
 }

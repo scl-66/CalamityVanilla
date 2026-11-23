@@ -20,7 +20,7 @@ public class Icebreaker : ModItem
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(0, 3, 0, 0);
         Item.shoot = ModContent.ProjectileType<IcebreakerProjectile>();
-        Item.shootSpeed = 9;
+        Item.shootSpeed = 5;
         Item.noMelee = true;
         Item.noUseGraphic = true;
     }
@@ -41,20 +41,27 @@ public class IcebreakerProjectile : ModProjectile
     }
     public override bool PreDraw(ref Color lightColor)
     {
-        for (int i = 7; i >= 0; i--)
-        {
-            float percent = 1f - i / 8f;
-            Main.EntitySpriteDraw(AssetReferences.Content.Tundra.Cryogen.Drops.Icebreaker.IceBreaker_Trail.Asset.Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)Main.timeForVisualEffects + i * 15) with { A = 128 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale * (0.5f + percent * 1f), SpriteEffects.None);
-        }
+        if (Projectile.ai[2] == 0)
+            for (int i = 7; i >= 0; i--)
+            {
+                float percent = 1f - i / 8f;
+                Main.EntitySpriteDraw(AssetReferences.Content.Tundra.Cryogen.Drops.Icebreaker.IceBreaker_Trail.Asset.Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, Cryogen.GetAuroraColor((int)(Main.timeForVisualEffects * 2) + i * 15) with { A = 128 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale * (0.5f + percent * 1f), SpriteEffects.None);
+            }
+        else
+            for (int i = 7; i >= 0; i--)
+            {
+                float percent = 1f - i / 8f;
+                Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, null, lightColor with { A = 128 } * percent * 0.5f, Projectile.oldRot[i], new Vector2(21, 17), Projectile.scale * (0.5f + percent * 1f), SpriteEffects.None);
+            }
         Main.EntitySpriteDraw(TextureAssets.Projectile[Type].Value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(21, 17), Projectile.scale, SpriteEffects.None);
         return false;
     }
     public override void AI()
     {
-        if (Main.rand.NextBool())
+        if (Projectile.ai[2] == 0 && Main.rand.NextBool())
         {
-            Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.width / 2), ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.1f));
-            d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 64 };
+            Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.width / 2), ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.1f) * 2);
+            d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects * 2) with { A = 64 };
             d.fadeIn = Main.rand.NextFloat(-3, 2);
             d.noGravity = true;
         }
@@ -64,25 +71,29 @@ public class IcebreakerProjectile : ModProjectile
             d.noGravity = true;
         }
         Projectile.position += Projectile.velocity * 1.5f;
-        Projectile.ai[1]+= 2;
-        if(Projectile.soundDelay == 1)
+        if (Projectile.soundDelay == 1)
         {
             SoundEngine.PlaySound(SoundID.Item7, Projectile.position);
-            Projectile.soundDelay = 15;
+            Projectile.soundDelay = 21;
+        }
+        if (Projectile.ai[0] == 0)
+        {
+            Projectile.soundDelay = 2;
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
         }
     }
     public override void SetDefaults()
     {
         Projectile.CloneDefaults(ProjectileID.ThornChakram);
-        Projectile.penetrate = 100;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 30;
         Projectile.tileCollide = false;
-        Projectile.extraUpdates = 1;
+        Projectile.extraUpdates = 2;
     }
     private void OnHitAnything()
     {
-        SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+        Projectile.ai[2] = 1;
+        Projectile.netUpdate = true;
         if (Main.myPlayer == Projectile.owner)
         {
             for (int i = 0; i < 6; i++)
@@ -95,14 +106,14 @@ public class IcebreakerProjectile : ModProjectile
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
         target.AddBuff(ModContent.BuffType<ChilledCV>(), 60 * 8);
-        if (Projectile.penetrate != 100)
+        if (Projectile.ai[2] == 1)
             return;
         OnHitAnything();
     }
     public override void OnHitPlayer(Player target, Player.HurtInfo info)
     {
         target.AddBuff(BuffID.Chilled, 60 * 8);
-        if (Projectile.penetrate != 100)
+        if (Projectile.ai[2] == 1)
             return;
         OnHitAnything();
     }
@@ -122,15 +133,17 @@ public class IcebreakerIcicles : ModProjectile
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = -1;
         Projectile.DamageType = DamageClass.Melee;
+        Projectile.tileCollide = false;
     }
     public override void AI()
     {
         if (Projectile.alpha == 0)
         {
+            SoundEngine.PlaySound(Assets.Sounds.IceBombExplode.Asset with { pitchVariance = 0.2f, volume = 0.5f, pitch = 0.7f }, Projectile.position);
             for (int i = 0; i < 3; i++)
             {
                 Dust d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<SimpleColorableGlowyDust>(), Projectile.velocity.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f));
-                d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects) with { A = 0 };
+                d.color = Cryogen.GetAuroraColor((int)Main.timeForVisualEffects * 2) with { A = 0 };
                 d.noGravity = true;
             }
             for (int i = 0; i < 3; i++)
@@ -138,6 +151,10 @@ public class IcebreakerIcicles : ModProjectile
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Snow, Projectile.velocity.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 4f));
                 d.noGravity = true;
             }
+        }
+        if (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+        {
+            Projectile.velocity *= 0.9f;
         }
         Projectile.frame = Projectile.whoAmI % 3;
         Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);

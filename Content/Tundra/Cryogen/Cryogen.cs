@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common;
+using CalamityVanilla.Common.Interfaces;
 using CalamityVanilla.Content.NPCs.TownNPCs.Priest;
 using CalamityVanilla.Content.Tundra.Cryogen.Drops;
 using CalamityVanilla.Content.Tundra.Cryogen.Drops.HoarfrostBow;
@@ -23,7 +24,7 @@ using Terraria.ModLoader;
 namespace CalamityVanilla.Content.Tundra.Cryogen;
 
 [AutoloadBossHead]
-public partial class Cryogen : ModNPC
+public partial class Cryogen : ModNPC, ICustomTrailingMode
 {
     private bool IsInPhase2()
     {

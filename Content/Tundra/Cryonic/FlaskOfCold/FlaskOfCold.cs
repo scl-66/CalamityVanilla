@@ -58,6 +58,6 @@ public class FlaskOfCold : Flask
     }
     public override void AddRecipes()
     {
-        CreateRecipe().AddTile(TileID.ImbuingStation).AddIngredient(ItemID.BottledWater).AddIngredient(AutoContent.ModItem<CryonicOre>()).Register();
+        CreateRecipe().AddTile(TileID.ImbuingStation).AddIngredient(ItemID.BottledWater).AddIngredient(AutoContent.ModItem<CryonicOre>(),3).Register();
     }
 }

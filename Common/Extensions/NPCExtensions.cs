@@ -27,6 +27,11 @@ public static class NPCExtensions
             var n = npc.NPCStats;
             n.Speed *= speed;
         }
+        public void PointDirectionToVector(Vector2 vector)
+        {
+            npc.direction = Math.Sign(vector.X - npc.Center.X);
+            npc.directionY = Math.Sign(vector.Y - npc.Center.Y);
+        }
         public NPCStats NPCStats => npc.GetGlobalNPC<NPCStats>();
         public void AddDOT(int dps, int damage)
         {

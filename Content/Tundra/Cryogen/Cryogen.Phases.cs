@@ -1,5 +1,6 @@
 using CalamityVanilla.Common.Dusts;
 using CalamityVanilla.Common.Extensions;
+using CalamityVanilla.Common.Interfaces;
 using CalamityVanilla.Common.Particles;
 using CalamityVanilla.Content.Tundra.Cryogen.Projectiles;
 using Microsoft.Xna.Framework;
@@ -12,12 +13,11 @@ using Terraria.ID;
 using Terraria.ModLoader;
 namespace CalamityVanilla.Content.Tundra.Cryogen;
 
-public partial class Cryogen : ModNPC
+public partial class Cryogen : ModNPC, ICustomTrailingMode
 {
     private ref float _currentAttack => ref NPC.ai[0];
     public override void AI()
     {
-        UpdateAfterimages();
         _glowAnimation.Update();
         NPC.rotation += (NPC.velocity * new Vector2(0.01f, 0.005f)).Length() * Math.Sign(NPC.velocity.X);
         _snowOverlayOpacity *= 0.96f;

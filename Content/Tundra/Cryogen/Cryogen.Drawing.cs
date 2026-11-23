@@ -1,4 +1,5 @@
 ﻿using CalamityVanilla.Common.Extensions;
+using CalamityVanilla.Common.Interfaces;
 using CalamityVanilla.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityVanilla.Content.Tundra.Cryogen;
 
-public partial class Cryogen : ModNPC
+public partial class Cryogen : ModNPC, ICustomTrailingMode
 {
     public enum GlowAnimationType
     {
@@ -126,18 +127,18 @@ public partial class Cryogen : ModNPC
         spriteBatch.Draw(backTexture.Value, NPC.Center - Main.screenPosition, SnowOverlay, tint * _snowOverlayOpacity, (float)Main.timeForVisualEffects * -0.05f * _snowOverlaySpinDirection, SnowOverlay.Size() / 2, 1.2f, SpriteEffects.None, 0);
         return false;
     }
-    private void UpdateAfterimages()
+    public void UpdateTrails(NPC npc)
     {
-        NPC.localAI[0]++;
-        if (NPC.localAI[0] < 3)
+        npc.localAI[0]++;
+        if (npc.localAI[0] < 3)
             return;
-        NPC.localAI[0] = 0;
-        for (int num6 = NPC.oldPos.Length - 1; num6 > 0; num6--)
+        npc.localAI[0] = 0;
+        for (int num6 = npc.oldPos.Length - 1; num6 > 0; num6--)
         {
-            NPC.oldPos[num6] = NPC.oldPos[num6 - 1];
-            NPC.oldRot[num6] = NPC.oldRot[num6 - 1];
+            npc.oldPos[num6] = npc.oldPos[num6 - 1];
+            npc.oldRot[num6] = npc.oldRot[num6 - 1];
         }
-        NPC.oldPos[0] = NPC.position + NPC.netOffset;
-        NPC.oldRot[0] = NPC.rotation;
+        npc.oldPos[0] = npc.position + npc.netOffset;
+        npc.oldRot[0] = npc.rotation;
     }
 }
